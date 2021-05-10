@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
 import 'package:rewardadz/presentation/screens/editprofile.dart';
 import 'package:rewardadz/presentation/screens/privacyPolicyWebView.dart';
 import 'package:rewardadz/presentation/screens/termsOfService.dart';
+import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -14,9 +16,7 @@ class _ProfileState extends State<Profile> {
   TextStyle _titleStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0);
   TextStyle _labelStyle = TextStyle(fontSize: 14.0);
-  TextStyle _inputLabelStyle = TextStyle(fontWeight: FontWeight.w400);
-  bool _hidePassword1 = true;
-  bool _hidePassword2 = true;
+
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -161,26 +161,27 @@ class _ProfileState extends State<Profile> {
                                     style: TextStyle(
                                         fontSize: 18.0, color: Colors.black),
                                   ),
-                                  Form(
-                                      child: Column(
-                                    children: [
-                                      TextField(
-                                        onChanged: (value) {
-                                          setState(() {});
-                                        },
-                                        cursorColor:
-                                            Theme.of(context).primaryColor,
-                                        keyboardType:
-                                            TextInputType.visiblePassword,
-                                        obscureText: _hidePassword1,
-                                        decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            suffixIcon: IconButton(
-                                                icon: _hidePassword1
+                                  Consumer<TogglePasswordProvider>(
+                                    builder: (context, data, child) => Form(
+                                        child: Column(
+                                      children: [
+                                        TextField(
+                                          onChanged: (value) {
+                                            setState(() {});
+                                          },
+                                          cursorColor:
+                                              Theme.of(context).primaryColor,
+                                          keyboardType:
+                                              TextInputType.visiblePassword,
+                                          obscureText: data.password4,
+                                          decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              suffixIcon: IconButton(
+                                                icon: data.password4
                                                     ? Icon(
                                                         Icons.visibility,
                                                         color: Colors.grey,
@@ -189,30 +190,26 @@ class _ProfileState extends State<Profile> {
                                                         Icons.visibility_off,
                                                         color: Colors.grey,
                                                       ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _hidePassword1 =
-                                                        !_hidePassword1;
-                                                  });
-                                                }),
-                                            fillColor: Colors.white,
-                                            filled: true,
-                                            labelText: "Password",
-                                            labelStyle: _labelStyle),
-                                      ),
-                                      Divider(
-                                        height: 8,
-                                      ),
-                                      TextField(
-                                        cursorColor:
-                                            Theme.of(context).primaryColor,
-                                        keyboardType:
-                                            TextInputType.visiblePassword,
-                                        obscureText: _hidePassword2,
-                                        decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            suffixIcon: IconButton(
-                                                icon: _hidePassword2
+                                                onPressed: data.togglePassword4,
+                                              ),
+                                              fillColor: Colors.white,
+                                              filled: true,
+                                              labelText: "Password",
+                                              labelStyle: _labelStyle),
+                                        ),
+                                        Divider(
+                                          height: 8,
+                                        ),
+                                        TextField(
+                                          cursorColor:
+                                              Theme.of(context).primaryColor,
+                                          keyboardType:
+                                              TextInputType.visiblePassword,
+                                          obscureText: data.password5,
+                                          decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              suffixIcon: IconButton(
+                                                icon: data.password5
                                                     ? Icon(
                                                         Icons.visibility,
                                                         color: Colors.grey,
@@ -221,23 +218,20 @@ class _ProfileState extends State<Profile> {
                                                         Icons.visibility_off,
                                                         color: Colors.grey,
                                                       ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _hidePassword2 =
-                                                        !_hidePassword2;
-                                                  });
-                                                }),
-                                            focusedBorder: InputBorder.none,
-                                            enabledBorder: InputBorder.none,
-                                            errorBorder: InputBorder.none,
-                                            disabledBorder: InputBorder.none,
-                                            fillColor: Colors.white,
-                                            filled: true,
-                                            labelText: "Confirm Password",
-                                            labelStyle: _labelStyle),
-                                      )
-                                    ],
-                                  )),
+                                                onPressed: data.togglePassword5,
+                                              ),
+                                              focusedBorder: InputBorder.none,
+                                              enabledBorder: InputBorder.none,
+                                              errorBorder: InputBorder.none,
+                                              disabledBorder: InputBorder.none,
+                                              fillColor: Colors.white,
+                                              filled: true,
+                                              labelText: "Confirm Password",
+                                              labelStyle: _labelStyle),
+                                        )
+                                      ],
+                                    )),
+                                  ),
                                   Container(
                                     width: MediaQuery.of(context).size.width,
                                     margin: EdgeInsets.all(15.0),

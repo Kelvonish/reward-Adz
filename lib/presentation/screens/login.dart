@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/presentation/screens/createAccount.dart';
-
+import 'package:provider/provider.dart';
 import 'package:rewardadz/presentation/screens/navigator.dart';
 
 class Login extends StatefulWidget {
@@ -12,7 +13,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   TextStyle _labelStyle = TextStyle(fontWeight: FontWeight.w400);
-  bool _hidePassword1 = true;
+
   final _formKey = GlobalKey<FormState>();
   var _scaffoldState;
 
@@ -58,18 +59,19 @@ class _LoginState extends State<Login> {
                               labelText: "Email Address",
                               labelStyle: _labelStyle),
                         ),
-                        TextField(
-                          cursorColor: Theme.of(context).primaryColor,
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: _hidePassword1,
-                          decoration: InputDecoration(
-                              border: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              disabledBorder: InputBorder.none,
-                              suffixIcon: IconButton(
-                                  icon: _hidePassword1
+                        Consumer<TogglePasswordProvider>(
+                          builder: (context, data, child) => TextField(
+                            cursorColor: Theme.of(context).primaryColor,
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: data.password3,
+                            decoration: InputDecoration(
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                suffixIcon: IconButton(
+                                  icon: data.password3
                                       ? Icon(
                                           Icons.visibility,
                                           color: Colors.grey,
@@ -78,15 +80,13 @@ class _LoginState extends State<Login> {
                                           Icons.visibility_off,
                                           color: Colors.grey,
                                         ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _hidePassword1 = !_hidePassword1;
-                                    });
-                                  }),
-                              fillColor: Colors.white,
-                              filled: true,
-                              labelText: "Password",
-                              labelStyle: _labelStyle),
+                                  onPressed: data.togglePassword3,
+                                ),
+                                fillColor: Colors.white,
+                                filled: true,
+                                labelText: "Password",
+                                labelStyle: _labelStyle),
+                          ),
                         ),
                       ],
                     ),
