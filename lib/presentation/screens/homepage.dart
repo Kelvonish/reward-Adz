@@ -6,6 +6,7 @@ import 'package:rewardadz/presentation/widgets/campaignCardTile.dart';
 import 'package:rewardadz/presentation/screens/campaignDetail.dart';
 import 'package:provider/provider.dart';
 import '../../business_logic/providers/getCampaignProvider.dart';
+import '../../business_logic/providers/topAdvertisersProvider.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -21,12 +22,12 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     Provider.of<GetCampaignProvider>(context, listen: false)
         .getCampaignsProvider();
+    Provider.of<TopAdvertisersProvider>(context, listen: false)
+        .getTopAdvertisers();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final campaign = Provider.of<GetCampaignProvider>(context);
-
     return RefreshIndicator(
       backgroundColor: Theme.of(context).primaryColor,
       onRefresh: () {
@@ -91,30 +92,19 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   height: 10.0,
                 ),
-                Container(
-                  alignment: Alignment.topLeft,
-                  height: 80,
-                  child: ListView(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      InkWell(
-                        onTap: () {},
-                        child: AdTile(
-                          name: "Facebook",
-                          url: "assets/facebook.png",
-                        ),
-                      ),
-                      AdTile(
-                        name: "Google",
-                        url: "assets/google.png",
-                      ),
-                      AdTile(
-                        name: "Twitter",
-                        url: "assets/twitter.png",
-                      ),
-                    ],
-                  ),
+                Consumer<TopAdvertisersProvider>(
+                  builder: (context, value, child) => Container(
+                      alignment: Alignment.topLeft,
+                      height: 80,
+                      child: ListView.builder(
+                          itemCount: value.topAdvertisersList.length,
+                          shrinkWrap: true,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            return AdTile(
+                                name: value.topAdvertisersList[index].name,
+                                url: value.topAdvertisersList[index].logo);
+                          })),
                 ),
                 SizedBox(
                   height: 15.0,
@@ -129,46 +119,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   height: 10.0,
                 ),
-                /*
-                _determineLocationClass.denied
-                    ? Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.location_off,
-                              size: 50,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            Text(
-                              "Please enable and allow Location services to get campaigns in your locality",
-                              style: TextStyle(
-                                  color: Colors.black, fontSize: 16.0),
-                              textAlign: TextAlign.center,
-                            ),
-                            TextButton.icon(
-                                onPressed: () {
-                                  getCampaigns();
-                                },
-                                style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                        Theme.of(context).primaryColor)),
-                                icon: Icon(
-                                  Icons.replay,
-                                  color: Colors.white,
-                                ),
-                                label: Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Text(
-                                    "Reload",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                )),
-                          ],
-                        ),
-                      )
-                    : */
-
                 Consumer<GetCampaignProvider>(
                   builder: (context, data, child) => Column(
                     children: [
@@ -208,16 +158,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     type: "video",
                                                   ))),
                                       child: MainCardTile(
-                                        name: data.campaignList[index].title,
+                                        name: data.campaignList[index].name,
                                         mainUrl:
-                                            "https://image.tmdb.org/t/p/w500" +
-                                                data.campaignList[index]
-                                                    .posterPath,
-                                        otherUrl:
-                                            "https://image.tmdb.org/t/p/w500" +
-                                                data.campaignList[index]
-                                                    .posterPath,
-                                        category: "Gaming and Video",
+                                            data.campaignList[index].campimg,
+                                        otherUrl: data.campaignList[index]
+                                            .organization.logo,
+                                        category: data.campaignList[index]
+                                            .organization.industry,
                                         amount: "60",
                                         type: "video",
                                       ),
