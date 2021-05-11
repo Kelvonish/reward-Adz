@@ -29,12 +29,6 @@ class _BottomNavigatorState extends State<BottomNavigator> {
     });
   }
 
-  void changeActiveIndex(int index) {
-    setState(() {
-      activeIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     var indicatorColors = <Color>[Theme.of(context).primaryColor];

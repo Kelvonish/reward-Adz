@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rewardadz/presentation/screens/videoQuiz.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoCampaignPage extends StatefulWidget {
@@ -51,9 +52,12 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
                   top: 40,
                   right: 15,
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => VideoQuiz()));
+                    },
                     child: Container(
-                      width: 120,
+                      width: 125,
                       decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(25)),
@@ -61,7 +65,17 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
                       child: Row(
                         children: [
                           Text("Start Survey"),
-                          Icon(Icons.arrow_forward)
+                          SizedBox(
+                            width: 5.0,
+                          ),
+                          CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Theme.of(context).primaryColor,
+                              child: Icon(
+                                Icons.arrow_forward,
+                                size: 20,
+                                color: Colors.white,
+                              ))
                         ],
                       ),
                     ),

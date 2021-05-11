@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
+import 'package:rewardadz/business_logic/Shared/validator.dart';
 import 'package:rewardadz/presentation/screens/login.dart';
 import 'package:rewardadz/business_logic/authentication/createAccount.dart';
 import 'package:rewardadz/presentation/screens/navigator.dart';
+import 'package:provider/provider.dart';
 
 class CreateAccount extends StatefulWidget {
   @override
@@ -12,8 +15,9 @@ class CreateAccount extends StatefulWidget {
 
 class _CreateAccountState extends State<CreateAccount> {
   TextStyle _labelStyle = TextStyle(fontWeight: FontWeight.w400);
-  bool _hidePassword1 = true;
-  bool _hidePassword2 = true;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -46,48 +50,71 @@ class _CreateAccountState extends State<CreateAccount> {
                 color: Colors.white,
                 child: Form(
                   key: _formKey,
-                  child: Column(
-                    children: [
-                      IntlPhoneField(
-                        initialCountryCode: "KE",
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                            fillColor: Colors.white,
-                            filled: true,
-                            labelText: "Phone Number",
-                            labelStyle: _labelStyle),
-                        onChanged: (phone) {
-                          print(phone.completeNumber);
-                        },
-                        onCountryChanged: (phone) {
-                          print(
-                              'Country code changed to: ' + phone.countryCode);
-                        },
-                      ),
-                      TextField(
-                        cursorColor: Theme.of(context).primaryColor,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                            fillColor: Colors.white,
-                            filled: true,
-                            labelText: "Email Address",
-                            labelStyle: _labelStyle),
-                      ),
-                      TextField(
-                        onChanged: (value) {
-                          setState(() {});
-                        },
-                        cursorColor: Theme.of(context).primaryColor,
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: _hidePassword1,
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            suffixIcon: IconButton(
-                                icon: _hidePassword1
+                  child: Consumer<TogglePasswordProvider>(
+                    builder: (context, data, child) => (Column(
+                      children: [
+                        IntlPhoneField(
+                          initialCountryCode: "KE",
+                          validator: (value) {
+                            if (value.length != 9) {
+                              return "Please enter a valid number";
+                            }
+                            return null;
+                          },
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              labelText: "Phone Number",
+                              labelStyle: _labelStyle),
+                          onChanged: (phone) {
+                            print(phone.completeNumber);
+                          },
+                          onCountryChanged: (phone) {
+                            print('Country code changed to: ' +
+                                phone.countryCode);
+                          },
+                        ),
+                        TextFormField(
+                          validator: (val) {
+                            if (!validateEmail(val)) {
+                              return "Please enter a valid email";
+                            }
+                            return null;
+                          },
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
+                              labelText: "Email Address",
+                              labelStyle: _labelStyle),
+                        ),
+                        TextFormField(
+                          controller: _passwordController,
+                          validator: (val) {
+                            if (val.length < 6) {
+                              return "Minimum is 6 characters";
+                            }
+                            if (!validatePassword(val)) {
+                              return "Should contain uppercase,lowecase,character and number";
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            setState(() {});
+                          },
+                          cursorColor: Theme.of(context).primaryColor,
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: data.password1,
+                          decoration: InputDecoration(
+                              //errorStyle: TextStyle(fontSize: 9),
+                              border: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              suffixIcon: IconButton(
+                                icon: data.password1
                                     ? Icon(
                                         Icons.visibility,
                                         color: Colors.grey,
@@ -96,24 +123,30 @@ class _CreateAccountState extends State<CreateAccount> {
                                         Icons.visibility_off,
                                         color: Colors.grey,
                                       ),
-                                onPressed: () {
-                                  setState(() {
-                                    _hidePassword1 = !_hidePassword1;
-                                  });
-                                }),
-                            fillColor: Colors.white,
-                            filled: true,
-                            labelText: "Password",
-                            labelStyle: _labelStyle),
-                      ),
-                      TextField(
-                        cursorColor: Theme.of(context).primaryColor,
-                        keyboardType: TextInputType.visiblePassword,
-                        obscureText: _hidePassword2,
-                        decoration: InputDecoration(
-                            border: InputBorder.none,
-                            suffixIcon: IconButton(
-                                icon: _hidePassword2
+                                onPressed: data.togglePassword1,
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                              labelText: "Password",
+                              labelStyle: _labelStyle),
+                        ),
+                        TextFormField(
+                          validator: (val) {
+                            if (val.isEmpty)
+                              return 'Confirm Password field cannot be empty';
+                            if (val != _passwordController.text) {
+                              return 'Passwords do not match';
+                            }
+                            return null;
+                          },
+                          controller: _confirmPasswordController,
+                          cursorColor: Theme.of(context).primaryColor,
+                          keyboardType: TextInputType.visiblePassword,
+                          obscureText: data.password2,
+                          decoration: InputDecoration(
+                              border: InputBorder.none,
+                              suffixIcon: IconButton(
+                                icon: data.password2
                                     ? Icon(
                                         Icons.visibility,
                                         color: Colors.grey,
@@ -122,24 +155,22 @@ class _CreateAccountState extends State<CreateAccount> {
                                         Icons.visibility_off,
                                         color: Colors.grey,
                                       ),
-                                onPressed: () {
-                                  setState(() {
-                                    _hidePassword2 = !_hidePassword2;
-                                  });
-                                }),
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            fillColor: Colors.white,
-                            filled: true,
-                            labelText: "Confirm Password",
-                            labelStyle: _labelStyle),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                    ],
+                                onPressed: data.togglePassword2,
+                              ),
+                              focusedBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              disabledBorder: InputBorder.none,
+                              fillColor: Colors.white,
+                              filled: true,
+                              labelText: "Confirm Password",
+                              labelStyle: _labelStyle),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    )),
                   ),
                 ),
               ),
@@ -149,10 +180,12 @@ class _CreateAccountState extends State<CreateAccount> {
                 margin: EdgeInsets.all(15.0),
                 child: ElevatedButton(
                   onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => BottomNavigator()));
+                    if (_formKey.currentState.validate()) {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BottomNavigator()));
+                    }
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(

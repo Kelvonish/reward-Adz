@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rewardadz/business_logic/Shared/getLocation.dart';
-import 'package:rewardadz/data/services/getCampaignsNetworkService.dart';
 import 'package:rewardadz/presentation/widgets/advertismentTileWidget.dart';
 import 'package:rewardadz/presentation/widgets/campaignCardShimmer.dart';
 import 'package:rewardadz/presentation/widgets/campaignCardTile.dart';
 import 'package:rewardadz/presentation/screens/campaignDetail.dart';
+import 'package:provider/provider.dart';
+import '../../business_logic/providers/getCampaignProvider.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -15,29 +15,12 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TextStyle _titleStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0);
-  var location;
-  var campaigns;
-
-  var _determineLocationClass = DetermineLocation();
 
   @override
   void initState() {
     super.initState();
-    getCampaigns();
-  }
-
-  Future<void> getCampaigns() async {
-    await _determineLocationClass.getLocation();
-    setState(() {
-      location = _determineLocationClass.locationData;
-    });
-    if (location != null) {
-      var _getCampaignClass = GetCampaignsClass();
-      await _getCampaignClass.fetchCampaigns(location);
-      setState(() {
-        campaigns = _getCampaignClass.campaignList;
-      });
-    }
+    Provider.of<GetCampaignProvider>(context, listen: false)
+        .getCampaignsProvider();
   }
 
   @override
@@ -47,7 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
     return RefreshIndicator(
       backgroundColor: Theme.of(context).primaryColor,
       onRefresh: () {
-        return getCampaigns();
+        return Provider.of<GetCampaignProvider>(context, listen: false)
+            .getCampaignsProvider();
       },
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -145,6 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   height: 10.0,
                 ),
+                /*
                 _determineLocationClass.denied
                     ? Center(
                         child: Column(
@@ -182,19 +167,29 @@ class _MyHomePageState extends State<MyHomePage> {
                           ],
                         ),
                       )
-                    : Column(
-                        children: [
-                          campaigns == null
-                              ? ListView.builder(
-                                  itemCount: 3,
-                                  shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return CampaignCardShimmer();
-                                  })
+                    : */
+
+                Consumer<GetCampaignProvider>(
+                  builder: (context, data, child) => Column(
+                    children: [
+                      data.loading
+                          ? ListView.builder(
+                              itemCount: 3,
+                              shrinkWrap: true,
+                              physics: NeverScrollableScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return CampaignCardShimmer();
+                              })
+                          : data.campaignList.length == 0
+                              ? Center(
+                                  child: Text(
+                                    "No Campaigns available right now!",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                )
                               : ListView.builder(
                                   shrinkWrap: true,
-                                  itemCount: campaigns.length,
+                                  itemCount: data.campaignList.length,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
                                     return InkWell(
@@ -213,21 +208,24 @@ class _MyHomePageState extends State<MyHomePage> {
                                                     type: "video",
                                                   ))),
                                       child: MainCardTile(
-                                        name: campaigns[index].title,
+                                        name: data.campaignList[index].title,
                                         mainUrl:
                                             "https://image.tmdb.org/t/p/w500" +
-                                                campaigns[index].posterPath,
+                                                data.campaignList[index]
+                                                    .posterPath,
                                         otherUrl:
                                             "https://image.tmdb.org/t/p/w500" +
-                                                campaigns[index].posterPath,
+                                                data.campaignList[index]
+                                                    .posterPath,
                                         category: "Gaming and Video",
                                         amount: "60",
                                         type: "video",
                                       ),
                                     );
                                   }),
-                        ],
-                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),

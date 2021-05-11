@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
+import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/presentation/screens/landingpage.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
+  //WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
@@ -19,6 +20,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<GetCampaignProvider>(
             create: (_) => GetCampaignProvider()),
+        ChangeNotifierProvider<TogglePasswordProvider>(
+            create: (_) => TogglePasswordProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
