@@ -14,7 +14,7 @@ class AdTile extends StatelessWidget {
           CircleAvatar(
             radius: 30,
             backgroundColor: Colors.white,
-            backgroundImage: AssetImage(
+            backgroundImage: NetworkImage(
               url,
             ),
           ),

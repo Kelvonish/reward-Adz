@@ -148,12 +148,20 @@ class _MyHomePageState extends State<MyHomePage> {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   CampaignDetails(
-                                                    mainUrl: "assets/agri.jpg",
-                                                    otherUrl:
-                                                        "assets/picture.png",
-                                                    name: "Test Company",
-                                                    category:
-                                                        "Gaming and Video",
+                                                    mainUrl: data
+                                                        .campaignList[index]
+                                                        .campimg,
+                                                    otherUrl: data
+                                                        .campaignList[index]
+                                                        .organization
+                                                        .logo,
+                                                    name: data
+                                                        .campaignList[index]
+                                                        .name,
+                                                    category: data
+                                                        .campaignList[index]
+                                                        .organization
+                                                        .industry,
                                                     amount: "60",
                                                     type: "video",
                                                   ))),

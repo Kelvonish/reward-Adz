@@ -16,7 +16,7 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
   void initState() {
     super.initState();
     _controller = VideoPlayerController.network(
-        'https://file-examples-com.github.io/uploads/2017/04/file_example_MP4_480_1_5MG.mp4')
+        'https://rewardadsdev.s3.fr-par.scw.cloud/paylend_video.mp4')
       ..initialize().then((_) {
         _controller.play();
         setState(() {

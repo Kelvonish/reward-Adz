@@ -1,68 +1,242 @@
 class CampaignModel {
-  bool adult;
-  String backdropPath;
-  List<int> genreIds;
-  int id;
-  String originalLanguage;
-  String originalTitle;
-  String overview;
-  double popularity;
-  String posterPath;
-  String releaseDate;
-  String title;
-  bool video;
-  int voteAverage;
-  int voteCount;
+  List<LocationsModel> locations;
+  bool isactive;
+  String sId;
+  String name;
+  String type;
+  OrganizationModel organization;
+  String status;
+  String campimg;
+  String objective;
+  int iV;
+  AudioModel audio;
+  Null banner;
+  VideoModel video;
+  String endage;
+  String gender;
+  String startage;
+  String dailybudget;
+  String featured;
+  String fromdate;
+  String paymentmode;
+  String todate;
+  String totalbudget;
 
   CampaignModel(
-      {this.adult,
-      this.backdropPath,
-      this.genreIds,
-      this.id,
-      this.originalLanguage,
-      this.originalTitle,
-      this.overview,
-      this.popularity,
-      this.posterPath,
-      this.releaseDate,
-      this.title,
+      {this.locations,
+      this.isactive,
+      this.sId,
+      this.name,
+      this.type,
+      this.organization,
+      this.status,
+      this.campimg,
+      this.objective,
+      this.iV,
+      this.audio,
+      this.banner,
       this.video,
-      this.voteAverage,
-      this.voteCount});
+      this.endage,
+      this.gender,
+      this.startage,
+      this.dailybudget,
+      this.featured,
+      this.fromdate,
+      this.paymentmode,
+      this.todate,
+      this.totalbudget});
 
   CampaignModel.fromJson(Map<String, dynamic> json) {
-    adult = json['adult'];
-    backdropPath = json['backdrop_path'];
-    genreIds = json['genre_ids'].cast<int>();
-    id = json['id'];
-    originalLanguage = json['original_language'];
-    originalTitle = json['original_title'];
-    overview = json['overview'];
-    popularity = json['popularity'];
-    posterPath = json['poster_path'];
-    releaseDate = json['release_date'];
-    title = json['title'];
-    video = json['video'];
-    voteAverage = json['vote_average'];
-    voteCount = json['vote_count'];
+    if (json['locations'] != null) {
+      locations = [];
+      json['locations'].forEach((v) {
+        locations.add(new LocationsModel.fromJson(v));
+      });
+    }
+    isactive = json['isactive'];
+    sId = json['_id'];
+    name = json['name'];
+    type = json['type'];
+    organization = json['organization'] != null
+        ? new OrganizationModel.fromJson(json['organization'])
+        : null;
+    status = json['status'];
+    campimg = json['campimg'];
+    objective = json['objective'];
+    iV = json['__v'];
+    audio = json['audio'];
+    banner = json['banner'];
+    video =
+        json['video'] != null ? new VideoModel.fromJson(json['video']) : null;
+    endage = json['endage'];
+    gender = json['gender'];
+    startage = json['startage'];
+    dailybudget = json['dailybudget'];
+    featured = json['featured'];
+    fromdate = json['fromdate'];
+    paymentmode = json['paymentmode'];
+    todate = json['todate'];
+    totalbudget = json['totalbudget'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['adult'] = this.adult;
-    data['backdrop_path'] = this.backdropPath;
-    data['genre_ids'] = this.genreIds;
+    if (this.locations != null) {
+      data['locations'] = this.locations.map((v) => v.toJson()).toList();
+    }
+    data['isactive'] = this.isactive;
+    data['_id'] = this.sId;
+    data['name'] = this.name;
+    data['type'] = this.type;
+    if (this.organization != null) {
+      data['organization'] = this.organization.toJson();
+    }
+    data['status'] = this.status;
+    data['campimg'] = this.campimg;
+    data['objective'] = this.objective;
+    data['__v'] = this.iV;
+    data['audio'] = this.audio;
+    data['banner'] = this.banner;
+    if (this.video != null) {
+      data['video'] = this.video.toJson();
+    }
+    data['endage'] = this.endage;
+    data['gender'] = this.gender;
+    data['startage'] = this.startage;
+    data['dailybudget'] = this.dailybudget;
+    data['featured'] = this.featured;
+    data['fromdate'] = this.fromdate;
+    data['paymentmode'] = this.paymentmode;
+    data['todate'] = this.todate;
+    data['totalbudget'] = this.totalbudget;
+    return data;
+  }
+}
+
+class LocationsModel {
+  double lat;
+  double lng;
+  int radius;
+  String address;
+  String id;
+
+  LocationsModel({this.lat, this.lng, this.radius, this.address, this.id});
+
+  LocationsModel.fromJson(Map<String, dynamic> json) {
+    lat = json['lat'];
+    lng = json['lng'];
+    radius = json['radius'];
+    address = json['address'];
+    id = json['id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['lat'] = this.lat;
+    data['lng'] = this.lng;
+    data['radius'] = this.radius;
+    data['address'] = this.address;
     data['id'] = this.id;
-    data['original_language'] = this.originalLanguage;
-    data['original_title'] = this.originalTitle;
-    data['overview'] = this.overview;
-    data['popularity'] = this.popularity;
-    data['poster_path'] = this.posterPath;
-    data['release_date'] = this.releaseDate;
-    data['title'] = this.title;
-    data['video'] = this.video;
-    data['vote_average'] = this.voteAverage;
-    data['vote_count'] = this.voteCount;
+    return data;
+  }
+}
+
+class OrganizationModel {
+  int id;
+  String name;
+  String email;
+  String industry;
+  String phone;
+  String logo;
+  int userId;
+  Null balance;
+  String createdAt;
+  String updatedAt;
+
+  OrganizationModel(
+      {this.id,
+      this.name,
+      this.email,
+      this.industry,
+      this.phone,
+      this.logo,
+      this.userId,
+      this.balance,
+      this.createdAt,
+      this.updatedAt});
+
+  OrganizationModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    name = json['name'];
+    email = json['email'];
+    industry = json['industry'];
+    phone = json['phone'];
+    logo = json['logo'];
+    userId = json['user_id'];
+    balance = json['balance'];
+    createdAt = json['createdAt'];
+    updatedAt = json['updatedAt'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['name'] = this.name;
+    data['email'] = this.email;
+    data['industry'] = this.industry;
+    data['phone'] = this.phone;
+    data['logo'] = this.logo;
+    data['user_id'] = this.userId;
+    data['balance'] = this.balance;
+    data['createdAt'] = this.createdAt;
+    data['updatedAt'] = this.updatedAt;
+    return data;
+  }
+}
+
+class VideoModel {
+  String surveyid;
+  String watchedvideosamount;
+  String url;
+
+  VideoModel({this.surveyid, this.watchedvideosamount, this.url});
+
+  VideoModel.fromJson(Map<String, dynamic> json) {
+    surveyid = json['surveyid'];
+    watchedvideosamount = json['watchedvideosamount'];
+    url = json['url'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['surveyid'] = this.surveyid;
+    data['watchedvideosamount'] = this.watchedvideosamount;
+    data['url'] = this.url;
+    return data;
+  }
+}
+
+class AudioModel {
+  String uniquecalls;
+  String award;
+  String volume;
+  String audiourl;
+
+  AudioModel({this.uniquecalls, this.award, this.volume, this.audiourl});
+
+  AudioModel.fromJson(Map<String, dynamic> json) {
+    uniquecalls = json['uniquecalls'];
+    award = json['award'];
+    volume = json['volume'];
+    audiourl = json['audiourl'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['uniquecalls'] = this.uniquecalls;
+    data['award'] = this.award;
+    data['volume'] = this.volume;
+    data['audiourl'] = this.audiourl;
     return data;
   }
 }

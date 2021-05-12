@@ -24,6 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   bloc: ^7.0.0
+  cached_network_image: ^3.0.0
   connectivity_plus: ^1.0.0
   cupertino_icons: ^1.0.2
   firebase_auth: ^1.1.1
@@ -38,7 +39,8 @@ dependencies:
   intl: ^0.17.0
   intl_phone_field: ^2.0.0
   location: ^4.1.1
-  quiz_view: ^1.0.5
+  network_to_file_image: ^3.0.0
+  path_provider: ^2.0.1
   rolling_nav_bar: ^0.0.4
   shimmer: ^2.0.0
   video_player: ^2.1.1

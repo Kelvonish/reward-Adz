@@ -121,8 +121,10 @@ class MainCardTile extends StatelessWidget {
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.0),
                 image: DecorationImage(
-                  image: NetworkImage(mainUrl),
-                  fit: BoxFit.fitWidth,
+                  image: NetworkImage(
+                    mainUrl,
+                  ),
+                  fit: BoxFit.cover,
                 )),
           ),
         ],
