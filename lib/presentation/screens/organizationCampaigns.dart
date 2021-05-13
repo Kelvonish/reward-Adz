@@ -93,7 +93,10 @@ class _OrganizationCampaignsState extends State<OrganizationCampaigns> {
                                   shrinkWrap: true,
                                   physics: NeverScrollableScrollPhysics(),
                                   itemBuilder: (context, index) {
-                                    return CampaignCardShimmer();
+                                    return Padding(
+                                      padding: const EdgeInsets.only(top: 10),
+                                      child: CampaignCardShimmer(),
+                                    );
                                   })
                               : data.organizationCampaignsList.length == 0
                                   ? Container(

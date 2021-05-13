@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/presentation/screens/landingpage.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +8,10 @@ import 'package:rewardadz/business_logic/providers/topAdvertisersProvider.dart';
 
 void main() {
   //WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor:
+        Colors.white, // navigation bar color // status bar color
+  ));
   runApp(MyApp());
 }
 

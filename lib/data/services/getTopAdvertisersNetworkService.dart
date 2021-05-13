@@ -29,9 +29,13 @@ class TopAdvertisersNetworkService {
               balance: json['balance'],
               createdAt: json['createdAt'],
               updatedAt: json['updatedAt']);
-          topAdvertisersList.add(eachElement);
+          var contain = topAdvertisersList
+              .where((element) => element.id == eachElement.id);
+          if (contain.isEmpty) {
+            topAdvertisersList.add(eachElement);
+          }
         });
-        print(topAdvertisersList);
+
         return topAdvertisersList;
       }
     } catch (e) {

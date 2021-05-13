@@ -42,7 +42,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
             ),
             bottomNavigationBar: Container(
               width: MediaQuery.of(context).size.width,
-              height: 65,
+              height: 55,
               child: RollingNavBar.iconData(
                 activeBadgeColors: <Color>[
                   Colors.white,
@@ -59,7 +59,7 @@ class _BottomNavigatorState extends State<BottomNavigator> {
                 iconColors: <Color>[Colors.grey[400]],
 
                 indicatorColors: indicatorColors,
-                iconSize: 30,
+                iconSize: 25,
                 indicatorRadius: 30,
 
                 onTap: _onTap,
