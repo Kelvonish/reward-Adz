@@ -225,7 +225,6 @@ class GetCampaignsClass {
 
             var contain = searchCampaignList
                 .where((element) => element.sId == newData.sId);
-            print(contain);
             if (contain.isEmpty) {
               searchCampaignList.add(newData);
             }
@@ -279,7 +278,6 @@ class GetCampaignsClass {
             );
             var contain = searchCampaignList
                 .where((element) => element.sId == newData.sId);
-            print(contain);
             if (contain.isEmpty) {
               searchCampaignList.add(newData);
             }
