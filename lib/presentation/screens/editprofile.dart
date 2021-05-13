@@ -41,6 +41,7 @@ class _EditProfileState extends State<EditProfile> {
                         minuteInterval: 1,
                         mode: CupertinoDatePickerMode.date,
                         initialDateTime: DateTime(1998, 3, 20),
+                        maximumDate: DateTime(2003, 1, 1),
                         onDateTimeChanged: (DateTime pickedDate) {
                           setState(() {
                             _selectedDate = pickedDate;
