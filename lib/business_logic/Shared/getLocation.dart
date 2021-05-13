@@ -30,6 +30,7 @@ class DetermineLocation {
 
     locationData = await location.getLocation();
     denied = false;
-    print(locationData);
+
+    return locationData;
   }
 }

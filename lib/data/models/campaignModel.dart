@@ -8,10 +8,12 @@ class CampaignModel {
   String status;
   String campimg;
   String objective;
+
   int iV;
   AudioModel audio;
   Null banner;
   VideoModel video;
+  SurveyModel survey;
   String endage;
   String gender;
   String startage;
@@ -36,6 +38,7 @@ class CampaignModel {
       this.audio,
       this.banner,
       this.video,
+      this.survey,
       this.endage,
       this.gender,
       this.startage,
@@ -237,6 +240,25 @@ class AudioModel {
     data['award'] = this.award;
     data['volume'] = this.volume;
     data['audiourl'] = this.audiourl;
+    return data;
+  }
+}
+
+class SurveyModel {
+  String surveyid;
+  String amount;
+
+  SurveyModel({this.surveyid, this.amount});
+
+  SurveyModel.fromJson(Map<String, dynamic> json) {
+    surveyid = json['surveyid'];
+    amount = json['amount'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['surveyid'] = this.surveyid;
+    data['amount'] = this.amount;
     return data;
   }
 }

@@ -1,28 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/presentation/screens/videoQuiz.dart';
 import 'package:video_player/video_player.dart';
+import 'package:flick_video_player/flick_video_player.dart';
 
 class VideoCampaignPage extends StatefulWidget {
+  final VideoModel videoModel;
+  VideoCampaignPage({this.videoModel});
   @override
   _VideoCampaignPageState createState() => _VideoCampaignPageState();
 }
 
 class _VideoCampaignPageState extends State<VideoCampaignPage> {
+  FlickManager flickManager;
   VideoPlayerController _controller;
   Future<void> _initializedVideoPlayerFuture;
   bool _videoEnded = false;
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.network(
-        'https://rewardadsdev.s3.fr-par.scw.cloud/paylend_video.mp4')
+    _controller = VideoPlayerController.network(widget.videoModel.url)
       ..initialize().then((_) {
         _controller.play();
         setState(() {
           _initializedVideoPlayerFuture = _controller.initialize();
         });
       });
+
     _controller.addListener(() {
       if (_controller.value.position == _controller.value.duration) {
         setState(() {

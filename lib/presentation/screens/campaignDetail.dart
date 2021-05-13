@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/presentation/screens/videoCampaign.dart';
 
 class CampaignDetails extends StatefulWidget {
@@ -8,6 +10,7 @@ class CampaignDetails extends StatefulWidget {
   final String otherUrl;
   final String category;
   final String type;
+  final VideoModel videoModel;
 
   CampaignDetails(
       {this.amount,
@@ -15,7 +18,8 @@ class CampaignDetails extends StatefulWidget {
       this.otherUrl,
       this.category,
       this.name,
-      this.type});
+      this.type,
+      this.videoModel});
 
   @override
   _CampaignDetailsState createState() => _CampaignDetailsState();
@@ -24,6 +28,198 @@ class CampaignDetails extends StatefulWidget {
 class _CampaignDetailsState extends State<CampaignDetails> {
   @override
   Widget build(BuildContext context) {
+    Widget _checkTypeofCampaignForDetails() {
+      if (widget.type == "Ringtone") {
+        return Text(
+          "Sorry! Ringtone not supported for iOS devices",
+          style: TextStyle(
+              fontSize: 13.0, color: Colors.red, fontWeight: FontWeight.bold),
+        );
+      } else if (widget.type == "Video") {
+        return Text(
+          "Watch the video and answer questions correctly to earn Ksh " +
+              widget.amount,
+          style: TextStyle(
+              fontSize: 13.0, color: Colors.white, fontWeight: FontWeight.w300),
+        );
+      } else if (widget.type == "Survey") {
+        return Text(
+          "Answer survey questions to earn Ksh " + widget.amount,
+          style: TextStyle(
+              fontSize: 13.0, color: Colors.white, fontWeight: FontWeight.w300),
+        );
+      }
+      return null;
+    }
+
+    Widget _checkTypeForAction() {
+      if (widget.type == "Video") {
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => VideoCampaignPage(
+                          videoModel: widget.videoModel,
+                        )));
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: const Color.fromRGBO(114, 145, 219, 1),
+                      child: Icon(
+                        Icons.play_arrow,
+                        color: Theme.of(context).primaryColor,
+                        size: 25,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15.0,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Watch Video,",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16.0),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4.0,
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.5,
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Watch video and answer subsequent questions to earn Ksh " +
+                                widget.amount,
+                            style: TextStyle(fontSize: 13.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Icon(Icons.arrow_forward_ios)
+              ],
+            ),
+          ),
+        );
+      } else if (widget.type == "Ringtone") {
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: const Color.fromRGBO(114, 145, 219, 1),
+                    child: Icon(
+                      Icons.music_note,
+                      color: Theme.of(context).primaryColor,
+                      size: 25,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Adopt Ringtone,",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16.0),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4.0,
+                      ),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Sorry! Not supported for iOS devices",
+                          style: TextStyle(fontSize: 13.0, color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Icon(Icons.arrow_forward_ios)
+            ],
+          ),
+        );
+      } else if (widget.type == "Survey") {
+        return Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 20,
+                    backgroundColor: const Color.fromRGBO(114, 145, 219, 1),
+                    child: Icon(
+                      Icons.assignment,
+                      color: Theme.of(context).primaryColor,
+                      size: 25,
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Answer Survey",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16.0),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 4.0,
+                      ),
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Answer survey questions to earn Ksh " +
+                              widget.amount,
+                          style: TextStyle(fontSize: 13.0, color: Colors.black),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Icon(Icons.arrow_forward_ios)
+            ],
+          ),
+        );
+      }
+      return Text("");
+    }
+
     return Container(
       color: Theme.of(context).primaryColor,
       child: SafeArea(
@@ -31,20 +227,33 @@ class _CampaignDetailsState extends State<CampaignDetails> {
           body: SingleChildScrollView(
             child: Column(
               children: [
-                Container(
-                  alignment: Alignment.topLeft,
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  decoration: BoxDecoration(
+                CachedNetworkImage(
+                  imageUrl: widget.mainUrl,
+                  fit: BoxFit.fitHeight,
+                  imageBuilder: (context, imageProvider) => Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    alignment: Alignment.topLeft,
+                    decoration: BoxDecoration(
+                      //shape: BoxShape.circle,
                       image: DecorationImage(
-                    image: AssetImage(widget.mainUrl ?? ""),
-                    fit: BoxFit.cover,
-                  )),
-                  child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios,
-                        color: Colors.white,
+                          image: imageProvider, fit: BoxFit.cover),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        child: IconButton(
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Colors.white,
+                            ),
+                            onPressed: () => Navigator.pop(context)),
                       ),
-                      onPressed: () => Navigator.pop(context)),
+                    ),
+                  ),
+                  placeholder: (context, url) => CircularProgressIndicator(),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
@@ -53,12 +262,21 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            radius: 25,
-                            backgroundColor: Colors.white,
-                            backgroundImage: AssetImage(
-                              widget.otherUrl ?? "",
+                          CachedNetworkImage(
+                            imageUrl: widget.otherUrl,
+                            imageBuilder: (context, imageProvider) => Container(
+                              width: 50.0,
+                              height: 50.0,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                    image: imageProvider, fit: BoxFit.cover),
+                              ),
                             ),
+                            placeholder: (context, url) =>
+                                CircularProgressIndicator(),
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error),
                           ),
                           SizedBox(
                             width: 5.0,
@@ -122,13 +340,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                           Container(
                             alignment: Alignment.topLeft,
                             width: MediaQuery.of(context).size.width * 0.6,
-                            child: Text(
-                              "70% battery charge * Watch Videos within 5 location * % unique callers * share on your social  media platform",
-                              style: TextStyle(
-                                  fontSize: 13.0,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w300),
-                            ),
+                            child: _checkTypeofCampaignForDetails(),
                           ),
                         ],
                       ),
@@ -159,121 +371,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                 Divider(
                   height: 10,
                 ),
-                widget.type == "video"
-                    ? InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => VideoCampaignPage()));
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor:
-                                        const Color.fromRGBO(114, 145, 219, 1),
-                                    child: Icon(
-                                      Icons.play_arrow,
-                                      color: Theme.of(context).primaryColor,
-                                      size: 25,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 15.0,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          "Watch Video,",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16.0),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 4.0,
-                                      ),
-                                      Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.5,
-                                        alignment: Alignment.topLeft,
-                                        child: Text(
-                                          "Watch video and answer subsequent questions to earn",
-                                          style: TextStyle(fontSize: 13.0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              Icon(Icons.arrow_forward_ios)
-                            ],
-                          ),
-                        ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundColor:
-                                      const Color.fromRGBO(114, 145, 219, 1),
-                                  child: Icon(
-                                    Icons.music_note,
-                                    color: Theme.of(context).primaryColor,
-                                    size: 25,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 15.0,
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.topLeft,
-                                      child: Text(
-                                        "Adopt Ringtone,",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16.0),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 4.0,
-                                    ),
-                                    Container(
-                                      alignment: Alignment.topLeft,
-                                      child: Text(
-                                        "Download the ringtone and use it as\n your ringtone and earn",
-                                        style: TextStyle(fontSize: 13.0),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Icon(Icons.arrow_forward_ios)
-                          ],
-                        ),
-                      ),
+                _checkTypeForAction(),
                 Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Row(

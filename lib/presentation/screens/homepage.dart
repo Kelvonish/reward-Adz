@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/presentation/widgets/advertismentTileWidget.dart';
 import 'package:rewardadz/presentation/widgets/campaignCardShimmer.dart';
 import 'package:rewardadz/presentation/widgets/campaignCardTile.dart';
@@ -28,6 +29,80 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    Widget _renderCampaignByType(CampaignModel data) {
+      if (data.audio != null) {
+        return InkWell(
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CampaignDetails(
+                        mainUrl: data.campimg,
+                        otherUrl: data.organization.logo,
+                        name: data.name,
+                        category: data.organization.industry,
+                        amount: data.audio.award,
+                        type: "Ringtone",
+                        videoModel: null,
+                      ))),
+          child: MainCardTile(
+            name: data.name,
+            mainUrl: data.campimg,
+            otherUrl: data.organization.logo,
+            category: data.organization.industry,
+            amount: data.audio.award,
+            type: "Ringtone",
+          ),
+        );
+      } else if (data.video != null) {
+        return InkWell(
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CampaignDetails(
+                        mainUrl: data.campimg,
+                        otherUrl: data.organization.logo,
+                        name: data.name,
+                        category: data.organization.industry,
+                        amount: data.video.watchedvideosamount,
+                        type: "Video",
+                        videoModel: data.video,
+                      ))),
+          child: MainCardTile(
+            name: data.name,
+            mainUrl: data.campimg,
+            otherUrl: data.organization.logo,
+            category: data.organization.industry,
+            amount: data.video.watchedvideosamount,
+            type: "Video",
+          ),
+        );
+      } else if (data.survey != null) {
+        return InkWell(
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CampaignDetails(
+                        mainUrl: data.campimg,
+                        otherUrl: data.organization.logo,
+                        name: data.name,
+                        category: data.organization.industry,
+                        amount: data.survey.amount,
+                        type: "Survey",
+                        videoModel: null,
+                      ))),
+          child: MainCardTile(
+            name: data.name,
+            mainUrl: data.campimg,
+            otherUrl: data.organization.logo,
+            category: data.organization.industry,
+            amount: data.survey.amount,
+            type: "Survey",
+          ),
+        );
+      }
+      return Text("");
+    }
+
     return RefreshIndicator(
       backgroundColor: Theme.of(context).primaryColor,
       onRefresh: () {
@@ -119,66 +194,36 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   height: 10.0,
                 ),
-                Consumer<GetCampaignProvider>(
-                  builder: (context, data, child) => Column(
-                    children: [
-                      data.loading
-                          ? ListView.builder(
-                              itemCount: 3,
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return CampaignCardShimmer();
-                              })
-                          : data.campaignList.length == 0
-                              ? Center(
-                                  child: Text(
-                                    "No Campaigns available right now!",
-                                    style: TextStyle(color: Colors.black),
-                                  ),
-                                )
-                              : ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: data.campaignList.length,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return InkWell(
-                                      onTap: () => Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  CampaignDetails(
-                                                    mainUrl: data
-                                                        .campaignList[index]
-                                                        .campimg,
-                                                    otherUrl: data
-                                                        .campaignList[index]
-                                                        .organization
-                                                        .logo,
-                                                    name: data
-                                                        .campaignList[index]
-                                                        .name,
-                                                    category: data
-                                                        .campaignList[index]
-                                                        .organization
-                                                        .industry,
-                                                    amount: "60",
-                                                    type: "video",
-                                                  ))),
-                                      child: MainCardTile(
-                                        name: data.campaignList[index].name,
-                                        mainUrl:
-                                            data.campaignList[index].campimg,
-                                        otherUrl: data.campaignList[index]
-                                            .organization.logo,
-                                        category: data.campaignList[index]
-                                            .organization.industry,
-                                        amount: "60",
-                                        type: "video",
-                                      ),
-                                    );
-                                  }),
-                    ],
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Consumer<GetCampaignProvider>(
+                    builder: (context, data, child) => Column(
+                      children: [
+                        data.loading
+                            ? ListView.builder(
+                                itemCount: 3,
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return CampaignCardShimmer();
+                                })
+                            : data.campaignList.length == 0
+                                ? Center(
+                                    child: Text(
+                                      "No Campaigns available right now!",
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  )
+                                : ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount: data.campaignList.length,
+                                    physics: NeverScrollableScrollPhysics(),
+                                    itemBuilder: (context, index) {
+                                      return _renderCampaignByType(
+                                          data.campaignList[index]);
+                                    }),
+                      ],
+                    ),
                   ),
                 ),
               ],

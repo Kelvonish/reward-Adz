@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:rewardadz/business_logic/constants/constants.dart';
 import 'package:rewardadz/data/models/topAdvertisersModel.dart';
