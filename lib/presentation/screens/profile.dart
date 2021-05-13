@@ -5,6 +5,7 @@ import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
 import 'package:rewardadz/presentation/screens/editprofile.dart';
 import 'package:rewardadz/presentation/screens/privacyPolicyWebView.dart';
 import 'package:rewardadz/presentation/screens/termsOfService.dart';
+import 'package:rewardadz/presentation/widgets/profileImage.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatefulWidget {
@@ -29,15 +30,7 @@ class _ProfileState extends State<Profile> {
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                CircleAvatar(
-                  radius: 30.0,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  child: Icon(
-                    Icons.person_outline,
-                    size: 35,
-                    color: Colors.white,
-                  ),
-                ),
+                ProfileImage(),
                 SizedBox(
                   width: 15.0,
                 ),

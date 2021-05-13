@@ -7,6 +7,7 @@ import 'package:rewardadz/data/models/campaignModel.dart';
 //import 'package:fluttertoast/fluttertoast.dart';
 class GetCampaignsClass {
   List<CampaignModel> campaignList = [];
+  List<CampaignModel> searchCampaignList = [];
 
   Future fetchCampaigns(LocationData location) async {
     try {
@@ -15,7 +16,7 @@ class GetCampaignsClass {
           location.latitude.toString() +
           "&lng=" +
           location.longitude.toString();
-      print("Url:     " + url);
+
       var parsedUrl = Uri.parse(url);
       var response = await http.get(parsedUrl);
 
@@ -75,7 +76,12 @@ class GetCampaignsClass {
               todate: json['todate'],
               totalbudget: json['totalbudget'],
             );
-            campaignList.add(newData);
+            var contain =
+                campaignList.where((element) => element.sId == newData.sId);
+            print(contain);
+            if (contain.isEmpty) {
+              campaignList.add(newData);
+            }
           } else {
             CampaignModel newData = CampaignModel(
               isactive: json['isactive'],
@@ -124,7 +130,12 @@ class GetCampaignsClass {
               todate: json['todate'],
               totalbudget: json['totalbudget'],
             );
-            campaignList.add(newData);
+            var contain =
+                campaignList.where((element) => element.sId == newData.sId);
+            print(contain);
+            if (contain.isEmpty) {
+              campaignList.add(newData);
+            }
           }
         });
 
@@ -143,9 +154,17 @@ class GetCampaignsClass {
   ) async {
     try {
       String url = BASE_URL +
-          "campaign/list/page/1/limit/75?gender=Male&lat=-1.2546569&lng=36.7976165";
+          "campaign/search/latitude/" +
+          location.latitude.toString() +
+          "/longitude/" +
+          location.longitude.toString() +
+          "/page/1/limit/10";
       var parsedUrl = Uri.parse(url);
-      var response = await http.get(parsedUrl);
+      Map data = {'name': query};
+      //encode Map to JSON
+      var body = json.encode(data);
+      var response = await http.post(parsedUrl,
+          headers: {"Content-Type": "application/json"}, body: body);
 
       if (response.statusCode == 200) {
         var campaigns = jsonDecode(response.body);
@@ -203,7 +222,13 @@ class GetCampaignsClass {
               todate: json['todate'],
               totalbudget: json['totalbudget'],
             );
-            campaignList.add(newData);
+
+            var contain = searchCampaignList
+                .where((element) => element.sId == newData.sId);
+            print(contain);
+            if (contain.isEmpty) {
+              searchCampaignList.add(newData);
+            }
           } else {
             CampaignModel newData = CampaignModel(
               isactive: json['isactive'],
@@ -252,11 +277,16 @@ class GetCampaignsClass {
               todate: json['todate'],
               totalbudget: json['totalbudget'],
             );
-            campaignList.add(newData);
+            var contain = searchCampaignList
+                .where((element) => element.sId == newData.sId);
+            print(contain);
+            if (contain.isEmpty) {
+              searchCampaignList.add(newData);
+            }
           }
         });
 
-        return campaignList;
+        return searchCampaignList;
       } else {
         print("No data found");
       }

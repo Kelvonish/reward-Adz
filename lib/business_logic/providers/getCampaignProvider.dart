@@ -8,17 +8,35 @@ import '../Shared/getLocation.dart';
 class GetCampaignProvider extends ChangeNotifier {
   CampaignModel campaign = CampaignModel();
   List<CampaignModel> campaignList = [];
+  List<CampaignModel> searchCampaignList = [];
   bool loading = false;
+  bool searchLoading = false;
+  bool searchPageInitalState = true;
   var location;
+  var _determineLocationClass = DetermineLocation();
+  GetCampaignsClass campaignClass = GetCampaignsClass();
 
   Future getCampaignsProvider() async {
     loading = true;
-    var _determineLocationClass = DetermineLocation();
-    location = await _determineLocationClass.getLocation();
-    GetCampaignsClass c = GetCampaignsClass();
-    await c.fetchCampaigns(location);
-    campaignList = c.campaignList;
+    if (location == null) {
+      location = await _determineLocationClass.getLocation();
+    }
+    await campaignClass.fetchCampaigns(location);
+    campaignList = campaignClass.campaignList;
     loading = false;
+    notifyListeners();
+  }
+
+  Future searchCampaigns(String searchQuery) async {
+    searchLoading = true;
+    searchPageInitalState = false;
+    if (location == null) {
+      location = await _determineLocationClass.getLocation();
+    }
+    campaignClass.searchCampaignList.clear();
+    await campaignClass.searchCampaigns(location, searchQuery);
+    searchCampaignList = campaignClass.searchCampaignList;
+    searchLoading = false;
     notifyListeners();
   }
 }

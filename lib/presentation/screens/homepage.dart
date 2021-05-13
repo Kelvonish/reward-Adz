@@ -1,13 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
+import 'package:rewardadz/presentation/screens/editprofile.dart';
 import 'package:rewardadz/presentation/widgets/advertismentTileWidget.dart';
 import 'package:rewardadz/presentation/widgets/campaignCardShimmer.dart';
-import 'package:rewardadz/presentation/widgets/campaignCardTile.dart';
-import 'package:rewardadz/presentation/screens/campaignDetail.dart';
+import 'package:rewardadz/presentation/widgets/profileImage.dart';
+import 'package:rewardadz/presentation/screens/organizationCampaigns.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../business_logic/providers/getCampaignProvider.dart';
 import '../../business_logic/providers/topAdvertisersProvider.dart';
+import 'package:rewardadz/business_logic/Shared/sortCampaignByType.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -29,80 +33,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    Widget _renderCampaignByType(CampaignModel data) {
-      if (data.audio != null) {
-        return InkWell(
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CampaignDetails(
-                        mainUrl: data.campimg,
-                        otherUrl: data.organization.logo,
-                        name: data.name,
-                        category: data.organization.industry,
-                        amount: data.audio.award,
-                        type: "Ringtone",
-                        videoModel: null,
-                      ))),
-          child: MainCardTile(
-            name: data.name,
-            mainUrl: data.campimg,
-            otherUrl: data.organization.logo,
-            category: data.organization.industry,
-            amount: data.audio.award,
-            type: "Ringtone",
-          ),
-        );
-      } else if (data.video != null) {
-        return InkWell(
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CampaignDetails(
-                        mainUrl: data.campimg,
-                        otherUrl: data.organization.logo,
-                        name: data.name,
-                        category: data.organization.industry,
-                        amount: data.video.watchedvideosamount,
-                        type: "Video",
-                        videoModel: data.video,
-                      ))),
-          child: MainCardTile(
-            name: data.name,
-            mainUrl: data.campimg,
-            otherUrl: data.organization.logo,
-            category: data.organization.industry,
-            amount: data.video.watchedvideosamount,
-            type: "Video",
-          ),
-        );
-      } else if (data.survey != null) {
-        return InkWell(
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => CampaignDetails(
-                        mainUrl: data.campimg,
-                        otherUrl: data.organization.logo,
-                        name: data.name,
-                        category: data.organization.industry,
-                        amount: data.survey.amount,
-                        type: "Survey",
-                        videoModel: null,
-                      ))),
-          child: MainCardTile(
-            name: data.name,
-            mainUrl: data.campimg,
-            otherUrl: data.organization.logo,
-            category: data.organization.industry,
-            amount: data.survey.amount,
-            type: "Survey",
-          ),
-        );
-      }
-      return Text("");
-    }
-
     return RefreshIndicator(
       backgroundColor: Theme.of(context).primaryColor,
       onRefresh: () {
@@ -119,14 +49,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CircleAvatar(
-                      radius: 30.0,
-                      backgroundColor: Theme.of(context).primaryColor,
-                      child: Icon(
-                        Icons.person_outline,
-                        size: 35,
-                        color: Colors.white,
-                      ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditProfile()));
+                      },
+                      child: ProfileImage(),
                     ),
                     Row(
                       children: [
@@ -171,15 +101,61 @@ class _MyHomePageState extends State<MyHomePage> {
                   builder: (context, value, child) => Container(
                       alignment: Alignment.topLeft,
                       height: 80,
-                      child: ListView.builder(
-                          itemCount: value.topAdvertisersList.length,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return AdTile(
-                                name: value.topAdvertisersList[index].name,
-                                url: value.topAdvertisersList[index].logo);
-                          })),
+                      child: value.loading
+                          ? ListView.builder(
+                              itemCount: 3,
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return Shimmer.fromColors(
+                                  baseColor: Colors.grey[200],
+                                  highlightColor: Colors.grey[350],
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    margin: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Column(children: []),
+                                  ),
+                                );
+                              })
+                          : ListView.builder(
+                              itemCount: value.topAdvertisersList.length,
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                OrganizationCampaigns(
+                                                  name: value
+                                                      .topAdvertisersList[index]
+                                                      .name,
+                                                  organizationId: value
+                                                      .topAdvertisersList[index]
+                                                      .id
+                                                      .toString(),
+                                                  url: value
+                                                      .topAdvertisersList[index]
+                                                      .logo,
+                                                  category: value
+                                                      .topAdvertisersList[index]
+                                                      .industry,
+                                                )));
+                                  },
+                                  child: AdTile(
+                                      name:
+                                          value.topAdvertisersList[index].name,
+                                      url:
+                                          value.topAdvertisersList[index].logo),
+                                );
+                              })),
                 ),
                 SizedBox(
                   height: 15.0,
@@ -192,7 +168,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                 ),
                 SizedBox(
-                  height: 10.0,
+                  height: 5.0,
                 ),
                 Container(
                   width: MediaQuery.of(context).size.width,
@@ -219,8 +195,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                     itemCount: data.campaignList.length,
                                     physics: NeverScrollableScrollPhysics(),
                                     itemBuilder: (context, index) {
-                                      return _renderCampaignByType(
-                                          data.campaignList[index]);
+                                      return renderCampaignByType(
+                                          context, data.campaignList[index]);
                                     }),
                       ],
                     ),

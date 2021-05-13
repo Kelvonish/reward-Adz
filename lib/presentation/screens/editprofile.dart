@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:rewardadz/presentation/widgets/profileImage.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -82,15 +83,7 @@ class _EditProfileState extends State<EditProfile> {
                   Center(
                     child: Column(
                       children: [
-                        CircleAvatar(
-                          radius: 30.0,
-                          backgroundColor: Theme.of(context).primaryColor,
-                          child: Icon(
-                            Icons.person_outline,
-                            size: 35,
-                            color: Colors.white,
-                          ),
-                        ),
+                        ProfileImage(),
                         SizedBox(
                           height: 5.0,
                         ),
