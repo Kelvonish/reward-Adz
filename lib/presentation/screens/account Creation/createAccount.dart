@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/Shared/validator.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
+import 'package:rewardadz/presentation/screens/account%20Creation/addReferalCode.dart';
 import 'package:rewardadz/presentation/screens/login.dart';
 import 'package:rewardadz/business_logic/authentication/createAccount.dart';
 import 'package:rewardadz/presentation/screens/navigator.dart';
@@ -17,7 +20,10 @@ class _CreateAccountState extends State<CreateAccount> {
   TextStyle _labelStyle = TextStyle(fontWeight: FontWeight.w400);
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
+  String country;
+  String countryCode;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -41,7 +47,7 @@ class _CreateAccountState extends State<CreateAccount> {
           child: Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.25,
+                height: MediaQuery.of(context).size.height * 0.2,
               ),
               Card(
                 margin: EdgeInsets.all(10.0),
@@ -54,12 +60,23 @@ class _CreateAccountState extends State<CreateAccount> {
                     builder: (context, data, child) => (Column(
                       children: [
                         IntlPhoneField(
+                          controller: _phoneController,
+                          inputFormatters: [
+                            new LengthLimitingTextInputFormatter(9)
+                          ],
                           initialCountryCode: "KE",
+                          autoValidate: false,
                           validator: (value) {
                             if (value.length != 9) {
                               return "Please enter a valid number";
                             }
                             return null;
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              country = value.countryISOCode;
+                              countryCode = value.countryCode;
+                            });
                           },
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
@@ -67,17 +84,18 @@ class _CreateAccountState extends State<CreateAccount> {
                               filled: true,
                               labelText: "Phone Number",
                               labelStyle: _labelStyle),
-                          onChanged: (phone) {
-                            print(phone.completeNumber);
-                          },
                           onCountryChanged: (phone) {
+                            setState(() {
+                              country = phone.countryISOCode;
+                              countryCode = phone.countryCode;
+                            });
                             print('Country code changed to: ' +
                                 phone.countryCode);
                           },
                         ),
                         TextFormField(
                           validator: (val) {
-                            if (!validateEmail(val)) {
+                            if (!validateEmail(val.trim())) {
                               return "Please enter a valid email";
                             }
                             return null;
@@ -92,21 +110,16 @@ class _CreateAccountState extends State<CreateAccount> {
                         TextFormField(
                           controller: _passwordController,
                           validator: (val) {
-                            if (val.length < 6) {
-                              return "Minimum is 6 characters";
-                            }
                             if (!validatePassword(val)) {
-                              return "Should contain uppercase,lowecase,character and number";
+                              return "Minimum is 6 characters! Should contain uppercase,lowecase,character and number";
                             }
                             return null;
-                          },
-                          onChanged: (value) {
-                            setState(() {});
                           },
                           cursorColor: Theme.of(context).primaryColor,
                           keyboardType: TextInputType.visiblePassword,
                           obscureText: data.password1,
                           decoration: InputDecoration(
+                              errorMaxLines: 2,
                               //errorStyle: TextStyle(fontSize: 9),
                               border: InputBorder.none,
                               focusedBorder: InputBorder.none,
@@ -181,21 +194,33 @@ class _CreateAccountState extends State<CreateAccount> {
                 child: ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState.validate()) {
+                      Provider.of<UserProvider>(context, listen: false)
+                          .createUser(
+                              _emailController.text.trim(),
+                              countryCode + _phoneController.text,
+                              country,
+                              _confirmPasswordController.text);
+
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => BottomNavigator()));
+                              builder: (context) => AddReferalCode()));
                     }
                   },
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(
                         Theme.of(context).primaryColor),
                   ),
-                  child: Text(
-                    "SIGN UP ",
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
+                  child: Provider.of<UserProvider>(context, listen: false)
+                          .signUpButtonLoading
+                      ? CircularProgressIndicator(
+                          backgroundColor: Colors.white,
+                        )
+                      : Text(
+                          "SIGN UP ",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                        ),
                 ),
               ),
               SizedBox(

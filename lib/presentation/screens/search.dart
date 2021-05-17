@@ -95,20 +95,25 @@ class _SearchState extends State<Search> {
                                     ),
                                   )
                                 : data.searchCampaignList.length == 0
-                                    ? Container(
-                                        height:
-                                            MediaQuery.of(context).size.height *
-                                                0.8,
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: Center(
-                                          child: Text(
-                                            "No Campaigns match your search!",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 18.0),
+                                    ? Column(
+                                        children: [
+                                          Image.asset("assets/empty.png"),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            child: Center(
+                                              child: Text(
+                                                "No Campaigns match your search!",
+                                                style: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 18.0,
+                                                    fontWeight:
+                                                        FontWeight.w300),
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       )
                                     : ListView.builder(
                                         shrinkWrap: true,

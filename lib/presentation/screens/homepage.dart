@@ -184,11 +184,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                   return CampaignCardShimmer();
                                 })
                             : data.campaignList.length == 0
-                                ? Center(
-                                    child: Text(
-                                      "No Campaigns available right now!",
-                                      style: TextStyle(color: Colors.black),
-                                    ),
+                                ? Column(
+                                    children: [
+                                      Image.asset("assets/empty.png"),
+                                      Center(
+                                        child: Text(
+                                          "No Campaigns available right now!",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                      ),
+                                    ],
                                   )
                                 : ListView.builder(
                                     shrinkWrap: true,

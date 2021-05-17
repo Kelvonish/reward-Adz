@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
-import 'package:rewardadz/presentation/screens/createAccount.dart';
+import 'package:rewardadz/presentation/screens/account%20Creation/createAccount.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/presentation/screens/navigator.dart';
 

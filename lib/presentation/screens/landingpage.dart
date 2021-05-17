@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rewardadz/presentation/screens/createAccount.dart';
+import 'package:rewardadz/presentation/screens/account%20Creation/createAccount.dart';
 import 'package:rewardadz/presentation/screens/login.dart';
 
 class LandingPage extends StatelessWidget {
