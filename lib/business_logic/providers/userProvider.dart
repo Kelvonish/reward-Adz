@@ -3,7 +3,7 @@ import 'package:rewardadz/data/services/userNetworkService.dart';
 
 class UserProvider extends ChangeNotifier {
   UserNetworkService userClass = UserNetworkService();
-  bool signUpButtonLoading = true;
+  bool signUpButtonLoading = false;
 
   createUser(
       String email, String phonenumber, String country, String password) async {
