@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/data/local%20storage/userPreference.dart';
+import 'package:rewardadz/main.dart';
 import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
 import 'package:rewardadz/presentation/screens/editprofile.dart';
 import 'package:rewardadz/presentation/screens/privacyPolicyWebView.dart';
@@ -385,8 +386,41 @@ class _ProfileState extends State<Profile> {
               ),
               InkWell(
                 onTap: () {
-                  UserPreferences userPref = UserPreferences();
-                  userPref.removeUser();
+                  showDialog<void>(
+                    context: context,
+                    barrierDismissible: false, // user must tap button!
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Confirm Logout'),
+                        content: Text('Are you sure you want to logout?'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: Text('Cancel',
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor)),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: Text(
+                              'Confirm',
+                              style: TextStyle(
+                                  color: Theme.of(context).primaryColor),
+                            ),
+                            onPressed: () {
+                              UserPreferences userPref = UserPreferences();
+                              userPref.removeUser();
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          MyApp()));
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

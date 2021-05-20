@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/data/services/userNetworkService.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
@@ -14,6 +15,7 @@ class UserProvider extends ChangeNotifier {
   UserPreferences userPref = UserPreferences();
   UserNetworkService userClass = UserNetworkService();
   bool signUpButtonLoading = false;
+  bool loginButtonLoading = false;
   bool accountDetailButton = false;
   Status _loggedInStatus = Status.NotLoggedIn;
   Status get loggedInStatus => _loggedInStatus;
@@ -26,6 +28,25 @@ class UserProvider extends ChangeNotifier {
     if (result != null) {
       _loggedInStatus = Status.LoggedIn;
       print(userPref.saveUser(result));
+      userPref.getUser();
+      notifyListeners();
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => AddAccountDetails(
+                    user: result,
+                  )));
+    }
+    signUpButtonLoading = false;
+    notifyListeners();
+  }
+
+  createSocialUser(BuildContext context, UserModel user) async {
+    signUpButtonLoading = true;
+    notifyListeners();
+    UserModel result = await userClass.createSocialUser(user);
+
+    if (result != null) {
       userPref.getUser();
       notifyListeners();
       Navigator.push(
@@ -54,35 +75,21 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Widget checkSession() {
-    UserModel userSaved;
-    Widget screen;
-    UserPreferences().getUser().then((result) => {
-          userSaved = result,
-          print("User is : "),
-          print(userSaved.data.id),
-          if (userSaved.data.id != null)
-            {
-              if (userSaved.data.dob == null ||
-                  userSaved.data.lname == null ||
-                  userSaved.data.fname == null ||
-                  userSaved.data.gender == null)
-                {
-                  screen = AddAccountDetails(
-                    user: userSaved,
-                  ),
-                }
-              else
-                {
-                  screen = LandingPage(),
-                }
-            }
-          else
-            {
-              screen = BottomNavigator(),
-            }
-        });
+  loginUser(BuildContext context, UserModel user) async {
+    loginButtonLoading = true;
+    notifyListeners();
+    UserModel result = await userClass.loginUser(user);
 
-    return screen;
+    if (result != null) {
+      userPref.saveUser(result);
+
+      Fluttertoast.showToast(
+          msg: "Successfully logged in!",
+          backgroundColor: Theme.of(context).primaryColor);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => BottomNavigator()));
+    }
+    loginButtonLoading = false;
+    notifyListeners();
   }
 }

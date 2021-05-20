@@ -2,13 +2,28 @@ class UserModel {
   String status;
   DataModel data;
   String token;
+  String refreshToken;
+  int balance;
+  int totalreward;
+  int earnedads;
 
-  UserModel({this.status, this.data, this.token});
+  UserModel(
+      {this.status,
+      this.data,
+      this.token,
+      this.refreshToken,
+      this.balance,
+      this.earnedads,
+      this.totalreward});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     status = json['status'];
     data = json['data'] != null ? new DataModel.fromJson(json['data']) : null;
     token = json['token'];
+    refreshToken = json['refreshToken'];
+    balance = json['balance'];
+    totalreward = json['totalreward'];
+    earnedads = json['earnedads'];
   }
 
   Map<String, dynamic> toJson() {
@@ -18,6 +33,10 @@ class UserModel {
       data['data'] = this.data.toJson();
     }
     data['token'] = this.token;
+    data['refreshToken'] = this.refreshToken;
+    data['balance'] = this.balance;
+    data['totalreward'] = this.totalreward;
+    data['earnedads'] = this.earnedads;
     return data;
   }
 }

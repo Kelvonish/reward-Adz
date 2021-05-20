@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
+import 'package:rewardadz/presentation/screens/account Creation/createAccount.dart';
 
 void googleLogin() async {
   GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -18,6 +21,7 @@ void googleLogin() async {
     print(acc.email);
     print(acc.displayName);
     print(acc.photoUrl);
+    print("");
 
     acc.authentication.then((GoogleSignInAuthentication auth) async {
       print(auth.idToken);
@@ -26,7 +30,7 @@ void googleLogin() async {
   });
 }
 
-void facebookLogin() async {
+facebookLogin(BuildContext context) async {
   final facebookLogin = FacebookLogin();
   // await facebookLogin.logOut();
 
@@ -34,13 +38,13 @@ void facebookLogin() async {
 
   switch (result.status) {
     case FacebookLoginStatus.loggedIn:
-      print("Success");
+      /*print("Success");
       print(result.accessToken);
       print(result.accessToken.token);
       print(result.accessToken.expires);
       print(result.accessToken.permissions);
       print(result.accessToken.userId);
-      print(result.accessToken.isValid());
+      print(result.accessToken.isValid());*/
       final token = result.accessToken.token;
       var url = Uri.parse(
           'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$token');
@@ -48,13 +52,18 @@ void facebookLogin() async {
       /// for profile details also use the below code
       final graphResponse = await http.get(url);
       final profile = json.decode(graphResponse.body);
-      print(profile);
+      if (profile != null) {
+        return profile;
+      }
+
       break;
     case FacebookLoginStatus.cancelledByUser:
       print("User cancelled");
+      return null;
       break;
     case FacebookLoginStatus.error:
       print(result.errorMessage);
+      return null;
       break;
   }
 }

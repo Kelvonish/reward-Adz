@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:rewardadz/business_logic/Shared/validator.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/createAccount.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/presentation/screens/navigator.dart';
@@ -16,6 +20,8 @@ class _LoginState extends State<Login> {
 
   final _formKey = GlobalKey<FormState>();
   var _scaffoldState;
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +56,16 @@ class _LoginState extends State<Login> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        TextField(
+                        TextFormField(
                           cursorColor: Theme.of(context).primaryColor,
                           keyboardType: TextInputType.emailAddress,
+                          controller: _emailController,
+                          validator: (val) {
+                            if (!validateEmail(val.trim())) {
+                              return "Please enter a valid email";
+                            }
+                            return null;
+                          },
                           decoration: InputDecoration(
                               fillColor: Colors.white,
                               filled: true,
@@ -60,11 +73,19 @@ class _LoginState extends State<Login> {
                               labelStyle: _labelStyle),
                         ),
                         Consumer<TogglePasswordProvider>(
-                          builder: (context, data, child) => TextField(
+                          builder: (context, data, child) => TextFormField(
+                            controller: _passwordController,
                             cursorColor: Theme.of(context).primaryColor,
                             keyboardType: TextInputType.visiblePassword,
+                            validator: (val) {
+                              if (!validatePassword(val)) {
+                                return "Minimum is 6 characters! Should contain uppercase,lowecase,character and number";
+                              }
+                              return null;
+                            },
                             obscureText: data.password3,
                             decoration: InputDecoration(
+                                errorMaxLines: 2,
                                 border: InputBorder.none,
                                 focusedBorder: InputBorder.none,
                                 enabledBorder: InputBorder.none,
@@ -92,27 +113,41 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                 ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 50,
-                  margin: EdgeInsets.all(15.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BottomNavigator()));
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(
-                          Theme.of(context).primaryColor),
-                    ),
-                    child: Text(
-                      "Login ",
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
+                Consumer<UserProvider>(
+                  builder: (context, value, child) => value.loginButtonLoading
+                      ? Center(
+                          child: SpinKitChasingDots(color: Colors.white),
+                        )
+                      : Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 50,
+                          margin: EdgeInsets.all(15.0),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState.validate()) {
+                                DataModel data = DataModel(
+                                    email: _emailController.text.trim(),
+                                    password: _passwordController.text,
+                                    type: 'Email');
+                                UserModel user = UserModel(
+                                  data: data,
+                                );
+
+                                value.loginUser(context, user);
+                              }
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  Theme.of(context).primaryColor),
+                            ),
+                            child: Text(
+                              "Login ",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
                 ),
                 SizedBox(
                   height: 10.0,

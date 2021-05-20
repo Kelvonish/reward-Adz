@@ -29,6 +29,111 @@ class _CreateAccountState extends State<CreateAccount> {
 
   @override
   Widget build(BuildContext context) {
+    showPhoneModal(BuildContext context, var profile) {
+      final _formKey2 = GlobalKey<FormState>();
+      var _countryCode;
+      String _phone;
+      TextEditingController _phoneController = TextEditingController();
+      showCupertinoModalPopup(
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => Container(
+                margin: EdgeInsets.all(15.0),
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: Container(
+                      height: 186,
+                      margin: MediaQuery.of(context).viewInsets,
+                      color: Colors.white,
+                      child: Column(
+                        children: [
+                          Center(
+                              child: Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: Text(
+                              "Phone Number",
+                              style: TextStyle(
+                                  fontSize: 18.0, color: Colors.black),
+                            ),
+                          )),
+                          Divider(
+                            height: 5,
+                          ),
+                          Form(
+                            key: _formKey2,
+                            child: IntlPhoneField(
+                              validator: (value) => value.length <= 8
+                                  ? "Enter a valid number"
+                                  : null,
+                              controller: _phoneController,
+                              initialCountryCode: "KE",
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
+                                labelText: "Phone Number",
+                                //labelStyle: _labelStyle
+                              ),
+                              onChanged: (phone) {
+                                setState(() {
+                                  _countryCode = phone.countryISOCode;
+                                  _phone = phone.completeNumber;
+                                });
+
+                                print(phone.completeNumber);
+                              },
+                              onCountryChanged: (phone) {
+                                print('Country code changed to: ' +
+                                    phone.countryCode);
+                              },
+                            ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.all(0.0),
+                            child: ElevatedButton(
+                              onPressed: () {
+                                if (_formKey2.currentState.validate()) {
+                                  Navigator.pop(context);
+                                  DataModel data = DataModel(
+                                    email: profile['email'],
+                                    type: "Facebook",
+                                    phone: _phone,
+                                    country: countryCodeToName[_countryCode],
+                                  );
+                                  UserModel user = UserModel(
+                                    data: data,
+                                  );
+                                  Provider.of<UserProvider>(context,
+                                          listen: false)
+                                      .createSocialUser(context, user);
+                                }
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Text("Submit"),
+                              ),
+                              style: ButtonStyle(
+                                  elevation: MaterialStateProperty.all(0.0),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            0.0,
+                                          ),
+                                          side: BorderSide(
+                                              color: Theme.of(context)
+                                                  .primaryColor))),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Theme.of(context).primaryColor)),
+                            ),
+                          )
+                        ],
+                      )),
+                ),
+              ));
+    }
+
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -247,7 +352,12 @@ class _CreateAccountState extends State<CreateAccount> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   InkWell(
-                    onTap: facebookLogin,
+                    onTap: () async {
+                      var profile = await facebookLogin(context);
+                      if (profile != null) {
+                        showPhoneModal(context, profile);
+                      }
+                    },
                     child: Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,

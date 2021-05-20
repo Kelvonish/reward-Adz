@@ -31,6 +31,22 @@
           }
         },
         {
+          "client_id": "259575008376-p5cam04pcdcl70cdsnljjsihpu7ngso5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adalabs.rewardads",
+            "certificate_hash": "c6afcbf03fa4a8e9d1b6d40a2a1f0b05a4e1fc0d"
+          }
+        },
+        {
+          "client_id": "259575008376-vrb1ul6rnoctqhnkhol0tle02i1jntfp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.adalabs.rewardads",
+            "certificate_hash": "ff6584f9981c933b93c4bc6e7e44e0dd3d9c3b9a"
+          }
+        },
+        {
           "client_id": "259575008376-leh1n29muhf9rl4qsauvlr1ke6dta57c.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -53,7 +69,7 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:259575008376:android:6d0031c7923c8c80cdb18d",
+        "mobilesdk_app_id": "1:259575008376:android:e0405db2dd6ffb3dcdb18d",
         "android_client_info": {
           "package_name": "com.example.rewardadz"
         }
