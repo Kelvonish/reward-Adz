@@ -6,7 +6,6 @@ import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/verifyOtp.dart';
 import 'package:rewardadz/data/local storage/userPreference.dart';
-import 'package:rewardadz/presentation/screens/landingpage.dart';
 import 'package:rewardadz/presentation/screens/navigator.dart';
 
 enum Status { NotLoggedIn, LoggedIn, LoggedOut }
