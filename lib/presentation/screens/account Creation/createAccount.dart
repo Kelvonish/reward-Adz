@@ -1,15 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/Shared/validator.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
-import 'package:rewardadz/presentation/screens/account%20Creation/addReferalCode.dart';
+import 'package:rewardadz/business_logic/Shared/countryCodeToName.dart';
 import 'package:rewardadz/presentation/screens/login.dart';
 import 'package:rewardadz/business_logic/authentication/createAccount.dart';
-import 'package:rewardadz/presentation/screens/navigator.dart';
 import 'package:provider/provider.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 
 class CreateAccount extends StatefulWidget {
   @override
@@ -61,6 +62,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       children: [
                         IntlPhoneField(
                           controller: _phoneController,
+                          dropDownArrowColor: Theme.of(context).primaryColor,
                           inputFormatters: [
                             new LengthLimitingTextInputFormatter(9)
                           ],
@@ -74,7 +76,7 @@ class _CreateAccountState extends State<CreateAccount> {
                           },
                           onChanged: (value) {
                             setState(() {
-                              country = value.countryISOCode;
+                              country = value.countryISOCode.toUpperCase();
                               countryCode = value.countryCode;
                             });
                           },
@@ -86,7 +88,7 @@ class _CreateAccountState extends State<CreateAccount> {
                               labelStyle: _labelStyle),
                           onCountryChanged: (phone) {
                             setState(() {
-                              country = phone.countryISOCode;
+                              country = phone.countryISOCode.toUpperCase();
                               countryCode = phone.countryCode;
                             });
                             print('Country code changed to: ' +
@@ -191,35 +193,40 @@ class _CreateAccountState extends State<CreateAccount> {
                 width: MediaQuery.of(context).size.width,
                 height: 50,
                 margin: EdgeInsets.all(15.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState.validate()) {
-                      Provider.of<UserProvider>(context, listen: false)
-                          .createUser(
-                              _emailController.text.trim(),
-                              countryCode + _phoneController.text,
-                              country,
-                              _confirmPasswordController.text);
-
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => AddReferalCode()));
-                    }
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(
-                        Theme.of(context).primaryColor),
-                  ),
-                  child: Provider.of<UserProvider>(context, listen: false)
-                          .signUpButtonLoading
-                      ? CircularProgressIndicator(
-                          backgroundColor: Colors.white,
+                child: Consumer<UserProvider>(
+                  builder: (context, value, child) => value.signUpButtonLoading
+                      ? SpinKitChasingDots(
+                          color: Colors.white,
                         )
-                      : Text(
-                          "SIGN UP ",
-                          style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
+                      : ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState.validate()) {
+                              DataModel data = DataModel(
+                                  email: _emailController.text.trim(),
+                                  password: _confirmPasswordController.text,
+                                  phone: countryCode + _phoneController.text,
+                                  country: countryCodeToName[country],
+                                  type: 'Email');
+                              UserModel user = UserModel(
+                                data: data,
+                              );
+                              value.createUser(context, user);
+                            }
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                Theme.of(context).primaryColor),
+                          ),
+                          child: value.signUpButtonLoading
+                              ? CircularProgressIndicator(
+                                  backgroundColor: Colors.white,
+                                )
+                              : Text(
+                                  "SIGN UP ",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
                         ),
                 ),
               ),

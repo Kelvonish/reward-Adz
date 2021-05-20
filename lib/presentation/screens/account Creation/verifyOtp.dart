@@ -19,6 +19,11 @@ class _VerifyOtpState extends State<VerifyOtp> {
     _startTimer();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void _startTimer() {
     CountdownTimer countDownTimer = new CountdownTimer(
       new Duration(seconds: _start),

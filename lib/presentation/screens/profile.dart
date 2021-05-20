@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
+import 'package:rewardadz/data/local%20storage/userPreference.dart';
 import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
 import 'package:rewardadz/presentation/screens/editprofile.dart';
 import 'package:rewardadz/presentation/screens/privacyPolicyWebView.dart';
@@ -382,8 +383,11 @@ class _ProfileState extends State<Profile> {
               SizedBox(
                 height: 15.0,
               ),
-              GestureDetector(
-                onTap: () {},
+              InkWell(
+                onTap: () {
+                  UserPreferences userPref = UserPreferences();
+                  userPref.removeUser();
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
