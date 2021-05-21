@@ -21,10 +21,15 @@ class UserPreferences {
     return savedUser;
   }
 
-  void removeUser() async {
+  Future<bool> removeUser() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    prefs.remove("user");
+    bool completed = await prefs.remove("user");
+    if (completed) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<String> getToken(args) async {

@@ -21,7 +21,6 @@ void googleLogin() async {
     print(acc.email);
     print(acc.displayName);
     print(acc.photoUrl);
-    print("");
 
     acc.authentication.then((GoogleSignInAuthentication auth) async {
       print(auth.idToken);
@@ -30,7 +29,7 @@ void googleLogin() async {
   });
 }
 
-facebookLogin(BuildContext context) async {
+facebookSignUp(BuildContext context) async {
   final facebookLogin = FacebookLogin();
   // await facebookLogin.logOut();
 
@@ -55,6 +54,34 @@ facebookLogin(BuildContext context) async {
       if (profile != null) {
         return profile;
       }
+
+      break;
+    case FacebookLoginStatus.cancelledByUser:
+      print("User cancelled");
+      return null;
+      break;
+    case FacebookLoginStatus.error:
+      print(result.errorMessage);
+      return null;
+      break;
+  }
+}
+
+facebookLogin(BuildContext context) async {
+  final facebookLogin = FacebookLogin();
+
+  final result = await facebookLogin.logIn(['email']);
+
+  switch (result.status) {
+    case FacebookLoginStatus.loggedIn:
+      final token = result.accessToken.token;
+      var url = Uri.parse(
+          'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$token');
+
+      /// for profile details also use the below code
+      final graphResponse = await http.get(url);
+      final profile = json.decode(graphResponse.body);
+      return profile;
 
       break;
     case FacebookLoginStatus.cancelledByUser:

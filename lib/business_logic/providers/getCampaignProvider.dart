@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 
 import '../../data/models/campaignModel.dart';
 import '../../data/services/getCampaignsNetworkService.dart';
@@ -16,12 +17,12 @@ class GetCampaignProvider extends ChangeNotifier {
   var _determineLocationClass = DetermineLocation();
   GetCampaignsClass campaignClass = GetCampaignsClass();
 
-  Future getCampaignsProvider() async {
+  Future getCampaignsProvider(UserModel user) async {
     loading = true;
     if (location == null) {
       location = await _determineLocationClass.getLocation();
     }
-    await campaignClass.fetchCampaigns(location);
+    await campaignClass.fetchCampaigns(location, user);
     campaignList = campaignClass.campaignList;
     loading = false;
     notifyListeners();

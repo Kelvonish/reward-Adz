@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/homepage.dart';
 import 'package:rewardadz/presentation/screens/profile.dart';
 import 'package:rewardadz/presentation/screens/report.dart';

@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/local%20storage/userPreference.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/main.dart';
 import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
 import 'package:rewardadz/presentation/screens/editprofile.dart';
@@ -30,23 +32,35 @@ class _ProfileState extends State<Profile> {
           margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 15.0),
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ProfileImage(),
-                  SizedBox(
-                    width: 15.0,
-                  ),
-                  Text(
-                    "Jane Doe",
-                    style: _titleStyle,
-                  ),
-                ],
+              Consumer<UserProvider>(
+                builder: (context, value, child) => Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    ProfileImage(
+                      url: value.loggedUser.data.image,
+                    ),
+                    SizedBox(
+                      width: 15.0,
+                    ),
+                    Text(
+                      value.loggedUser.data.fname +
+                          " " +
+                          value.loggedUser.data.lname,
+                      style: _titleStyle,
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: 10.0,
               ),
-              BalanceCard(),
+              Consumer<UserProvider>(
+                builder: (context, value, child) => BalanceCard(
+                  name: "Total Earnings",
+                  earnedAmount: value.loggedUser.totalreward.toString(),
+                  numberOfAds: value.loggedUser.earnedads.toString(),
+                ),
+              ),
               SizedBox(
                 height: 15.0,
               ),
@@ -408,13 +422,18 @@ class _ProfileState extends State<Profile> {
                               style: TextStyle(
                                   color: Theme.of(context).primaryColor),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               UserPreferences userPref = UserPreferences();
-                              userPref.removeUser();
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          MyApp()));
+                              bool done = await userPref.removeUser();
+
+                              if (done) {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            MyApp()));
+                              } else {
+                                Navigator.pop(context);
+                              }
                             },
                           ),
                         ],

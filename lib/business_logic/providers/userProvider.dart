@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/data/services/userNetworkService.dart';
 import 'package:rewardadz/data/models/userModel.dart';
+import 'package:rewardadz/main.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/verifyOtp.dart';
 import 'package:rewardadz/data/local storage/userPreference.dart';
@@ -18,6 +19,13 @@ class UserProvider extends ChangeNotifier {
   bool accountDetailButton = false;
   Status _loggedInStatus = Status.NotLoggedIn;
   Status get loggedInStatus => _loggedInStatus;
+  UserModel loggedUser;
+
+  getLoggedInUser() async {
+    loggedUser = await UserPreferences().getUser();
+    notifyListeners();
+    return loggedUser;
+  }
 
   createUser(BuildContext context, UserModel user) async {
     signUpButtonLoading = true;
@@ -64,11 +72,17 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
     UserModel result = await userClass.addUserDetails(user);
     if (result != null) {
-      print(userPref.saveUser(result));
-      var loggedInUser = userPref.getUser();
-      print(loggedInUser);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => VerifyOtp()));
+      userPref.saveUser(result);
+
+      var _sentOtp = await userClass.sendOtp(result);
+      if (_sentOtp) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => VerifyOtp(
+                      user: result,
+                    )));
+      }
     }
     accountDetailButton = false;
     notifyListeners();
@@ -81,12 +95,65 @@ class UserProvider extends ChangeNotifier {
 
     if (result != null) {
       userPref.saveUser(result);
-
+      loginButtonLoading = false;
+      notifyListeners();
       Fluttertoast.showToast(
           msg: "Successfully logged in!",
           backgroundColor: Theme.of(context).primaryColor);
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => BottomNavigator()));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+    }
+    loginButtonLoading = false;
+    notifyListeners();
+  }
+
+  loginSocialUser(BuildContext context, UserModel user) async {
+    loginButtonLoading = true;
+    notifyListeners();
+
+    UserModel result = await userClass.loginSocialUser(user);
+
+    if (result != null) {
+      userPref.saveUser(result);
+      loginButtonLoading = false;
+      notifyListeners();
+      Fluttertoast.showToast(
+          msg: "Successfully logged in!",
+          backgroundColor: Theme.of(context).primaryColor);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+    }
+    loginButtonLoading = false;
+    notifyListeners();
+  }
+
+  updateProfile(BuildContext context, UserModel user) async {
+    loginButtonLoading = true;
+    notifyListeners();
+
+    UserModel result = await userClass.updateUserDetails(user);
+
+    if (result != null) {
+      var existingUser = await UserPreferences().getUser();
+      existingUser.data = result.data;
+
+      userPref.saveUser(existingUser);
+      getLoggedInUser();
+      loginButtonLoading = false;
+      notifyListeners();
+    }
+    loginButtonLoading = false;
+    notifyListeners();
+  }
+
+  verifyOtp(BuildContext context, UserModel user, String otpCode) async {
+    loginButtonLoading = true;
+    notifyListeners();
+
+    bool verified = await userClass.verifyOtp(user, otpCode);
+
+    if (verified) {
+      loginButtonLoading = false;
+      notifyListeners();
+      Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
     }
     loginButtonLoading = false;
     notifyListeners();

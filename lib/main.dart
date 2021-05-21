@@ -34,7 +34,6 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    Future<UserModel> getUserData() => UserPreferences().getUser();
     return MultiProvider(
         providers: [
           ChangeNotifierProvider<TogglePasswordProvider>(
@@ -54,33 +53,63 @@ class _MyAppState extends State<MyApp> {
               highlightColor: const Color.fromRGBO(114, 145, 219, 1),
               primarySwatch: Colors.blue,
               scaffoldBackgroundColor: Colors.white),
-          home: FutureBuilder(
-              future: getUserData(),
-              builder: (context, snapshot) {
-                switch (snapshot.connectionState) {
-                  case ConnectionState.none:
-                  case ConnectionState.waiting:
-                    return Scaffold(
-                      body: Center(
-                        child: SpinKitChasingDots(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                    );
-                  default:
-                    if (snapshot.data == null)
-                      return LandingPage();
-                    else if (snapshot.data.data.dob == null ||
-                        snapshot.data.data.lname == null ||
-                        snapshot.data.data.fname == null ||
-                        snapshot.data.data.gender == null) {
-                      return AddAccountDetails(
-                        user: snapshot.data,
-                      );
-                    } else
-                      return BottomNavigator();
-                }
-              }),
+          home: CheckSession(),
         ));
+  }
+}
+
+class CheckSession extends StatefulWidget {
+  @override
+  _CheckSessionState createState() => _CheckSessionState();
+}
+
+class _CheckSessionState extends State<CheckSession> {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: FutureBuilder(
+          future: Provider.of<UserProvider>(context, listen: false)
+              .getLoggedInUser(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return Scaffold(
+                  body: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context).primaryColor,
+                          const Color.fromRGBO(114, 145, 219, 1),
+                          Theme.of(context).accentColor
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                    child: Center(
+                      child: SpinKitChasingDots(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                );
+              default:
+                if (snapshot.data == null)
+                  return LandingPage();
+                else if (snapshot.data.data.dob == null ||
+                    snapshot.data.data.lname == null ||
+                    snapshot.data.data.fname == null ||
+                    snapshot.data.data.gender == null) {
+                  return AddAccountDetails(
+                    user: snapshot.data,
+                  );
+                } else
+                  return BottomNavigator();
+            }
+          }),
+    );
   }
 }

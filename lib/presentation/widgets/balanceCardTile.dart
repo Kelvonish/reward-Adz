@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BalanceCard extends StatelessWidget {
+  final String earnedAmount;
+  final String numberOfAds;
+  final String name;
+  BalanceCard({this.earnedAmount, this.numberOfAds, this.name});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -19,7 +23,7 @@ class BalanceCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Earnings",
+                  name,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16.0,
@@ -38,14 +42,14 @@ class BalanceCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Ksh 23,500.00",
+                  "Ksh " + earnedAmount,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18.0,
                       color: Colors.white),
                 ),
                 Text(
-                  "Viewed 2060 Ads",
+                  "You have Completed $numberOfAds ads",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 10.0,

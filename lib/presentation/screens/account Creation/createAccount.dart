@@ -353,7 +353,7 @@ class _CreateAccountState extends State<CreateAccount> {
                 children: [
                   InkWell(
                     onTap: () async {
-                      var profile = await facebookLogin(context);
+                      var profile = await facebookSignUp(context);
                       if (profile != null) {
                         showPhoneModal(context, profile);
                       }

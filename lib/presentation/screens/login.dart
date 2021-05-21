@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:rewardadz/business_logic/Shared/validator.dart';
+import 'package:rewardadz/business_logic/authentication/createAccount.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/models/userModel.dart';
@@ -165,14 +166,30 @@ class _LoginState extends State<Login> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      padding: EdgeInsets.all(10.0),
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage("assets/facebook.png"),
+                    InkWell(
+                      onTap: () async {
+                        var profile = await facebookLogin(context);
+                        if (profile != null) {
+                          DataModel data = DataModel(
+                            email: profile['email'],
+                            type: "Facebook",
+                          );
+                          UserModel user = UserModel(
+                            data: data,
+                          );
+                          Provider.of<UserProvider>(context, listen: false)
+                              .loginSocialUser(context, user);
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.all(10.0),
+                        child: CircleAvatar(
+                          backgroundImage: AssetImage("assets/facebook.png"),
+                        ),
                       ),
                     ),
                     SizedBox(

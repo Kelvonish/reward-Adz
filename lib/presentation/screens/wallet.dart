@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:provider/provider.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
 
 class Wallet extends StatefulWidget {
@@ -65,7 +67,13 @@ class _WalletState extends State<Wallet> {
         margin: EdgeInsets.all(15.0),
         child: Column(
           children: [
-            BalanceCard(),
+            Consumer<UserProvider>(
+              builder: (context, value, child) => BalanceCard(
+                name: "Balance",
+                earnedAmount: value.loggedUser.balance.toString(),
+                numberOfAds: value.loggedUser.earnedads.toString(),
+              ),
+            ),
             SizedBox(
               height: 15.0,
             ),

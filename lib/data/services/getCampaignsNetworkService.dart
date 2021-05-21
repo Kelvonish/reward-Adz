@@ -3,16 +3,19 @@ import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 import 'package:rewardadz/business_logic/constants/constants.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 
 //import 'package:fluttertoast/fluttertoast.dart';
 class GetCampaignsClass {
   List<CampaignModel> campaignList = [];
   List<CampaignModel> searchCampaignList = [];
 
-  Future fetchCampaigns(LocationData location) async {
+  Future fetchCampaigns(LocationData location, UserModel user) async {
     try {
       String url = BASE_URL +
-          "campaign/list/page/1/limit/75?gender=Male&lat=" +
+          "campaign/list/page/1/limit/75?gender=" +
+          user.data.gender +
+          "&lat=" +
           location.latitude.toString() +
           "&lng=" +
           location.longitude.toString();

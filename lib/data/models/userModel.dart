@@ -50,12 +50,12 @@ class DataModel {
   String gender;
   String dob;
   String phone;
-  Null terms;
-  Null image;
+  String terms;
+  String image;
   String currency;
   int status;
   String country;
-  Null randid;
+  String randid;
   String type;
   String createdAt;
   String updatedAt;

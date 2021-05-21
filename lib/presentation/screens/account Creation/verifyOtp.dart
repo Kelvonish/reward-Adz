@@ -1,18 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:provider/provider.dart';
 import 'package:quiver/async.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/navigator.dart';
 
-import '../homepage.dart';
-
 class VerifyOtp extends StatefulWidget {
+  final UserModel user;
+  VerifyOtp({this.user});
   @override
   _VerifyOtpState createState() => _VerifyOtpState();
 }
 
 class _VerifyOtpState extends State<VerifyOtp> {
-  int _start = 30;
-  int _current = 30;
+  int _start = 60;
+  int _current = 60;
+  final _formKey = GlobalKey<FormState>();
+  String enteredOtp;
   @override
   void initState() {
     super.initState();
@@ -79,7 +85,8 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   height: 10.0,
                 ),
                 Text(
-                  "Please enter the verification code sent to +254721233456",
+                  "Please enter the verification code sent to " +
+                      widget.user.data.phone,
                   style: TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w400,
@@ -90,6 +97,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   height: 70.0,
                 ),
                 Form(
+                  key: _formKey,
                   child: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 30),
@@ -129,13 +137,10 @@ class _VerifyOtpState extends State<VerifyOtp> {
                         //errorAnimationController: errorController,
                         //controller: textEditingController,
                         keyboardType: TextInputType.number,
-                        onCompleted: (v) {
-                          print("Completed");
-                        },
+
                         onChanged: (value) {
-                          print(value);
                           setState(() {
-                            //currentText = value;
+                            enteredOtp = value;
                           });
                         },
                         beforeTextPaste: (text) {
@@ -149,21 +154,34 @@ class _VerifyOtpState extends State<VerifyOtp> {
                 SizedBox(
                   height: 50.0,
                 ),
-                Container(
-                    width: MediaQuery.of(context).size.width,
-                    child: ElevatedButton(
-                        style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all(
-                                Theme.of(context).primaryColor)),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BottomNavigator()));
-                        },
-                        child: Padding(
-                            padding: EdgeInsets.all(15.0),
-                            child: Text("Verify")))),
+                Consumer<UserProvider>(
+                  builder: (context, value, child) => value.loginButtonLoading
+                      ? Center(
+                          child: SpinKitChasingDots(
+                            color: Colors.white,
+                          ),
+                        )
+                      : Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Theme.of(context).primaryColor)),
+                              onPressed: () {
+                                if (_formKey.currentState.validate()) {
+                                  value.verifyOtp(
+                                      context, widget.user, enteredOtp);
+                                }
+
+                                /*Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BottomNavigator()));*/
+                              },
+                              child: Padding(
+                                  padding: EdgeInsets.all(15.0),
+                                  child: Text("Verify")))),
+                ),
                 SizedBox(
                   height: 50.0,
                 ),
@@ -179,7 +197,7 @@ class _VerifyOtpState extends State<VerifyOtp> {
                     : InkWell(
                         onTap: () {
                           setState(() {
-                            _current = 30;
+                            _current = 60;
                           });
                           _startTimer();
                         },

@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/editprofile.dart';
 import 'package:rewardadz/presentation/widgets/advertismentTileWidget.dart';
 import 'package:rewardadz/presentation/widgets/campaignCardShimmer.dart';
@@ -26,7 +28,8 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     Provider.of<GetCampaignProvider>(context, listen: false)
-        .getCampaignsProvider();
+        .getCampaignsProvider(
+            Provider.of<UserProvider>(context, listen: false).loggedUser);
     Provider.of<TopAdvertisersProvider>(context, listen: false)
         .getTopAdvertisers();
   }
@@ -37,7 +40,8 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Theme.of(context).primaryColor,
       onRefresh: () {
         return Provider.of<GetCampaignProvider>(context, listen: false)
-            .getCampaignsProvider();
+            .getCampaignsProvider(
+                Provider.of<UserProvider>(context, listen: false).loggedUser);
       },
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -46,43 +50,47 @@ class _MyHomePageState extends State<MyHomePage> {
             margin: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
             child: Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditProfile()));
-                      },
-                      child: ProfileImage(),
-                    ),
-                    Row(
-                      children: [
-                        Icon(
-                          Icons.notifications_none,
-                          size: 35,
-                          color: Theme.of(context).primaryColor,
+                Consumer<UserProvider>(
+                  builder: (context, value, child) => Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => EditProfile()));
+                        },
+                        child: ProfileImage(
+                          url: value.loggedUser.data.image,
                         ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "Balance",
-                              style: _titleStyle,
-                            ),
-                            Text(
-                              "Kes 0.00",
-                              style: _titleStyle,
-                            ),
-                          ],
-                        )
-                      ],
-                    )
-                  ],
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.notifications_none,
+                            size: 35,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Column(
+                            children: [
+                              Text(
+                                "Balance",
+                                style: _titleStyle,
+                              ),
+                              Text(
+                                "Kes " + value.loggedUser.balance.toString(),
+                                style: _titleStyle,
+                              ),
+                            ],
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 20.0,
