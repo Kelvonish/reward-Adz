@@ -75,6 +75,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                           amount: data.survey.amount,
                           type: "Survey",
                           videoModel: null,
+                          surveyId: data.survey.surveyid,
                         )))
             : showAlertDialogBox(context);
       },

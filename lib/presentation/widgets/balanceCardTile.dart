@@ -41,20 +41,36 @@ class BalanceCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  "Ksh " + earnedAmount,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                      color: Colors.white),
-                ),
-                Text(
-                  "You have Completed $numberOfAds ads",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 10.0,
-                      color: Colors.white),
-                ),
+                earnedAmount == null
+                    ? Text(
+                        "Ksh 0",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                            color: Colors.white),
+                      )
+                    : Text(
+                        "Ksh $earnedAmount",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18.0,
+                            color: Colors.white),
+                      ),
+                numberOfAds == null
+                    ? Text(
+                        "You have Completed 0 ads",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10.0,
+                            color: Colors.white),
+                      )
+                    : Text(
+                        "You have Completed $numberOfAds ads",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10.0,
+                            color: Colors.white),
+                      ),
               ],
             ),
           ],

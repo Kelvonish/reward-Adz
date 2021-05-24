@@ -194,20 +194,23 @@ class _VerifyOtpState extends State<VerifyOtp> {
                             fontSize: 16.0),
                         textAlign: TextAlign.center,
                       )
-                    : InkWell(
-                        onTap: () {
-                          setState(() {
-                            _current = 60;
-                          });
-                          _startTimer();
-                        },
-                        child: Text(
-                          "Resend verification code",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                              fontSize: 16.0),
-                          textAlign: TextAlign.center,
+                    : Consumer<UserProvider>(
+                        builder: (context, value, child) => InkWell(
+                          onTap: () {
+                            setState(() {
+                              value.resendOtp(value.loggedUser);
+                              _current = 60;
+                            });
+                            _startTimer();
+                          },
+                          child: Text(
+                            "Resend verification code",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w300,
+                                fontSize: 16.0),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                 SizedBox(

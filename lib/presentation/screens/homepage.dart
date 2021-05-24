@@ -5,6 +5,7 @@ import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/editprofile.dart';
+import 'package:rewardadz/presentation/screens/notifications.dart';
 import 'package:rewardadz/presentation/widgets/advertismentTileWidget.dart';
 import 'package:rewardadz/presentation/widgets/campaignCardShimmer.dart';
 import 'package:rewardadz/presentation/widgets/profileImage.dart';
@@ -67,10 +68,18 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       Row(
                         children: [
-                          Icon(
-                            Icons.notifications_none,
-                            size: 35,
-                            color: Theme.of(context).primaryColor,
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Notifications()));
+                            },
+                            child: Icon(
+                              Icons.notifications_none,
+                              size: 35,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
                           SizedBox(
                             width: 5,

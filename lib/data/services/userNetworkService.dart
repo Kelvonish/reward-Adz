@@ -220,17 +220,22 @@ class UserNetworkService {
     try {
       String url = BASE_URL + "confirm";
       var body = json.encode(data);
-      print(body);
+
       var parsedUrl = Uri.parse(url);
 
       var response = await http.post(parsedUrl,
           headers: {"Content-Type": "application/json"}, body: body);
-      //var returnedData = json.decode(response.body);
+      var returnedData = json.decode(response.body);
       if (response.statusCode == 200) {
-        Fluttertoast.showToast(msg: "Successfully verified ");
-        return true;
+        if (returnedData['status'] == "true") {
+          Fluttertoast.showToast(msg: "Successfully verified ");
+          return true;
+        } else {
+          Fluttertoast.showToast(msg: "OTP not correct");
+          return false;
+        }
       } else {
-        Fluttertoast.showToast(msg: "OTP not correct");
+        Fluttertoast.showToast(msg: "Error");
         return false;
       }
     } catch (e) {

@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/userModel.dart';
+import 'package:rewardadz/data/models/surveyModel.dart';
+import 'package:rewardadz/presentation/screens/survey/surveyPage.dart';
 
 import '../../data/models/campaignModel.dart';
 import '../../data/services/getCampaignsNetworkService.dart';
@@ -39,5 +42,18 @@ class GetCampaignProvider extends ChangeNotifier {
     searchCampaignList = campaignClass.searchCampaignList;
     searchLoading = false;
     notifyListeners();
+  }
+
+  Future getSurvey(BuildContext context, String surveyId) async {
+    FullSurveyModel returnedSurvey = await campaignClass.getSurvey(surveyId);
+    if (returnedSurvey != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => Survey(
+                    surveyModel: returnedSurvey,
+                  )));
+    }
+    print(returnedSurvey);
   }
 }

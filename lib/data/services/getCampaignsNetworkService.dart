@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:location/location.dart';
 import 'package:rewardadz/business_logic/constants/constants.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
+import 'package:rewardadz/data/models/surveyModel.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 
 //import 'package:fluttertoast/fluttertoast.dart';
@@ -293,6 +295,26 @@ class GetCampaignsClass {
       }
     } catch (e) {
       print(e.toString());
+    }
+  }
+
+  getSurvey(String surveyId) async {
+    try {
+      String uri = BASE_URL + "mysurvey/$surveyId";
+      var url = Uri.parse(uri);
+
+      var response = await http.get(url);
+      var returnedData = json.decode(response.body);
+      print(returnedData);
+      if (response.statusCode == 200) {
+        return FullSurveyModel.fromJson(returnedData);
+      } else {
+        Fluttertoast.showToast(msg: "Error getting survey");
+        return null;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      return null;
     }
   }
 }

@@ -100,7 +100,8 @@ class UserProvider extends ChangeNotifier {
       Fluttertoast.showToast(
           msg: "Successfully logged in!",
           backgroundColor: Theme.of(context).primaryColor);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => MyApp()));
     }
     loginButtonLoading = false;
     notifyListeners();
@@ -119,7 +120,8 @@ class UserProvider extends ChangeNotifier {
       Fluttertoast.showToast(
           msg: "Successfully logged in!",
           backgroundColor: Theme.of(context).primaryColor);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => MyApp()));
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (BuildContext context) => MyApp()));
     }
     loginButtonLoading = false;
     notifyListeners();
@@ -157,5 +159,9 @@ class UserProvider extends ChangeNotifier {
     }
     loginButtonLoading = false;
     notifyListeners();
+  }
+
+  resendOtp(UserModel user) async {
+    await userClass.sendOtp(user);
   }
 }
