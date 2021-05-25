@@ -37,16 +37,17 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      backgroundColor: Theme.of(context).primaryColor,
-      onRefresh: () {
-        return Provider.of<GetCampaignProvider>(context, listen: false)
-            .getCampaignsProvider(
-                Provider.of<UserProvider>(context, listen: false).loggedUser);
-      },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: SingleChildScrollView(
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
+        child: RefreshIndicator(
+          backgroundColor: Theme.of(context).primaryColor,
+          onRefresh: () {
+            return Provider.of<GetCampaignProvider>(context, listen: false)
+                .getCampaignsProvider(
+                    Provider.of<UserProvider>(context, listen: false)
+                        .loggedUser);
+          },
           child: Container(
             margin: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
             child: Column(

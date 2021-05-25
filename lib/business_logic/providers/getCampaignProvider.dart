@@ -16,6 +16,7 @@ class GetCampaignProvider extends ChangeNotifier {
   bool loading = false;
   bool searchLoading = false;
   bool searchPageInitalState = true;
+  bool loadingSurvey = false;
   var location;
   var _determineLocationClass = DetermineLocation();
   GetCampaignsClass campaignClass = GetCampaignsClass();
@@ -44,16 +45,23 @@ class GetCampaignProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future getSurvey(BuildContext context, String surveyId) async {
+  Future getSurvey(
+      BuildContext context, String surveyId, String campaignName) async {
+    loadingSurvey = true;
+    notifyListeners();
     FullSurveyModel returnedSurvey = await campaignClass.getSurvey(surveyId);
     if (returnedSurvey != null) {
+      loadingSurvey = false;
+      notifyListeners();
       Navigator.push(
           context,
           MaterialPageRoute(
               builder: (context) => Survey(
                     surveyModel: returnedSurvey,
+                    pageTitle: campaignName,
                   )));
     }
-    print(returnedSurvey);
+    loadingSurvey = false;
+    notifyListeners();
   }
 }

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
@@ -170,62 +171,71 @@ class _CampaignDetailsState extends State<CampaignDetails> {
           ),
         );
       } else if (widget.type == "Survey") {
-        return InkWell(
-          onTap: () {
-            Provider.of<GetCampaignProvider>(context, listen: false)
-                .getSurvey(context, widget.surveyId);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      radius: 20,
-                      backgroundColor: const Color.fromRGBO(114, 145, 219, 1),
-                      child: Icon(
-                        Icons.assignment,
-                        color: Theme.of(context).primaryColor,
-                        size: 25,
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15.0,
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+        return Consumer<GetCampaignProvider>(
+          builder: (context, value, child) => value.loadingSurvey
+              ? Center(
+                  child: SpinKitChasingDots(
+                  color: Theme.of(context).primaryColor,
+                ))
+              : InkWell(
+                  onTap: () {
+                    Provider.of<GetCampaignProvider>(context, listen: false)
+                        .getSurvey(context, widget.surveyId, widget.name);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Answer Survey",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16.0),
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              radius: 20,
+                              backgroundColor:
+                                  const Color.fromRGBO(114, 145, 219, 1),
+                              child: Icon(
+                                Icons.assignment,
+                                color: Theme.of(context).primaryColor,
+                                size: 25,
+                              ),
+                            ),
+                            SizedBox(
+                              width: 15.0,
+                            ),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Answer Survey",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16.0),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 4.0,
+                                ),
+                                Container(
+                                  alignment: Alignment.topLeft,
+                                  child: Text(
+                                    "Answer survey questions to earn Ksh " +
+                                        widget.amount,
+                                    style: TextStyle(
+                                        fontSize: 13.0, color: Colors.black),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: 4.0,
-                        ),
-                        Container(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Answer survey questions to earn Ksh " +
-                                widget.amount,
-                            style:
-                                TextStyle(fontSize: 13.0, color: Colors.black),
-                          ),
-                        ),
+                        Icon(Icons.arrow_forward_ios)
                       ],
                     ),
-                  ],
+                  ),
                 ),
-                Icon(Icons.arrow_forward_ios)
-              ],
-            ),
-          ),
         );
       }
       return Text("");
@@ -253,7 +263,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CircleAvatar(
-                        backgroundColor: Theme.of(context).primaryColor,
+                        backgroundColor: Colors.black26,
                         child: IconButton(
                             icon: Icon(
                               Icons.arrow_back,

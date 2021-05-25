@@ -11,7 +11,7 @@ class CampaignModel {
 
   int iV;
   AudioModel audio;
-  Null banner;
+  BannerModel banner;
   VideoModel video;
   SurveyModel survey;
   String endage;
@@ -259,6 +259,39 @@ class SurveyModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['surveyid'] = this.surveyid;
     data['amount'] = this.amount;
+    return data;
+  }
+}
+
+class BannerModel {
+  String shares;
+  String sharesamount;
+  Null bannerset;
+  Null banneramount;
+  String bannerurl;
+
+  BannerModel(
+      {this.shares,
+      this.sharesamount,
+      this.bannerset,
+      this.banneramount,
+      this.bannerurl});
+
+  BannerModel.fromJson(Map<String, dynamic> json) {
+    shares = json['shares'];
+    sharesamount = json['sharesamount'];
+    bannerset = json['bannerset'];
+    banneramount = json['banneramount'];
+    bannerurl = json['bannerurl'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['shares'] = this.shares;
+    data['sharesamount'] = this.sharesamount;
+    data['bannerset'] = this.bannerset;
+    data['banneramount'] = this.banneramount;
+    data['bannerurl'] = this.bannerurl;
     return data;
   }
 }

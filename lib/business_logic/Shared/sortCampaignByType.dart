@@ -89,6 +89,34 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
         type: "Survey",
       ),
     );
+  } else if (data.banner != null) {
+    return InkWell(
+      onTap: () {
+        data.isactive
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CampaignDetails(
+                          mainUrl: data.campimg,
+                          otherUrl: data.organization.logo,
+                          name: data.name,
+                          category: data.organization.industry,
+                          amount: data.banner.sharesamount,
+                          type: "Banner",
+                          videoModel: null,
+                        )))
+            : showAlertDialogBox(context);
+      },
+      child: MainCardTile(
+        name: data.name,
+        mainUrl: data.campimg,
+        isActive: data.isactive,
+        otherUrl: data.organization.logo,
+        category: data.organization.industry,
+        amount: data.banner.sharesamount,
+        type: "Banner",
+      ),
+    );
   }
   return Text("");
 }

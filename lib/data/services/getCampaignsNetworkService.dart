@@ -60,6 +60,15 @@ class GetCampaignsClass {
                       volume: json['audio']['volume'],
                       audiourl: json['audio']['audiourl'])
                   : null,
+              banner: json['banner'] != null
+                  ? BannerModel(
+                      shares: json['shares'],
+                      sharesamount: json['sharesamount'],
+                      bannerset: json['bannerset'],
+                      banneramount: json['banneramount'],
+                      bannerurl: json['bannerurl'],
+                    )
+                  : null,
               video: json['video'] != null
                   ? VideoModel(
                       surveyid: json['video']['surveyid'],
@@ -123,6 +132,15 @@ class GetCampaignsClass {
                       surveyid: json['video']['surveyid'],
                       watchedvideosamount: json['video']['watchedvideosamount'],
                       url: json['video']['url'])
+                  : null,
+              banner: json['banner'] != null
+                  ? BannerModel(
+                      shares: json['shares'],
+                      sharesamount: json['sharesamount'],
+                      bannerset: json['bannerset'],
+                      banneramount: json['banneramount'],
+                      bannerurl: json['bannerurl'],
+                    )
                   : null,
               survey: null,
               endage: json['endage'],
@@ -217,6 +235,15 @@ class GetCampaignsClass {
                       amount: json['survey']['amount'],
                       surveyid: json['survey']['surveyid'])
                   : null,
+              banner: json['banner'] != null
+                  ? BannerModel(
+                      shares: json['shares'],
+                      sharesamount: json['sharesamount'],
+                      bannerset: json['bannerset'],
+                      banneramount: json['banneramount'],
+                      bannerurl: json['bannerurl'],
+                    )
+                  : null,
               endage: json['endage'],
               gender: json['gender'],
               startage: json['startage'],
@@ -269,6 +296,15 @@ class GetCampaignsClass {
                       surveyid: json['video']['surveyid'],
                       watchedvideosamount: json['video']['watchedvideosamount'],
                       url: json['video']['url'])
+                  : null,
+              banner: json['banner'] != null
+                  ? BannerModel(
+                      shares: json['shares'],
+                      sharesamount: json['sharesamount'],
+                      bannerset: json['bannerset'],
+                      banneramount: json['banneramount'],
+                      bannerurl: json['bannerurl'],
+                    )
                   : null,
               survey: null,
               endage: json['endage'],

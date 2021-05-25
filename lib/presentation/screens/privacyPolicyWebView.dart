@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class PrivacyPolicyWebView extends StatefulWidget {
@@ -7,6 +8,7 @@ class PrivacyPolicyWebView extends StatefulWidget {
 }
 
 class _PrivacyPolicyWebViewState extends State<PrivacyPolicyWebView> {
+  bool isLoading = true;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,8 +30,18 @@ class _PrivacyPolicyWebViewState extends State<PrivacyPolicyWebView> {
                   gestureNavigationEnabled: true,
                   initialUrl: 'https://rewardads-dev.adalabsafrica.com/privacy',
                   javascriptMode: JavascriptMode.unrestricted,
-                  onPageFinished: (finish) {},
+                  onPageFinished: (finish) {
+                    setState(() {
+                      isLoading = false;
+                    });
+                  },
                 ),
+                isLoading
+                    ? Center(
+                        child: SpinKitChasingDots(
+                        color: Theme.of(context).primaryColor,
+                      ))
+                    : Stack(),
               ],
             )),
       ),
