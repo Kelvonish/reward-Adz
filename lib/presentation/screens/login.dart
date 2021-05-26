@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:rewardadz/business_logic/Shared/validator.dart';
-import 'package:rewardadz/business_logic/authentication/createAccount.dart';
+import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/models/userModel.dart';
@@ -163,64 +164,87 @@ class _LoginState extends State<Login> {
                 SizedBox(
                   height: 15.0,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      onTap: () async {
-                        var profile = await facebookLogin(context);
-                        if (profile != null) {
-                          DataModel data = DataModel(
-                            email: profile['email'],
-                            type: "Facebook",
-                          );
-                          UserModel user = UserModel(
-                            data: data,
-                          );
-                          Provider.of<UserProvider>(context, listen: false)
-                              .loginSocialUser(context, user);
-                        }
-                      },
-                      child: Container(
+                Consumer<AuthenticationProvider>(
+                  builder: (context, value, child) => Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () async {
+                          var profile = await value.facebookSignUp(context);
+                          print(profile);
+                          if (profile != null) {
+                            DataModel data = DataModel(
+                              email: profile['email'],
+                              type: "Facebook",
+                            );
+                            UserModel user = UserModel(
+                              data: data,
+                            );
+                            Provider.of<UserProvider>(context, listen: false)
+                                .loginSocialUser(
+                              context: context,
+                              user: user,
+                            );
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          padding: EdgeInsets.all(10.0),
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage("assets/facebook.png"),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8.0,
+                      ),
+                      InkWell(
+                        onTap: () async {
+                          var profile = await value.googleLogin();
+
+                          if (profile != null) {
+                            DataModel data = DataModel(
+                              email: profile.email,
+                              type: "Google",
+                            );
+                            UserModel user = UserModel(
+                              data: data,
+                            );
+                            Provider.of<UserProvider>(context, listen: false)
+                                .loginSocialUser(context: context, user: user);
+                          }
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.white,
+                          ),
+                          padding: EdgeInsets.all(10.0),
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            backgroundImage: AssetImage("assets/google.png"),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 8.0,
+                      ),
+                      Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
                         ),
                         padding: EdgeInsets.all(10.0),
                         child: CircleAvatar(
-                          backgroundImage: AssetImage("assets/facebook.png"),
+                          backgroundColor: Colors.white,
+                          backgroundImage: AssetImage("assets/twitter.png"),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      width: 8.0,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      padding: EdgeInsets.all(10.0),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: AssetImage("assets/google.png"),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 8.0,
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      padding: EdgeInsets.all(10.0),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: AssetImage("assets/twitter.png"),
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
                 SizedBox(
                   height: 15.0,

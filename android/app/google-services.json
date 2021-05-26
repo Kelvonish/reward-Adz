@@ -69,9 +69,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:259575008376:android:0367569f3fb86000cdb18d",
+        "mobilesdk_app_id": "1:259575008376:android:5c42ca5edbe35df3cdb18d",
         "android_client_info": {
-          "package_name": "com.example.rewardadz"
+          "package_name": "com.adalabsflutter.rewardadz"
         }
       },
       "oauth_client": [

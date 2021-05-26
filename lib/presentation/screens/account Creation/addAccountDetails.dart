@@ -9,7 +9,9 @@ import 'package:rewardadz/presentation/screens/account Creation/verifyOtp.dart';
 
 class AddAccountDetails extends StatefulWidget {
   final UserModel user;
-  AddAccountDetails({this.user});
+  final String fname;
+  final String lname;
+  AddAccountDetails({this.user, this.fname, this.lname});
   @override
   _AddAccountDetailsState createState() => _AddAccountDetailsState();
 }
@@ -19,9 +21,9 @@ class _AddAccountDetailsState extends State<AddAccountDetails> {
   List<String> genders = ["Male", "Female", "Other"];
   var _selectedGender;
   var _selectedDate;
-  final _dateController = TextEditingController();
-  final _fNameController = TextEditingController();
-  final _lNameController = TextEditingController();
+  var _dateController = TextEditingController();
+  var _fNameController;
+  var _lNameController;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -108,13 +110,20 @@ class _AddAccountDetailsState extends State<AddAccountDetails> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: TextFormField(
-                                    controller: _fNameController,
                                     validator: (val) {
                                       if (val.isEmpty) {
                                         return "Please enter first name";
                                       }
                                       return null;
                                     },
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _fNameController = val;
+                                      });
+                                    },
+                                    initialValue: widget.fname == null
+                                        ? ""
+                                        : widget.fname,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -137,13 +146,20 @@ class _AddAccountDetailsState extends State<AddAccountDetails> {
                                   width:
                                       MediaQuery.of(context).size.width * 0.42,
                                   child: TextFormField(
-                                    controller: _lNameController,
                                     validator: (val) {
                                       if (val.isEmpty) {
                                         return "Please enter last name";
                                       }
                                       return null;
                                     },
+                                    onChanged: (val) {
+                                      setState(() {
+                                        _lNameController = val;
+                                      });
+                                    },
+                                    initialValue: widget.lname == null
+                                        ? ""
+                                        : widget.lname,
                                     decoration: InputDecoration(
                                         border: InputBorder.none,
                                         focusedBorder: InputBorder.none,
@@ -233,8 +249,8 @@ class _AddAccountDetailsState extends State<AddAccountDetails> {
                                 if (_formKey.currentState.validate()) {
                                   DataModel data = DataModel(
                                       dob: _formatDate(_selectedDate),
-                                      fname: _fNameController.text,
-                                      lname: _lNameController.text,
+                                      fname: _fNameController,
+                                      lname: _lNameController,
                                       gender: _selectedGender,
                                       id: widget.user.data.id);
 

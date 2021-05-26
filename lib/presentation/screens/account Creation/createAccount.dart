@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/Shared/validator.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/business_logic/Shared/countryCodeToName.dart';
 import 'package:rewardadz/presentation/screens/login.dart';
-import 'package:rewardadz/business_logic/authentication/createAccount.dart';
+import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 
@@ -29,7 +30,10 @@ class _CreateAccountState extends State<CreateAccount> {
 
   @override
   Widget build(BuildContext context) {
-    showPhoneModal(BuildContext context, var profile) {
+    showPhoneModal(
+        {BuildContext context,
+        var facebook,
+        GoogleSignInAccount googleAccount}) {
       final _formKey2 = GlobalKey<FormState>();
       var _countryCode;
       String _phone;
@@ -94,19 +98,47 @@ class _CreateAccountState extends State<CreateAccount> {
                             child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey2.currentState.validate()) {
-                                  Navigator.pop(context);
-                                  DataModel data = DataModel(
-                                    email: profile['email'],
-                                    type: "Facebook",
-                                    phone: _phone,
-                                    country: countryCodeToName[_countryCode],
-                                  );
-                                  UserModel user = UserModel(
-                                    data: data,
-                                  );
-                                  Provider.of<UserProvider>(context,
-                                          listen: false)
-                                      .createSocialUser(context, user);
+                                  if (facebook != null) {
+                                    Navigator.pop(context);
+                                    DataModel data = DataModel(
+                                      email: facebook['email'],
+                                      type: "Facebook",
+                                      phone: _phone,
+                                      country: countryCodeToName[_countryCode],
+                                    );
+                                    UserModel user = UserModel(
+                                      data: data,
+                                    );
+                                    Provider.of<UserProvider>(context,
+                                            listen: false)
+                                        .createSocialUser(
+                                            context: context,
+                                            user: user,
+                                            fname: facebook['first_name'],
+                                            lname: facebook['last_name']);
+                                  } else if (googleAccount != null) {
+                                    String fullName = googleAccount.displayName;
+
+                                    var res = fullName.split(" ");
+
+                                    Navigator.pop(context);
+                                    DataModel data = DataModel(
+                                      email: googleAccount.email,
+                                      type: "Google",
+                                      phone: _phone,
+                                      country: countryCodeToName[_countryCode],
+                                    );
+                                    UserModel user = UserModel(
+                                      data: data,
+                                    );
+                                    Provider.of<UserProvider>(context,
+                                            listen: false)
+                                        .createSocialUser(
+                                            context: context,
+                                            user: user,
+                                            fname: res[0],
+                                            lname: res[1]);
+                                  }
                                 }
                               },
                               child: Padding(
@@ -348,62 +380,71 @@ class _CreateAccountState extends State<CreateAccount> {
               SizedBox(
                 height: 10.0,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  InkWell(
-                    onTap: () async {
-                      var profile = await facebookSignUp(context);
-                      if (profile != null) {
-                        showPhoneModal(context, profile);
-                      }
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      padding: EdgeInsets.all(10.0),
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage("assets/facebook.png"),
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 8.0,
-                  ),
-                  InkWell(
-                    onTap: googleLogin,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      padding: EdgeInsets.all(10.0),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: AssetImage("assets/google.png"),
+              Consumer<AuthenticationProvider>(
+                builder: (context, value, child) => Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    InkWell(
+                      onTap: () async {
+                        var profile = await value.facebookSignUp(context);
+                        print(profile);
+                        if (profile != null) {
+                          showPhoneModal(context: context, facebook: profile);
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.all(10.0),
+                        child: CircleAvatar(
+                          backgroundImage: AssetImage("assets/facebook.png"),
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    width: 8.0,
-                  ),
-                  InkWell(
-                    onTap: twitterLogin,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                      ),
-                      padding: EdgeInsets.all(10.0),
-                      child: CircleAvatar(
-                        backgroundColor: Colors.white,
-                        backgroundImage: AssetImage("assets/twitter.png"),
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        var profile = await value.googleLogin();
+                        if (profile != null) {
+                          showPhoneModal(
+                              context: context, googleAccount: profile);
+                        }
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.all(10.0),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          backgroundImage: AssetImage("assets/google.png"),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                    SizedBox(
+                      width: 8.0,
+                    ),
+                    InkWell(
+                      onTap: value.twitterLogin,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        padding: EdgeInsets.all(10.0),
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          backgroundImage: AssetImage("assets/twitter.png"),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               SizedBox(
                 height: 15.0,

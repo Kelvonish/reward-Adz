@@ -48,7 +48,11 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  createSocialUser(BuildContext context, UserModel user) async {
+  createSocialUser(
+      {BuildContext context,
+      UserModel user,
+      String fname,
+      String lname}) async {
     signUpButtonLoading = true;
     notifyListeners();
     UserModel result = await userClass.createSocialUser(user);
@@ -107,7 +111,10 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  loginSocialUser(BuildContext context, UserModel user) async {
+  loginSocialUser({
+    BuildContext context,
+    UserModel user,
+  }) async {
     loginButtonLoading = true;
     notifyListeners();
 

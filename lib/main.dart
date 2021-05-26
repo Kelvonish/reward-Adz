@@ -10,6 +10,7 @@ import 'package:rewardadz/presentation/screens/landingpage.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
 import 'package:rewardadz/business_logic/providers/topAdvertisersProvider.dart';
+import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 
 import 'package:rewardadz/presentation/screens/navigator.dart';
 
@@ -44,6 +45,8 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider<GetCampaignProvider>(
               create: (_) => GetCampaignProvider()),
           ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
+          ChangeNotifierProvider<AuthenticationProvider>(
+              create: (_) => AuthenticationProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

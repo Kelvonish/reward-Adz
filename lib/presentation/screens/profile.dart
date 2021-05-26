@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
+import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/local%20storage/userPreference.dart';
 import 'package:rewardadz/data/models/userModel.dart';
@@ -429,8 +430,14 @@ class _ProfileState extends State<Profile> {
                             onPressed: () async {
                               UserPreferences userPref = UserPreferences();
                               bool done = await userPref.removeUser();
-
+                              await Provider.of<AuthenticationProvider>(context,
+                                      listen: false)
+                                  .logoutSocial();
                               if (done) {
+                                Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .loggedUser = null;
+
                                 Navigator.of(context).pushReplacement(
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>

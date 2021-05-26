@@ -13,6 +13,7 @@ class Survey extends StatefulWidget {
 class _SurveyState extends State<Survey> {
   var radioGroupValue;
   var selectedRadio;
+
   @override
   Widget build(BuildContext context) {
     _buildAnswers(BuildContext context, Data data) {

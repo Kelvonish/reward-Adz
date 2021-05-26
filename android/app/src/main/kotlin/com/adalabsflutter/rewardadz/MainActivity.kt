@@ -1,4 +1,4 @@
-package com.example.rewardadz
+package com.adalabsflutter.rewardadz
 
 import io.flutter.embedding.android.FlutterActivity
 
