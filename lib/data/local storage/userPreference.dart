@@ -8,8 +8,6 @@ class UserPreferences {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setString("user", jsonEncode(user));
-
-    return prefs.commit();
   }
 
   Future<UserModel> getUser() async {
@@ -17,7 +15,6 @@ class UserPreferences {
 
     var user = prefs.getString("user");
     var savedUser = UserModel.fromJson(jsonDecode(user));
-    print(savedUser);
     return savedUser;
   }
 

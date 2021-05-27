@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:location/location.dart';
+import 'package:rewardadz/data/local storage/locationPreference.dart';
 import 'package:rewardadz/data/services/getTopAdvertisersNetworkService.dart';
 import 'package:rewardadz/data/models/topAdvertisersModel.dart';
 import '../Shared/getLocation.dart';
@@ -11,7 +11,7 @@ class TopAdvertisersProvider extends ChangeNotifier {
   bool loading = false;
   bool organizationPageLoading = false;
   var location;
-  var _determineLocationClass = DetermineLocation();
+
   TopAdvertisersNetworkService c = TopAdvertisersNetworkService();
   getTopAdvertisers() async {
     loading = true;
@@ -25,7 +25,11 @@ class TopAdvertisersProvider extends ChangeNotifier {
   getOrganizationCampaigns(String organizationId) async {
     organizationPageLoading = true;
     if (location == null) {
-      location = await _determineLocationClass.getLocation();
+      location = await LocationPreference().getLocation();
+      if (location == null) {
+        await LocationPreference().saveLocation();
+        location = await LocationPreference().getLocation();
+      }
     }
     c.organizationCampiagnsList.clear();
     await c.getOrganizationCampaigns(location, organizationId);

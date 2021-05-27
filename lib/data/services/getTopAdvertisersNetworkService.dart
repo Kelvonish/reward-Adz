@@ -44,15 +44,15 @@ class TopAdvertisersNetworkService {
   }
 
   Future getOrganizationCampaigns(
-    LocationData location,
+    var location,
     String organizationId,
   ) async {
     try {
       String url = BASE_URL +
           "organization/org/latitude/" +
-          location.latitude.toString() +
+          location[0] +
           "/longitude/" +
-          location.longitude.toString() +
+          location[1] +
           "/" +
           organizationId +
           "/page/1/limit/20";
@@ -119,7 +119,7 @@ class TopAdvertisersNetworkService {
 
             var contain = organizationCampiagnsList
                 .where((element) => element.sId == newData.sId);
-            print(contain);
+
             if (contain.isEmpty) {
               organizationCampiagnsList.add(newData);
             }
@@ -173,7 +173,7 @@ class TopAdvertisersNetworkService {
             );
             var contain = organizationCampiagnsList
                 .where((element) => element.sId == newData.sId);
-            print(contain);
+
             if (contain.isEmpty) {
               organizationCampiagnsList.add(newData);
             }

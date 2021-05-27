@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
-import 'package:rewardadz/data/local%20storage/userPreference.dart';
+import 'package:rewardadz/data/local storage/locationPreference.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
 import 'package:rewardadz/presentation/screens/landingpage.dart';
@@ -33,6 +33,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
+    LocationPreference().saveLocation();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(

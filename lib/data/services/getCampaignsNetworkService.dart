@@ -12,15 +12,15 @@ class GetCampaignsClass {
   List<CampaignModel> campaignList = [];
   List<CampaignModel> searchCampaignList = [];
 
-  Future fetchCampaigns(LocationData location, UserModel user) async {
+  Future fetchCampaigns(var location, UserModel user) async {
     try {
       String url = BASE_URL +
           "campaign/list/page/1/limit/75?gender=" +
           user.data.gender +
           "&lat=" +
-          location.latitude.toString() +
+          location[0] +
           "&lng=" +
-          location.longitude.toString();
+          location[1];
 
       var parsedUrl = Uri.parse(url);
       var response = await http.get(parsedUrl);
@@ -92,7 +92,7 @@ class GetCampaignsClass {
             );
             var contain =
                 campaignList.where((element) => element.sId == newData.sId);
-            print(contain);
+
             if (contain.isEmpty) {
               campaignList.add(newData);
             }
@@ -172,15 +172,15 @@ class GetCampaignsClass {
   }
 
   Future searchCampaigns(
-    LocationData location,
+    var location,
     String query,
   ) async {
     try {
       String url = BASE_URL +
           "campaign/search/latitude/" +
-          location.latitude.toString() +
+          location[0] +
           "/longitude/" +
-          location.longitude.toString() +
+          location[1] +
           "/page/1/limit/10";
       var parsedUrl = Uri.parse(url);
       Map data = {'name': query};
@@ -336,12 +336,12 @@ class GetCampaignsClass {
 
   getSurvey(String surveyId) async {
     try {
-      String uri = BASE_URL + "mysurvey/$surveyId";
+      String uri = BASE_URL + "mysurvey/60acb8f18df01a63abce2ff0";
       var url = Uri.parse(uri);
 
       var response = await http.get(url);
       var returnedData = json.decode(response.body);
-      print(returnedData);
+
       if (response.statusCode == 200) {
         return FullSurveyModel.fromJson(returnedData);
       } else {

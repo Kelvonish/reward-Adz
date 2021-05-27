@@ -34,7 +34,7 @@ class UserProvider extends ChangeNotifier {
 
     if (result != null) {
       _loggedInStatus = Status.LoggedIn;
-      print(userPref.saveUser(result));
+
       userPref.getUser();
       notifyListeners();
       Navigator.push(

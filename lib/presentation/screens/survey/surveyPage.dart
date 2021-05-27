@@ -11,16 +11,18 @@ class Survey extends StatefulWidget {
 }
 
 class _SurveyState extends State<Survey> {
-  var radioGroupValue;
   var selectedRadio;
-
+  bool _value = false;
+  FullSurveyModel surveyAnswers = FullSurveyModel(data: []);
   @override
   Widget build(BuildContext context) {
-    _buildAnswers(BuildContext context, Data data) {
-      if (data.type == "radio") {
+    _buildAnswers(BuildContext context, SurveyDataModel answerData,
+        List<Answers> answers, int position) {
+      surveyAnswers.data.add(answerData);
+      if (answerData.type == "radio") {
         return ListView.builder(
             shrinkWrap: true,
-            itemCount: data.answers.length,
+            itemCount: answers.length,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return Container(
@@ -32,35 +34,42 @@ class _SurveyState extends State<Survey> {
                     selectedTileColor: Theme.of(context).primaryColor,
                     tileColor: Colors.grey[200],
                     title: Text(
-                      data.answers[index].title,
-                      style: selectedRadio == data.answers[index].title
+                      answers[index].title,
+                      style: surveyAnswers.data[position].choosenAnswer == index
                           ? TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white)
                           : TextStyle(fontWeight: FontWeight.normal),
                     ),
                     activeColor: Colors.white,
-                    value: data.answers[index].title,
+                    value: answers[index].title,
                     toggleable: true,
-                    groupValue: radioGroupValue,
-                    selected: selectedRadio == data.answers[index].title
-                        ? true
-                        : false,
+                    groupValue: answerData.sId,
+                    selected:
+                        surveyAnswers.data[position].choosenAnswer == index
+                            ? true
+                            : false,
                     controlAffinity: ListTileControlAffinity.trailing,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20)),
                     onChanged: (val) {
                       setState(() {
                         selectedRadio = val;
-                        print(selectedRadio);
+                        surveyAnswers.data[position].choosenAnswer = index;
+                        //surveyAnswers.data[position].answers.clear();
+
+                        // print(surveyAnswers.data[position].answers.length);
                       });
                     }),
               );
             });
-      } else if (data.type == "textfield") {
+      } else if (answerData.type == "textfield") {
         return Container(
           margin: EdgeInsets.only(top: 10),
           child: TextFormField(
             cursorColor: Theme.of(context).primaryColor,
+            onChanged: (value) {
+              surveyAnswers.data[position].textFieldAnswer = value;
+            },
             decoration: InputDecoration(
               contentPadding:
                   EdgeInsets.symmetric(vertical: 25.0, horizontal: 10.0),
@@ -75,11 +84,10 @@ class _SurveyState extends State<Survey> {
             ),
           ),
         );
-      } else if (data.type == "checkboxes") {
-        bool _value = false;
+      } else if (answerData.type == "checkboxes") {
         return ListView.builder(
             shrinkWrap: true,
-            itemCount: data.answers.length,
+            itemCount: answerData.answers.length,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return Container(
@@ -88,8 +96,9 @@ class _SurveyState extends State<Survey> {
                   selectedTileColor: Theme.of(context).primaryColor,
                   tileColor: Colors.grey[200],
                   title: Text(
-                    data.answers[index].title,
-                    style: _value
+                    answerData.answers[index].title,
+                    style: surveyAnswers
+                            .data[position].answers[index].selectedAnswer
                         ? TextStyle(
                             fontWeight: FontWeight.bold, color: Colors.white)
                         : TextStyle(fontWeight: FontWeight.normal),
@@ -98,11 +107,14 @@ class _SurveyState extends State<Survey> {
                   activeColor: Theme.of(context).primaryColor,
                   checkColor: Colors.white,
                   controlAffinity: ListTileControlAffinity.trailing,
-                  selected: _value,
-                  value: _value,
+                  selected: surveyAnswers
+                      .data[position].answers[index].selectedAnswer,
+                  value: surveyAnswers
+                      .data[position].answers[index].selectedAnswer,
                   onChanged: (bool value) {
                     setState(() {
-                      _value = value;
+                      surveyAnswers
+                          .data[position].answers[index].selectedAnswer = value;
                     });
                   },
                 ),
@@ -155,9 +167,10 @@ class _SurveyState extends State<Survey> {
                                   fontWeight: FontWeight.bold, fontSize: 17.0),
                             ),
                             _buildAnswers(
-                              context,
-                              widget.surveyModel.data[index],
-                            ),
+                                context,
+                                widget.surveyModel.data[index],
+                                widget.surveyModel.data[index].answers,
+                                index),
                           ],
                         );
                       }),

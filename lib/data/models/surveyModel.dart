@@ -1,6 +1,6 @@
 class FullSurveyModel {
   String status;
-  List<Data> data;
+  List<SurveyDataModel> data;
 
   FullSurveyModel({this.status, this.data});
 
@@ -9,7 +9,7 @@ class FullSurveyModel {
     if (json['data'] != null) {
       data = [];
       json['data'].forEach((v) {
-        data.add(new Data.fromJson(v));
+        data.add(new SurveyDataModel.fromJson(v));
       });
     }
   }
@@ -24,31 +24,36 @@ class FullSurveyModel {
   }
 }
 
-class Data {
+class SurveyDataModel {
   String sId;
   String question;
   String surveyid;
   String type;
   String orgid;
   int iV;
+  int choosenAnswer;
+  String textFieldAnswer;
   List<Answers> answers;
 
-  Data(
+  SurveyDataModel(
       {this.sId,
       this.question,
       this.surveyid,
       this.type,
+      this.choosenAnswer,
+      this.textFieldAnswer,
       this.orgid,
       this.iV,
       this.answers});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  SurveyDataModel.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     question = json['question'];
     surveyid = json['surveyid'];
     type = json['type'];
     orgid = json['orgid'];
     iV = json['__v'];
+    choosenAnswer = null;
     if (json['answers'] != null) {
       answers = [];
       json['answers'].forEach((v) {
@@ -77,6 +82,7 @@ class Answers {
   String qid;
   String title;
   String choice;
+  bool selectedAnswer;
   int iV;
 
   Answers({this.sId, this.qid, this.title, this.choice, this.iV});
@@ -87,6 +93,7 @@ class Answers {
     title = json['title'];
     choice = json['choice'];
     iV = json['__v'];
+    selectedAnswer = false;
   }
 
   Map<String, dynamic> toJson() {
