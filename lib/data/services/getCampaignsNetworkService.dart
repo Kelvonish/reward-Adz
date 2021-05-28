@@ -336,7 +336,7 @@ class GetCampaignsClass {
 
   getSurvey(String surveyId) async {
     try {
-      String uri = BASE_URL + "mysurvey/60acb8f18df01a63abce2ff0";
+      String uri = BASE_URL + "mysurvey/$surveyId";
       var url = Uri.parse(uri);
 
       var response = await http.get(url);

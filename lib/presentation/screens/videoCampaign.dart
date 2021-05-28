@@ -7,12 +7,100 @@ import 'package:flick_video_player/flick_video_player.dart';
 
 class VideoCampaignPage extends StatefulWidget {
   final VideoModel videoModel;
-  VideoCampaignPage({this.videoModel});
+  final String name;
+  VideoCampaignPage({this.videoModel, this.name});
   @override
   _VideoCampaignPageState createState() => _VideoCampaignPageState();
 }
 
 class _VideoCampaignPageState extends State<VideoCampaignPage> {
+  FlickManager flickManager;
+  bool _videoEnded = false;
+  @override
+  void initState() {
+    super.initState();
+    flickManager = FlickManager(
+      onVideoEnd: () {
+        setState(() {
+          _videoEnded = true;
+        });
+      },
+      videoPlayerController:
+          VideoPlayerController.network(widget.videoModel.url),
+    );
+  }
+
+  @override
+  void dispose() {
+    flickManager.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Theme.of(context).primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: Colors.black,
+          body: Stack(
+            children: [
+              _videoEnded
+                  ? Positioned(
+                      top: 40,
+                      right: 15,
+                      child: InkWell(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => VideoQuiz(
+                                        name: widget.name,
+                                        surveyId: widget.videoModel.surveyid,
+                                      )));
+                        },
+                        child: Container(
+                          width: 125,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25)),
+                          padding: EdgeInsets.all(8),
+                          child: Row(
+                            children: [
+                              Text("Start Survey"),
+                              SizedBox(
+                                width: 5.0,
+                              ),
+                              CircleAvatar(
+                                  radius: 15,
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
+                                  child: Icon(
+                                    Icons.arrow_forward,
+                                    size: 20,
+                                    color: Colors.white,
+                                  ))
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  : SizedBox(
+                      width: 10,
+                    ),
+              Center(
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  child: FlickVideoPlayer(flickManager: flickManager),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+  /*
   FlickManager flickManager;
   VideoPlayerController _controller;
   Future<void> _initializedVideoPlayerFuture;
@@ -124,5 +212,5 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
     super.dispose();
     _controller.removeListener(() {});
     _controller.dispose();
-  }
+  }*/
 }

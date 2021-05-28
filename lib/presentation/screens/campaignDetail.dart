@@ -65,6 +65,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => VideoCampaignPage(
+                          name: widget.name,
                           videoModel: widget.videoModel,
                         )));
           },

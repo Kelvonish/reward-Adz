@@ -1,473 +1,239 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
+import 'package:rewardadz/data/models/campaignModel.dart';
+import 'package:rewardadz/data/models/surveyModel.dart';
 
 class VideoQuiz extends StatefulWidget {
+  final String surveyId;
+  final String name;
+  VideoQuiz({this.surveyId, this.name});
+
   @override
   _VideoQuizState createState() => _VideoQuizState();
 }
 
 class _VideoQuizState extends State<VideoQuiz> {
-  int _radioValue1 = -1;
-  int correctScore = 0;
-  int _radioValue2 = -1;
-  int _radioValue3 = -1;
-  int _radioValue4 = -1;
-  int _radioValue5 = -1;
-
-  void _handleRadioValueChange1(int value) {
-    setState(() {
-      _radioValue1 = value;
-
-      switch (_radioValue1) {
-        case 0:
-          Fluttertoast.showToast(
-              msg: 'Correct !', toastLength: Toast.LENGTH_SHORT);
-          correctScore++;
-          break;
-        case 1:
-          Fluttertoast.showToast(
-              msg: 'Try again !', toastLength: Toast.LENGTH_SHORT);
-          break;
-        case 2:
-          Fluttertoast.showToast(
-              msg: 'Try again !', toastLength: Toast.LENGTH_SHORT);
-          break;
-      }
-    });
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<GetCampaignProvider>(context, listen: false)
+        .getVideoSurvey(widget.surveyId);
   }
 
-  void _handleRadioValueChange2(int value) {
-    setState(() {
-      _radioValue2 = value;
-
-      switch (_radioValue2) {
-        case 0:
-          Fluttertoast.showToast(
-              msg: 'Try again !', toastLength: Toast.LENGTH_SHORT);
-          break;
-        case 1:
-          Fluttertoast.showToast(
-              msg: 'Correct !', toastLength: Toast.LENGTH_SHORT);
-          correctScore++;
-          break;
-        case 2:
-          Fluttertoast.showToast(
-              msg: 'Try again !', toastLength: Toast.LENGTH_SHORT);
-          break;
-      }
-    });
-  }
-
-  void _handleRadioValueChange3(int value) {
-    setState(() {
-      _radioValue3 = value;
-
-      switch (_radioValue3) {
-        case 0:
-          Fluttertoast.showToast(
-              msg: 'Try again !', toastLength: Toast.LENGTH_SHORT);
-          break;
-        case 1:
-          Fluttertoast.showToast(
-              msg: 'Correct !', toastLength: Toast.LENGTH_SHORT);
-          correctScore++;
-          break;
-        case 2:
-          Fluttertoast.showToast(
-              msg: 'Try again !', toastLength: Toast.LENGTH_SHORT);
-          break;
-      }
-    });
-  }
-
-  void _handleRadioValueChange4(int value) {
-    setState(() {
-      _radioValue4 = value;
-
-      switch (_radioValue4) {
-        case 0:
-          Fluttertoast.showToast(
-              msg: 'Correct !', toastLength: Toast.LENGTH_SHORT);
-          correctScore++;
-          break;
-        case 1:
-          Fluttertoast.showToast(
-              msg: 'Try again !', toastLength: Toast.LENGTH_SHORT);
-          break;
-        case 2:
-          Fluttertoast.showToast(
-              msg: 'Try again !', toastLength: Toast.LENGTH_SHORT);
-          break;
-      }
-    });
-  }
-
-  void _handleRadioValueChange5(int value) {
-    setState(() {
-      _radioValue5 = value;
-
-      switch (_radioValue5) {
-        case 0:
-          Fluttertoast.showToast(
-              msg: 'Try again !', toastLength: Toast.LENGTH_SHORT);
-          break;
-        case 1:
-          Fluttertoast.showToast(
-              msg: 'Try again !', toastLength: Toast.LENGTH_SHORT);
-          break;
-        case 2:
-          Fluttertoast.showToast(
-              msg: 'Correct !', toastLength: Toast.LENGTH_SHORT);
-          correctScore++;
-          break;
-      }
-    });
-  }
-
+  FullSurveyModel surveyAnswers = FullSurveyModel(data: []);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          iconTheme: IconThemeData(color: Colors.black),
-          elevation: 0.0,
-          automaticallyImplyLeading: true,
-          title: Text(
-            'Video Quiz',
-            style: TextStyle(color: Colors.black),
+    _buildAnswers(
+        BuildContext context, SurveyDataModel answerData, int position) {
+      if (surveyAnswers.data.contains(answerData)) {
+      } else {
+        surveyAnswers.data.add(answerData);
+      }
+      if (answerData.type == "radio") {
+        return ListView.builder(
+            shrinkWrap: true,
+            itemCount: answerData.answers.length,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.only(top: 10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                ),
+                child: RadioListTile(
+                    selectedTileColor: Theme.of(context).primaryColor,
+                    tileColor: Colors.grey[200],
+                    title: Text(
+                      answerData.answers[index].title,
+                      style: surveyAnswers.data[position].choosenAnswer == index
+                          ? TextStyle(
+                              fontWeight: FontWeight.bold, color: Colors.white)
+                          : TextStyle(fontWeight: FontWeight.normal),
+                    ),
+                    activeColor: Colors.white,
+                    value: answerData.answers[index].title,
+                    toggleable: true,
+                    groupValue: answerData.sId,
+                    selected:
+                        surveyAnswers.data[position].choosenAnswer == index
+                            ? true
+                            : false,
+                    controlAffinity: ListTileControlAffinity.trailing,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    onChanged: (val) {
+                      setState(() {
+                        surveyAnswers.data[position].choosenAnswer = index;
+                        //surveyAnswers.data[position].answers.clear();
+
+                        // print(surveyAnswers.data[position].answers.length);
+                      });
+                    }),
+              );
+            });
+      } else if (answerData.type == "textfield") {
+        return Container(
+          margin: EdgeInsets.only(top: 10),
+          child: TextFormField(
+            cursorColor: Theme.of(context).primaryColor,
+            onChanged: (value) {
+              surveyAnswers.data[position].textFieldAnswer = value;
+            },
+            decoration: InputDecoration(
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 25.0, horizontal: 10.0),
+              hintText: "Write an answer",
+              border: InputBorder.none,
+              focusedBorder: InputBorder.none,
+              enabledBorder: InputBorder.none,
+              errorBorder: InputBorder.none,
+              disabledBorder: InputBorder.none,
+              fillColor: Colors.grey[100],
+              filled: true,
+            ),
+          ),
+        );
+      } else if (answerData.type == "checkboxes") {
+        return ListView.builder(
+            shrinkWrap: true,
+            itemCount: answerData.answers.length,
+            physics: NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.only(top: 10),
+                child: CheckboxListTile(
+                  selectedTileColor: Theme.of(context).primaryColor,
+                  tileColor: Colors.grey[200],
+                  title: Text(
+                    answerData.answers[index].title,
+                    style: surveyAnswers
+                            .data[position].answers[index].selectedAnswer
+                        ? TextStyle(
+                            fontWeight: FontWeight.bold, color: Colors.white)
+                        : TextStyle(fontWeight: FontWeight.normal),
+                  ),
+                  autofocus: false,
+                  activeColor: Theme.of(context).primaryColor,
+                  checkColor: Colors.white,
+                  controlAffinity: ListTileControlAffinity.trailing,
+                  selected: surveyAnswers
+                      .data[position].answers[index].selectedAnswer,
+                  value: surveyAnswers
+                      .data[position].answers[index].selectedAnswer,
+                  onChanged: (bool value) {
+                    setState(() {
+                      surveyAnswers
+                          .data[position].answers[index].selectedAnswer = value;
+                    });
+                  },
+                ),
+              );
+            });
+      }
+    }
+
+    return Container(
+      color: Theme.of(context).primaryColor,
+      child: SafeArea(
+        child: Scaffold(
+          appBar: AppBar(
+            iconTheme: IconThemeData(color: Colors.black),
+            backgroundColor: Colors.white,
+            elevation: 0.0,
+            title: Text(
+              widget.name,
+              style: TextStyle(color: Colors.black),
+            ),
           ),
           backgroundColor: Colors.white,
-        ),
-        body: new Container(
-            padding: EdgeInsets.all(8.0),
-            child: new Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  new Text(
-                    'Select correct answers from below:',
-                    style: new TextStyle(
-                        fontSize: 20.0, fontWeight: FontWeight.bold),
-                  ),
-                  new Padding(
-                    padding: new EdgeInsets.all(8.0),
-                  ),
-                  new Divider(height: 5.0, color: Colors.black),
-                  new Padding(
-                    padding: new EdgeInsets.all(8.0),
-                  ),
-                  new Text(
-                    'Lion is :',
-                    style: new TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  new Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      new Radio(
-                        value: 0,
-                        groupValue: _radioValue1,
-                        onChanged: _handleRadioValueChange1,
+          body: Container(
+            margin: EdgeInsets.all(10.0),
+            child: Consumer<GetCampaignProvider>(
+              builder: (context, value, child) => value.loadingSurvey
+                  ? Center(
+                      child: SpinKitChasingDots(
+                        color: Theme.of(context).primaryColor,
                       ),
-                      new Text(
-                        'Carnivore',
-                        style: new TextStyle(fontSize: 16.0),
-                      ),
-                      new Radio(
-                        value: 1,
-                        groupValue: _radioValue1,
-                        onChanged: _handleRadioValueChange1,
-                      ),
-                      new Text(
-                        'Herbivore',
-                        style: new TextStyle(
-                          fontSize: 16.0,
-                        ),
-                      ),
-                      new Radio(
-                        value: 2,
-                        groupValue: _radioValue1,
-                        onChanged: _handleRadioValueChange1,
-                      ),
-                      new Text(
-                        'Omnivore',
-                        style: new TextStyle(fontSize: 16.0),
-                      ),
-                    ],
-                  ),
-                  new Divider(
-                    height: 5.0,
-                    color: Colors.black,
-                  ),
-                  new Padding(
-                    padding: new EdgeInsets.all(8.0),
-                  ),
-                  new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        new Text(
-                          'Giraffe is :',
-                          style: new TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18.0,
+                    )
+                  : ListView(
+                      children: [
+                        ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: value.videoSurvey.data.length,
+                            physics: NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              var questionNumber = index + 1;
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 15.0,
+                                  ),
+                                  Text("Question " +
+                                      questionNumber.toString() +
+                                      "/" +
+                                      value.videoSurvey.data.length.toString()),
+                                  SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    value.videoSurvey.data[index].question,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 17.0),
+                                  ),
+                                  _buildAnswers(context,
+                                      value.videoSurvey.data[index], index),
+                                ],
+                              );
+                            }),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: EdgeInsets.only(top: 30.0),
+                          child: ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    Theme.of(context).primaryColor)),
+                            onPressed: () {
+                              for (int index = 0;
+                                  index < surveyAnswers.data.length;
+                                  index++) {
+                                var qn = index + 1;
+                                if (surveyAnswers.data[index].type == "radio") {
+                                  if (surveyAnswers.data[index].choosenAnswer ==
+                                      null) {
+                                    Fluttertoast.showToast(
+                                        msg: "Question $qn is not answered");
+                                  } else {
+                                    if (surveyAnswers
+                                            .data[index]
+                                            .answers[surveyAnswers
+                                                .data[index].choosenAnswer]
+                                            .choice !=
+                                        "correct") {
+                                      Fluttertoast.showToast(
+                                          msg: "Question $qn is not correct");
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(15.0),
+                              child: Text("Submit"),
+                            ),
                           ),
                         ),
-                        new Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            new Radio(
-                              value: 0,
-                              groupValue: _radioValue2,
-                              onChanged: _handleRadioValueChange2,
-                            ),
-                            new Text(
-                              'Carnivore',
-                              style: new TextStyle(fontSize: 16.0),
-                            ),
-                            new Radio(
-                              value: 1,
-                              groupValue: _radioValue2,
-                              onChanged: _handleRadioValueChange2,
-                            ),
-                            new Text(
-                              'Herbivore',
-                              style: new TextStyle(fontSize: 16.0),
-                            ),
-                            new Radio(
-                              value: 2,
-                              groupValue: _radioValue2,
-                              onChanged: _handleRadioValueChange2,
-                            ),
-                            new Text(
-                              'Omnivore',
-                              style: new TextStyle(fontSize: 16.0),
-                            ),
-                          ],
-                        ),
-                        new Divider(
-                          height: 5.0,
-                          color: Colors.black,
-                        ),
-                        new Padding(
-                          padding: new EdgeInsets.all(8.0),
-                        ),
-                        new Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              new Text(
-                                'Elephant is :',
-                                style: new TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                              new Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  new Radio(
-                                    value: 0,
-                                    groupValue: _radioValue3,
-                                    onChanged: _handleRadioValueChange3,
-                                  ),
-                                  new Text(
-                                    'Carnivore',
-                                    style: new TextStyle(fontSize: 16.0),
-                                  ),
-                                  new Radio(
-                                    value: 1,
-                                    groupValue: _radioValue3,
-                                    onChanged: _handleRadioValueChange3,
-                                  ),
-                                  new Text(
-                                    'Herbivore',
-                                    style: new TextStyle(fontSize: 16.0),
-                                  ),
-                                  new Radio(
-                                    value: 2,
-                                    groupValue: _radioValue3,
-                                    onChanged: _handleRadioValueChange3,
-                                  ),
-                                  new Text(
-                                    'Omnivore',
-                                    style: new TextStyle(fontSize: 16.0),
-                                  ),
-                                ],
-                              ),
-                              new Divider(
-                                height: 5.0,
-                                color: Colors.black,
-                              ),
-                              new Padding(
-                                padding: new EdgeInsets.all(8.0),
-                              ),
-                              new Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  new Text(
-                                    'Tiger is :',
-                                    style: new TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18.0,
-                                    ),
-                                  ),
-                                  new Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      new Radio(
-                                        value: 0,
-                                        groupValue: _radioValue4,
-                                        onChanged: _handleRadioValueChange4,
-                                      ),
-                                      new Text(
-                                        'Carnivore',
-                                        style: new TextStyle(fontSize: 16.0),
-                                      ),
-                                      new Radio(
-                                        value: 1,
-                                        groupValue: _radioValue4,
-                                        onChanged: _handleRadioValueChange4,
-                                      ),
-                                      new Text(
-                                        'Herbivore',
-                                        style: new TextStyle(fontSize: 16.0),
-                                      ),
-                                      new Radio(
-                                        value: 2,
-                                        groupValue: _radioValue4,
-                                        onChanged: _handleRadioValueChange4,
-                                      ),
-                                      new Text(
-                                        'Omnivore',
-                                        style: new TextStyle(fontSize: 16.0),
-                                      ),
-                                    ],
-                                  ),
-                                  new Divider(
-                                    height: 5.0,
-                                    color: Colors.black,
-                                  ),
-                                  new Padding(
-                                    padding: new EdgeInsets.all(8.0),
-                                  ),
-                                  new Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      new Text(
-                                        'Bear is :',
-                                        style: new TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18.0,
-                                        ),
-                                      ),
-                                      new Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          new Radio(
-                                            value: 0,
-                                            groupValue: _radioValue5,
-                                            onChanged: _handleRadioValueChange5,
-                                          ),
-                                          new Text(
-                                            'Carnivore',
-                                            style:
-                                                new TextStyle(fontSize: 16.0),
-                                          ),
-                                          new Radio(
-                                            value: 1,
-                                            groupValue: _radioValue5,
-                                            onChanged: _handleRadioValueChange5,
-                                          ),
-                                          new Text(
-                                            'Herbivore',
-                                            style:
-                                                new TextStyle(fontSize: 16.0),
-                                          ),
-                                          new Radio(
-                                            value: 2,
-                                            groupValue: _radioValue5,
-                                            onChanged: _handleRadioValueChange5,
-                                          ),
-                                          new Text(
-                                            'Omnivore',
-                                            style:
-                                                new TextStyle(fontSize: 16.0),
-                                          ),
-                                        ],
-                                      ),
-                                      new Divider(
-                                        height: 5.0,
-                                        color: Colors.black,
-                                      ),
-                                      new Padding(
-                                        padding: new EdgeInsets.all(8.0),
-                                      ),
-                                      new RaisedButton(
-                                        onPressed: validateAnswers,
-                                        child: new Text(
-                                          'Check Final Score',
-                                          style: new TextStyle(
-                                              fontSize: 16.0,
-                                              fontWeight: FontWeight.normal,
-                                              color: Colors.white),
-                                        ),
-                                        color: Theme.of(context).accentColor,
-                                        shape: new RoundedRectangleBorder(
-                                            borderRadius:
-                                                new BorderRadius.circular(
-                                                    20.0)),
-                                      ),
-                                      new Padding(
-                                        padding: EdgeInsets.all(4.0),
-                                      ),
-                                      new RaisedButton(
-                                        onPressed: resetSelection,
-                                        child: new Text(
-                                          'Reset Selection',
-                                          style: new TextStyle(
-                                              fontWeight: FontWeight.normal,
-                                              fontSize: 16.0,
-                                              color: Colors.white),
-                                        ),
-                                        color: Theme.of(context).accentColor,
-                                        shape: new RoundedRectangleBorder(
-                                            borderRadius:
-                                                new BorderRadius.circular(
-                                                    20.0)),
-                                      )
-                                    ],
-                                  ),
-                                ],
-                              )
-                            ])
-                      ])
-                ])));
-  }
-
-  void resetSelection() {
-    _handleRadioValueChange1(-1);
-    _handleRadioValueChange2(-1);
-    _handleRadioValueChange3(-1);
-    _handleRadioValueChange4(-1);
-    _handleRadioValueChange5(-1);
-    correctScore = 0;
-  }
-
-  void validateAnswers() {
-    if (_radioValue1 == -1 &&
-        _radioValue2 == -1 &&
-        _radioValue3 == -1 &&
-        _radioValue4 == -1 &&
-        _radioValue5 == -1) {
-      Fluttertoast.showToast(
-          msg: 'Please select atleast one answer',
-          toastLength: Toast.LENGTH_SHORT);
-    } else {
-      Fluttertoast.showToast(
-          msg: 'Your total score is: $correctScore out of 5',
-          toastLength: Toast.LENGTH_LONG);
-    }
+                      ],
+                    ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

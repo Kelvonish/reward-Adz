@@ -46,6 +46,7 @@ dependencies:
   rolling_nav_bar: ^0.0.4
   shared_preferences: ^2.0.5
   shimmer: ^2.0.0
+  sqflite: ^2.0.0+3
   video_player: ^2.1.1
   webview_flutter: ^2.0.4
 

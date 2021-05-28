@@ -18,6 +18,7 @@ class GetCampaignProvider extends ChangeNotifier {
   bool searchPageInitalState = true;
   bool loadingSurvey = false;
   var location;
+  FullSurveyModel videoSurvey;
 
   GetCampaignsClass campaignClass = GetCampaignsClass();
 
@@ -68,6 +69,17 @@ class GetCampaignProvider extends ChangeNotifier {
                     surveyModel: returnedSurvey,
                     pageTitle: campaignName,
                   )));
+    }
+    loadingSurvey = false;
+    notifyListeners();
+  }
+
+  Future getVideoSurvey(String surveyId) async {
+    loadingSurvey = true;
+
+    FullSurveyModel returnedSurvey = await campaignClass.getSurvey(surveyId);
+    if (returnedSurvey != null) {
+      videoSurvey = returnedSurvey;
     }
     loadingSurvey = false;
     notifyListeners();
