@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rewardadz/presentation/screens/startedCampaigns.dart';
 
 class Report extends StatefulWidget {
   @override
@@ -41,11 +42,7 @@ class _ReportState extends State<Report> {
               "0",
               style: TextStyle(fontSize: 40),
             )),
-            Center(
-                child: Text(
-              "1",
-              style: TextStyle(fontSize: 40),
-            )),
+            StartedCampaigns(),
             Center(
                 child: Text(
               "2",

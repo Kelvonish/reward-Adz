@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
+import 'package:rewardadz/data/database/campaignDatabase.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/presentation/screens/videoCampaign.dart';
 
@@ -15,16 +17,19 @@ class CampaignDetails extends StatefulWidget {
   final String type;
   final String surveyId;
   final VideoModel videoModel;
+  final CampaignModel campaignModel;
 
-  CampaignDetails(
-      {this.amount,
-      this.mainUrl,
-      this.otherUrl,
-      this.category,
-      this.surveyId,
-      this.name,
-      this.type,
-      this.videoModel});
+  CampaignDetails({
+    this.amount,
+    this.mainUrl,
+    this.otherUrl,
+    this.category,
+    this.surveyId,
+    this.name,
+    this.type,
+    this.videoModel,
+    this.campaignModel,
+  });
 
   @override
   _CampaignDetailsState createState() => _CampaignDetailsState();
@@ -60,7 +65,14 @@ class _CampaignDetailsState extends State<CampaignDetails> {
     Widget _checkTypeForAction() {
       if (widget.type == "Video") {
         return InkWell(
-          onTap: () {
+          onTap: () async {
+            await CampaignDatabase().insertCampaign(
+                widget.campaignModel,
+                Provider.of<UserProvider>(context, listen: false)
+                    .loggedUser
+                    .data
+                    .id);
+
             Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -179,7 +191,14 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                   color: Theme.of(context).primaryColor,
                 ))
               : InkWell(
-                  onTap: () {
+                  onTap: () async {
+                    await CampaignDatabase().insertCampaign(
+                        widget.campaignModel,
+                        Provider.of<UserProvider>(context, listen: false)
+                            .loggedUser
+                            .data
+                            .id);
+
                     Provider.of<GetCampaignProvider>(context, listen: false)
                         .getSurvey(context, widget.surveyId, widget.name);
                   },

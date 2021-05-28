@@ -19,6 +19,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                           amount: data.audio.award,
                           type: "Ringtone",
                           videoModel: null,
+                          campaignModel: data,
                         )))
             : showAlertDialogBox(context);
       },
@@ -47,6 +48,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                           amount: data.video.watchedvideosamount,
                           type: "Video",
                           videoModel: data.video,
+                          campaignModel: data,
                         )))
             : showAlertDialogBox(context);
       },
@@ -76,6 +78,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                           type: "Survey",
                           videoModel: null,
                           surveyId: data.survey.surveyid,
+                          campaignModel: data,
                         )))
             : showAlertDialogBox(context);
       },
@@ -104,6 +107,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                           amount: data.banner.sharesamount,
                           type: "Banner",
                           videoModel: null,
+                          campaignModel: data,
                         )))
             : showAlertDialogBox(context);
       },
