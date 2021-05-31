@@ -34,41 +34,41 @@ class _StartedCampaignsState extends State<StartedCampaigns> {
                   default:
                     if (snapshot.hasData) {
                       final _campaign = snapshot.data;
-                      return ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: _campaign.length,
-                          itemBuilder: (context, index) {
-                            if (_campaign.length == 0) {
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Image.asset("assets/startedCampaigns.png"),
-                                  Text(
-                                      "All the the campaigns you have started will be shown here")
-                                ],
-                              );
-                            } else {
-                              return CampaignCardDatabase(
-                                amount: _campaign[index]["campaignAmount"],
-                                type: _campaign[index]["campaignType"],
-                                category: _campaign[index]
-                                    ["campaignOrganizationIndustry"],
-                                isActive: true,
-                                mainUrl: _campaign[index]["campaignMainUrl"],
-                                name: _campaign[index]["campaignName"],
-                                otherUrl: _campaign[index]
-                                    ["campaignOrganizationLogo"],
-                                campaignId: _campaign[index]["campaignId"],
-                              );
-                            }
-                          });
+                      return _campaign.isEmpty
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset("assets/startedCampaigns.png"),
+                                Text(
+                                  "All the campaigns you have started will be shown here",
+                                  style: TextStyle(fontWeight: FontWeight.w300),
+                                )
+                              ],
+                            )
+                          : ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: _campaign.length,
+                              itemBuilder: (context, index) {
+                                return CampaignCardDatabase(
+                                  amount: _campaign[index]["campaignAmount"],
+                                  type: _campaign[index]["campaignType"],
+                                  category: _campaign[index]
+                                      ["campaignOrganizationIndustry"],
+                                  isActive: true,
+                                  mainUrl: _campaign[index]["campaignMainUrl"],
+                                  name: _campaign[index]["campaignName"],
+                                  otherUrl: _campaign[index]
+                                      ["campaignOrganizationLogo"],
+                                  campaignId: _campaign[index]["campaignId"],
+                                );
+                              });
                     } else {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Image.asset("assets/startedCampaigns.png"),
                           Text(
-                              "All the the campaigns you have started will be shown here")
+                              "All the campaigns you have started will be shown here")
                         ],
                       );
                     }

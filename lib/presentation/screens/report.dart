@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rewardadz/presentation/screens/startedCampaigns.dart';
+import 'package:rewardadz/presentation/screens/completedCampaigns.dart';
+import 'package:rewardadz/presentation/screens/ongoingCampaigns.dart';
 
 class Report extends StatefulWidget {
   @override
@@ -37,17 +39,9 @@ class _ReportState extends State<Report> {
         ),
         body: TabBarView(
           children: [
-            Center(
-                child: Text(
-              "0",
-              style: TextStyle(fontSize: 40),
-            )),
+            CompletedCampaigns(),
             StartedCampaigns(),
-            Center(
-                child: Text(
-              "2",
-              style: TextStyle(fontSize: 40),
-            )),
+            OngoingCampaigns(),
           ],
         ),
       ),

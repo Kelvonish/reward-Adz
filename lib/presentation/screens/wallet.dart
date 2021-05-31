@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
+import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
 import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
+import 'package:rewardadz/data/models/transactionModel.dart';
+import 'package:rewardadz/presentation/widgets/transactionTile.dart';
 
 class Wallet extends StatefulWidget {
   @override
@@ -31,21 +35,148 @@ class _WalletState extends State<Wallet> {
                     Tab(text: "Transfers"),
                   ]),
             ),
-            Container(
-              //Add this to give height
-              height: MediaQuery.of(context).size.height * 0.4,
-              width: MediaQuery.of(context).size.width,
-              child: TabBarView(children: [
-                Container(
-                  child: Center(child: Text("Earnings")),
-                ),
-                Container(
-                  child: Center(child: Text("Withdrawals")),
-                ),
-                Container(
-                  child: Center(child: Text("Buy Airtime")),
-                ),
-              ]),
+            Consumer<TransactionProvider>(
+              builder: (context, value, child) => Container(
+                //Add this to give height
+                height: MediaQuery.of(context).size.height * 0.5,
+                width: MediaQuery.of(context).size.width,
+                child: TabBarView(children: [
+                  Container(
+                      child: FutureBuilder(
+                          future: value.getEarnings(
+                              Provider.of<UserProvider>(context, listen: false)
+                                  .loggedUser
+                                  .data
+                                  .id
+                                  .toString()),
+                          builder: (context, snapshot) {
+                            switch (snapshot.connectionState) {
+                              case ConnectionState.none:
+                              case ConnectionState.waiting:
+                                return Center(
+                                  child: SpinKitChasingDots(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                );
+                              default:
+                                if (snapshot.hasData) {
+                                  TransactionModel earnings = snapshot.data;
+                                  return earnings.data.length == 0
+                                      ? Column(
+                                          children: [
+                                            Image.asset("assets/earnings.png"),
+                                            Text(
+                                              "All earnings will appear here",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w300),
+                                            ),
+                                          ],
+                                        )
+                                      : ListView.builder(
+                                          shrinkWrap: true,
+                                          itemCount: earnings.data.length,
+                                          itemBuilder: (context, index) {
+                                            return TranscationTile(
+                                              data: earnings.data[index],
+                                              type: earnings.data[index].txn,
+                                            );
+                                          });
+                                }
+                            }
+                          })),
+                  Container(
+                    child: FutureBuilder(
+                        future: value.getWithdrawals(
+                            Provider.of<UserProvider>(context, listen: false)
+                                .loggedUser
+                                .data
+                                .id
+                                .toString()),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.none:
+                            case ConnectionState.waiting:
+                              return Center(
+                                child: SpinKitChasingDots(
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              );
+                            default:
+                              if (snapshot.hasData) {
+                                TransactionModel withdrawals = snapshot.data;
+                                return withdrawals.data.length == 0
+                                    ? Column(
+                                        children: [
+                                          Image.asset("assets/withdraw.png"),
+                                          Text(
+                                            "All withdrawals will appear here",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w300),
+                                          ),
+                                        ],
+                                      )
+                                    : ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: withdrawals.data.length,
+                                        itemBuilder: (context, index) {
+                                          return TranscationTile(
+                                            data: withdrawals.data[index],
+                                            type: withdrawals.data[index].txn,
+                                          );
+                                        });
+                              }
+                          }
+                        }),
+                  ),
+                  Container(
+                    child: FutureBuilder(
+                        future: value.getTransfers(
+                            Provider.of<UserProvider>(context, listen: false)
+                                .loggedUser
+                                .data
+                                .id
+                                .toString()),
+                        builder: (context, snapshot) {
+                          switch (snapshot.connectionState) {
+                            case ConnectionState.none:
+                            case ConnectionState.waiting:
+                              return Center(
+                                child: SpinKitChasingDots(
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              );
+                            default:
+                              if (snapshot.hasData) {
+                                TransactionModel transfers = snapshot.data;
+                                return transfers.data.length == 0
+                                    ? Column(
+                                        children: [
+                                          Image.asset("assets/transfers.png"),
+                                          Text(
+                                            "All transfers will appear here",
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w300),
+                                          ),
+                                        ],
+                                      )
+                                    : ListView.builder(
+                                        shrinkWrap: true,
+                                        itemCount: transfers.data.length,
+                                        itemBuilder: (context, index) {
+                                          return TranscationTile(
+                                            data: transfers.data[index],
+                                            type: transfers.data[index].txn,
+                                          );
+                                        });
+                              }
+                          }
+                        }),
+                  ),
+                ]),
+              ),
             ),
           ],
         ),
@@ -65,7 +196,7 @@ class _WalletState extends State<Wallet> {
       ),
       body: Container(
         margin: EdgeInsets.all(15.0),
-        child: Column(
+        child: ListView(
           children: [
             Consumer<UserProvider>(
               builder: (context, value, child) => BalanceCard(
