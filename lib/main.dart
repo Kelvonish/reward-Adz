@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
+import 'package:rewardadz/data/database/campaignDatabase.dart';
 import 'package:rewardadz/data/local storage/locationPreference.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
@@ -11,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
 import 'package:rewardadz/business_logic/providers/topAdvertisersProvider.dart';
 import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
+import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
 
 import 'package:rewardadz/presentation/screens/navigator.dart';
 
@@ -53,6 +55,10 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider<UserProvider>(create: (_) => UserProvider()),
           ChangeNotifierProvider<AuthenticationProvider>(
               create: (_) => AuthenticationProvider()),
+          ChangeNotifierProvider<CampaignDatabaseProvider>(
+              create: (_) => CampaignDatabaseProvider()),
+          ChangeNotifierProvider<TransactionProvider>(
+              create: (_) => TransactionProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

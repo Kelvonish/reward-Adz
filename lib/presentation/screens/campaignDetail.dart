@@ -66,12 +66,13 @@ class _CampaignDetailsState extends State<CampaignDetails> {
       if (widget.type == "Video") {
         return InkWell(
           onTap: () async {
-            await CampaignDatabase().insertCampaign(
-                widget.campaignModel,
-                Provider.of<UserProvider>(context, listen: false)
-                    .loggedUser
-                    .data
-                    .id);
+            await Provider.of<CampaignDatabaseProvider>(context, listen: false)
+                .insertCampaign(
+                    widget.campaignModel,
+                    Provider.of<UserProvider>(context, listen: false)
+                        .loggedUser
+                        .data
+                        .id);
 
             Navigator.push(
                 context,
@@ -192,12 +193,14 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                 ))
               : InkWell(
                   onTap: () async {
-                    await CampaignDatabase().insertCampaign(
-                        widget.campaignModel,
-                        Provider.of<UserProvider>(context, listen: false)
-                            .loggedUser
-                            .data
-                            .id);
+                    await Provider.of<CampaignDatabaseProvider>(context,
+                            listen: false)
+                        .insertCampaign(
+                            widget.campaignModel,
+                            Provider.of<UserProvider>(context, listen: false)
+                                .loggedUser
+                                .data
+                                .id);
 
                     Provider.of<GetCampaignProvider>(context, listen: false)
                         .getSurvey(context, widget.surveyId, widget.name);

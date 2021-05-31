@@ -6,7 +6,7 @@ import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class CampaignDatabase {
+class CampaignDatabaseProvider extends ChangeNotifier {
   Database db;
   String dbName = "StartedCampaigns";
 
@@ -27,16 +27,42 @@ create table $dbName (
     });
   }
 
-  Future getStartedCampaigns(int userId) async {
+  Future<List<Map<String, Object>>> getStartedCampaigns(int userId) async {
     if (db == null) {
       await open();
     }
-    var result = db.query(dbName, where: 'userId=?', whereArgs: [107]);
+    var result = db.query(dbName, where: 'userId=?', whereArgs: [userId]);
     if (result == null) {
       Fluttertoast.showToast(msg: "Nothing shown");
     }
-    print(json.encode(result));
+
     return result;
+  }
+
+  String checkType(CampaignModel campaign) {
+    if (campaign.audio != null) {
+      return "Audio";
+    } else if (campaign.video != null) {
+      return "Video";
+    } else if (campaign.survey != null) {
+      return "Survey";
+    } else if (campaign.banner != null) {
+      return "Banner";
+    }
+    return "Unknown";
+  }
+
+  String checkAmount(CampaignModel campaign) {
+    if (campaign.audio != null) {
+      return campaign.audio.award;
+    } else if (campaign.video != null) {
+      return campaign.video.watchedvideosamount;
+    } else if (campaign.survey != null) {
+      return campaign.survey.amount;
+    } else if (campaign.banner != null) {
+      return campaign.banner.banneramount;
+    }
+    return "Unknown";
   }
 
   Future<bool> insertCampaign(CampaignModel campaign, int userId) async {
@@ -47,18 +73,26 @@ create table $dbName (
       "campaignMainUrl": campaign.campimg,
       "campaignOrganizationLogo": campaign.organization.logo,
       "campaignOrganizationIndustry": campaign.organization.industry,
-      "campaignType": "will do",
-      "campaignAmount": "50"
+      "campaignType": checkType(campaign),
+      "campaignAmount": checkAmount(campaign),
     };
 
     var t = await campaignExists(campaign.sId);
-    if (t == null) {
+    print("printing t : ");
+    print(t);
+    if (t.isEmpty) {
       int d = await db.insert(dbName, values);
+
       if (d != null) {
         Fluttertoast.showToast(msg: "yeey! saved");
         return true;
+      } else {
+        Fluttertoast.showToast(msg: "Not saved");
       }
+    } else {
+      Fluttertoast.showToast(msg: "campaign exists");
     }
+    notifyListeners();
     return false;
   }
 
@@ -73,6 +107,13 @@ create table $dbName (
     if (db == null) {
       await open();
     }
-    return await db.delete("dbName", where: 'CampaignId = ?', whereArgs: [id]);
+    int t = await db.delete(dbName, where: 'CampaignId = ?', whereArgs: [id]);
+    if (t == null) {
+      Fluttertoast.showToast(msg: "Not Deleted");
+    } else {
+      Fluttertoast.showToast(msg: "deleted");
+    }
+    notifyListeners();
+    return t;
   }
 }
