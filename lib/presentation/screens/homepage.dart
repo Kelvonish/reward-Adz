@@ -35,6 +35,14 @@ class _MyHomePageState extends State<MyHomePage> {
         .getTopAdvertisers();
   }
 
+  getAllData() {
+    Provider.of<GetCampaignProvider>(context, listen: false)
+        .getCampaignsProvider(
+            Provider.of<UserProvider>(context, listen: false).loggedUser);
+    Provider.of<TopAdvertisersProvider>(context, listen: false)
+        .getTopAdvertisers();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,9 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: RefreshIndicator(
         backgroundColor: Theme.of(context).primaryColor,
         onRefresh: () {
-          return Provider.of<GetCampaignProvider>(context, listen: false)
-              .getCampaignsProvider(
-                  Provider.of<UserProvider>(context, listen: false).loggedUser);
+          return getAllData();
         },
         child: Container(
           margin: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),

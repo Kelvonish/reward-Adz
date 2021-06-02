@@ -1,12 +1,20 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/cupertino.dart';
 
-class IntenetProvider extends ChangeNotifier {
-  String connection;
-  var subcriprion =
-      Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-    if (result == ConnectivityResult.mobile ||
-        result == ConnectivityResult.wifi) {
-    } else if (result == ConnectivityResult.none) {}
-  });
+import 'dart:async';
+
+enum ConnectivityStatus { WiFi, Cellular, Offline }
+
+class ConnectivityService {
+  // Create our public controller
+  Future<bool> checkInternetConnection() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult == ConnectivityResult.mobile) {
+      return true;
+    } else if (connectivityResult == ConnectivityResult.wifi) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

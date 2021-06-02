@@ -7,7 +7,8 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
   if (data.audio != null) {
     return InkWell(
       onTap: () {
-        data.isactive
+        bool t = true;
+        t
             ? Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -19,6 +20,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                           amount: data.audio.award,
                           type: "Ringtone",
                           videoModel: null,
+                          audioModel: data.audio,
                           campaignModel: data,
                         )))
             : showAlertDialogBox(context);
@@ -48,6 +50,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                           amount: data.video.watchedvideosamount,
                           type: "Video",
                           videoModel: data.video,
+                          audioModel: null,
                           campaignModel: data,
                         )))
             : showAlertDialogBox(context);
@@ -79,6 +82,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                           videoModel: null,
                           surveyId: data.survey.surveyid,
                           campaignModel: data,
+                          audioModel: null,
                         )))
             : showAlertDialogBox(context);
       },
@@ -108,6 +112,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                           type: "Banner",
                           videoModel: null,
                           campaignModel: data,
+                          audioModel: null,
                         )))
             : showAlertDialogBox(context);
       },

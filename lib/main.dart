@@ -15,6 +15,7 @@ import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
 
 import 'package:rewardadz/presentation/screens/navigator.dart';
+import 'package:rewardadz/presentation/screens/test.dart';
 
 void main() {
   //WidgetsFlutterBinding.ensureInitialized();

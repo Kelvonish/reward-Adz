@@ -15,6 +15,34 @@ class Wallet extends StatefulWidget {
 }
 
 class _WalletState extends State<Wallet> {
+  @override
+  void initState() {
+    super.initState();
+    getAllData();
+  }
+
+  getAllData() async {
+    await Provider.of<TransactionProvider>(context, listen: false).getEarnings(
+        Provider.of<UserProvider>(context, listen: false)
+            .loggedUser
+            .data
+            .id
+            .toString());
+
+    await Provider.of<TransactionProvider>(context, listen: false)
+        .getWithdrawals(Provider.of<UserProvider>(context, listen: false)
+            .loggedUser
+            .data
+            .id
+            .toString());
+    await Provider.of<TransactionProvider>(context, listen: false).getTransfers(
+        Provider.of<UserProvider>(context, listen: false)
+            .loggedUser
+            .data
+            .id
+            .toString());
+  }
+
   TextStyle _labelStyle = TextStyle(fontWeight: FontWeight.w400);
   @override
   Widget build(BuildContext context) {
@@ -42,139 +70,130 @@ class _WalletState extends State<Wallet> {
                 width: MediaQuery.of(context).size.width,
                 child: TabBarView(children: [
                   Container(
-                      child: FutureBuilder(
-                          future: value.getEarnings(
-                              Provider.of<UserProvider>(context, listen: false)
-                                  .loggedUser
-                                  .data
-                                  .id
-                                  .toString()),
-                          builder: (context, snapshot) {
-                            switch (snapshot.connectionState) {
-                              case ConnectionState.none:
-                              case ConnectionState.waiting:
-                                return Center(
-                                  child: SpinKitChasingDots(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                );
-                              default:
-                                if (snapshot.hasData) {
-                                  TransactionModel earnings = snapshot.data;
-                                  return earnings.data.length == 0
-                                      ? Column(
-                                          children: [
-                                            Image.asset("assets/earnings.png"),
-                                            Text(
-                                              "All earnings will appear here",
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.w300),
-                                            ),
-                                          ],
-                                        )
-                                      : ListView.builder(
-                                          shrinkWrap: true,
-                                          itemCount: earnings.data.length,
-                                          itemBuilder: (context, index) {
-                                            return TranscationTile(
-                                              data: earnings.data[index],
-                                              type: earnings.data[index].txn,
-                                            );
-                                          });
-                                }
-                            }
-                          })),
+                      child: value.earningsLoading
+                          ? Center(
+                              child: SpinKitChasingDots(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            )
+                          : value.allEarnings == null
+                              ? Column(
+                                  children: [
+                                    Image.asset("assets/earnings.png"),
+                                    Text(
+                                      "All earnings will appear here",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ],
+                                )
+                              : value.allEarnings.data.isEmpty
+                                  ? Column(
+                                      children: [
+                                        Image.asset("assets/earnings.png"),
+                                        Text(
+                                          "All earnings will appear here",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                      ],
+                                    )
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: value.allEarnings.data.length,
+                                      itemBuilder: (context, index) {
+                                        return TranscationTile(
+                                          data: value.allEarnings.data[index],
+                                          type:
+                                              value.allEarnings.data[index].txn,
+                                        );
+                                      })),
                   Container(
-                    child: FutureBuilder(
-                        future: value.getWithdrawals(
-                            Provider.of<UserProvider>(context, listen: false)
-                                .loggedUser
-                                .data
-                                .id
-                                .toString()),
-                        builder: (context, snapshot) {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.none:
-                            case ConnectionState.waiting:
-                              return Center(
-                                child: SpinKitChasingDots(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              );
-                            default:
-                              if (snapshot.hasData) {
-                                TransactionModel withdrawals = snapshot.data;
-                                return withdrawals.data.length == 0
-                                    ? Column(
-                                        children: [
-                                          Image.asset("assets/withdraw.png"),
-                                          Text(
-                                            "All withdrawals will appear here",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w300),
-                                          ),
-                                        ],
-                                      )
-                                    : ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: withdrawals.data.length,
-                                        itemBuilder: (context, index) {
-                                          return TranscationTile(
-                                            data: withdrawals.data[index],
-                                            type: withdrawals.data[index].txn,
-                                          );
-                                        });
-                              }
-                          }
-                        }),
-                  ),
+                      child: value.withdrawsLoading
+                          ? Center(
+                              child: SpinKitChasingDots(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            )
+                          : value.allWithdrawals == null
+                              ? Column(
+                                  children: [
+                                    Image.asset("assets/withdraw.png"),
+                                    Text(
+                                      "All withdrawals will appear here",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ],
+                                )
+                              : value.allWithdrawals.data.isEmpty
+                                  ? Column(
+                                      children: [
+                                        Image.asset("assets/withdraw.png"),
+                                        Text(
+                                          "All withdrawals will appear here",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                      ],
+                                    )
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          value.allWithdrawals.data.length,
+                                      itemBuilder: (context, index) {
+                                        return TranscationTile(
+                                          data:
+                                              value.allWithdrawals.data[index],
+                                          type: value
+                                              .allWithdrawals.data[index].txn,
+                                        );
+                                      })),
                   Container(
-                    child: FutureBuilder(
-                        future: value.getTransfers(
-                            Provider.of<UserProvider>(context, listen: false)
-                                .loggedUser
-                                .data
-                                .id
-                                .toString()),
-                        builder: (context, snapshot) {
-                          switch (snapshot.connectionState) {
-                            case ConnectionState.none:
-                            case ConnectionState.waiting:
-                              return Center(
-                                child: SpinKitChasingDots(
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                              );
-                            default:
-                              if (snapshot.hasData) {
-                                TransactionModel transfers = snapshot.data;
-                                return transfers.data.length == 0
-                                    ? Column(
-                                        children: [
-                                          Image.asset("assets/transfers.png"),
-                                          Text(
-                                            "All transfers will appear here",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w300),
-                                          ),
-                                        ],
-                                      )
-                                    : ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount: transfers.data.length,
-                                        itemBuilder: (context, index) {
-                                          return TranscationTile(
-                                            data: transfers.data[index],
-                                            type: transfers.data[index].txn,
-                                          );
-                                        });
-                              }
-                          }
-                        }),
-                  ),
+                      child: value.transfersLoading
+                          ? Center(
+                              child: SpinKitChasingDots(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            )
+                          : value.allTransfers == null
+                              ? Column(
+                                  children: [
+                                    Image.asset("assets/transfers.png"),
+                                    Text(
+                                      "All transfers will appear here",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w300),
+                                    ),
+                                  ],
+                                )
+                              : value.allTransfers.data.isEmpty
+                                  ? Column(
+                                      children: [
+                                        Image.asset("assets/transfers.png"),
+                                        Text(
+                                          "All transfers will appear here",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.w300),
+                                        ),
+                                      ],
+                                    )
+                                  : ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: value.allTransfers.data.length,
+                                      itemBuilder: (context, index) {
+                                        return TranscationTile(
+                                          data: value.allTransfers.data[index],
+                                          type: value
+                                              .allTransfers.data[index].txn,
+                                        );
+                                      })),
                 ]),
               ),
             ),
@@ -194,103 +213,250 @@ class _WalletState extends State<Wallet> {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      body: Container(
-        margin: EdgeInsets.all(15.0),
-        child: ListView(
-          children: [
-            Consumer<UserProvider>(
-              builder: (context, value, child) => BalanceCard(
-                name: "Balance",
-                earnedAmount: value.loggedUser.balance.toString(),
-                numberOfAds: value.loggedUser.earnedads.toString(),
+      body: RefreshIndicator(
+        backgroundColor: Theme.of(context).primaryColor,
+        onRefresh: () {
+          return getAllData();
+        },
+        child: Container(
+          margin: EdgeInsets.all(15.0),
+          child: ListView(
+            children: [
+              Consumer<UserProvider>(
+                builder: (context, value, child) => BalanceCard(
+                  name: "Balance",
+                  earnedAmount: value.loggedUser.balance.toString(),
+                  numberOfAds: value.loggedUser.earnedads.toString(),
+                ),
               ),
-            ),
-            SizedBox(
-              height: 15.0,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                InkWell(
-                  onTap: () {
-                    showCupertinoModalPopup(
-                        context: context,
-                        builder: (context) => Container(
-                              margin: EdgeInsets.all(15.0),
-                              child: Material(
-                                type: MaterialType.transparency,
-                                child: Container(
-                                    height: 158,
-                                    margin: MediaQuery.of(context).viewInsets,
-                                    color: Colors.white,
-                                    child: Column(
-                                      children: [
-                                        Center(
-                                            child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Text(
-                                            "Withdraw",
-                                            style: TextStyle(
-                                                fontSize: 18.0,
-                                                color: Colors.black),
-                                          ),
-                                        )),
-                                        Divider(
-                                          height: 5,
-                                        ),
-                                        TextFormField(
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                              fillColor: Colors.white,
-                                              filled: true,
-                                              hintText: "Enter Amount",
-                                              labelStyle: _labelStyle),
-                                        ),
-                                        Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          margin: EdgeInsets.all(0.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {},
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(20.0),
-                                              child: Text("Withdraw"),
+              SizedBox(
+                height: 15.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) => Container(
+                                margin: EdgeInsets.all(15.0),
+                                child: Material(
+                                  type: MaterialType.transparency,
+                                  child: Container(
+                                      height: 158,
+                                      margin: MediaQuery.of(context).viewInsets,
+                                      color: Colors.white,
+                                      child: Column(
+                                        children: [
+                                          Center(
+                                              child: Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Text(
+                                              "Withdraw",
+                                              style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  color: Colors.black),
                                             ),
-                                            style: ButtonStyle(
-                                                elevation:
-                                                    MaterialStateProperty.all(
-                                                        0.0),
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          0.0,
-                                                        ),
-                                                        side: BorderSide(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor))),
-                                                backgroundColor:
-                                                    MaterialStateProperty.all(
-                                                        Theme.of(context)
-                                                            .primaryColor)),
+                                          )),
+                                          Divider(
+                                            height: 5,
                                           ),
-                                        )
-                                      ],
-                                    )),
-                              ),
-                            ));
-                  },
-                  child: Column(
+                                          TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            decoration: InputDecoration(
+                                                fillColor: Colors.white,
+                                                filled: true,
+                                                hintText: "Enter Amount",
+                                                labelStyle: _labelStyle),
+                                          ),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            margin: EdgeInsets.all(0.0),
+                                            child: ElevatedButton(
+                                              onPressed: () {},
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(20.0),
+                                                child: Text("Withdraw"),
+                                              ),
+                                              style: ButtonStyle(
+                                                  elevation:
+                                                      MaterialStateProperty.all(
+                                                          0.0),
+                                                  shape: MaterialStateProperty.all<
+                                                          RoundedRectangleBorder>(
+                                                      RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                            0.0,
+                                                          ),
+                                                          side: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor))),
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          Theme.of(context)
+                                                              .primaryColor)),
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                ),
+                              ));
+                    },
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 25.0,
+                          backgroundColor: Theme.of(context).accentColor,
+                          child: Icon(
+                            Icons.arrow_downward_rounded,
+                            size: 35,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Text(
+                          "Withdraw",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 12.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15.0,
+                  ),
+                  InkWell(
+                    onTap: () {
+                      showCupertinoModalPopup(
+                          context: context,
+                          builder: (context) => Container(
+                                margin: EdgeInsets.all(15.0),
+                                child: Material(
+                                  type: MaterialType.transparency,
+                                  child: Container(
+                                      height: 234,
+                                      margin: MediaQuery.of(context).viewInsets,
+                                      color: Colors.white,
+                                      child: Column(
+                                        children: [
+                                          Center(
+                                              child: Padding(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Text(
+                                              "Transfer",
+                                              style: TextStyle(
+                                                  fontSize: 18.0,
+                                                  color: Colors.black),
+                                            ),
+                                          )),
+                                          Divider(
+                                            height: 5,
+                                          ),
+                                          IntlPhoneField(
+                                            initialCountryCode: "KE",
+                                            keyboardType: TextInputType.number,
+                                            decoration: InputDecoration(
+                                                fillColor: Colors.white,
+                                                filled: true,
+                                                labelText: "Phone Number",
+                                                labelStyle: _labelStyle),
+                                            onChanged: (phone) {
+                                              print(phone.completeNumber);
+                                            },
+                                            onCountryChanged: (phone) {
+                                              print(
+                                                  'Country code changed to: ' +
+                                                      phone.countryCode);
+                                            },
+                                          ),
+                                          TextFormField(
+                                            keyboardType: TextInputType.number,
+                                            decoration: InputDecoration(
+                                                fillColor: Colors.white,
+                                                filled: true,
+                                                hintText: "Enter Amount",
+                                                labelStyle: _labelStyle),
+                                          ),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width,
+                                            margin: EdgeInsets.all(0.0),
+                                            child: ElevatedButton(
+                                              onPressed: () {},
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(20.0),
+                                                child: Text("Withdraw"),
+                                              ),
+                                              style: ButtonStyle(
+                                                  elevation:
+                                                      MaterialStateProperty.all(
+                                                          0.0),
+                                                  shape: MaterialStateProperty.all<
+                                                          RoundedRectangleBorder>(
+                                                      RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                            0.0,
+                                                          ),
+                                                          side: BorderSide(
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor))),
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all(
+                                                          Theme.of(context)
+                                                              .primaryColor)),
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                ),
+                              ));
+                    },
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 25.0,
+                          backgroundColor: Theme.of(context).accentColor,
+                          child: Icon(
+                            Icons.arrow_forward_sharp,
+                            size: 35,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Text(
+                          "Transfer",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 12.0),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Column(
                     children: [
                       CircleAvatar(
                         radius: 25.0,
                         backgroundColor: Theme.of(context).accentColor,
                         child: Icon(
-                          Icons.arrow_downward_rounded,
+                          Icons.phone_iphone_outlined,
                           size: 35,
                           color: Theme.of(context).primaryColor,
                         ),
@@ -299,155 +465,17 @@ class _WalletState extends State<Wallet> {
                         height: 5.0,
                       ),
                       Text(
-                        "Withdraw",
+                        "Buy Airtime",
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 12.0),
                       ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  width: 15.0,
-                ),
-                InkWell(
-                  onTap: () {
-                    showCupertinoModalPopup(
-                        context: context,
-                        builder: (context) => Container(
-                              margin: EdgeInsets.all(15.0),
-                              child: Material(
-                                type: MaterialType.transparency,
-                                child: Container(
-                                    height: 234,
-                                    margin: MediaQuery.of(context).viewInsets,
-                                    color: Colors.white,
-                                    child: Column(
-                                      children: [
-                                        Center(
-                                            child: Padding(
-                                          padding: const EdgeInsets.all(15.0),
-                                          child: Text(
-                                            "Transfer",
-                                            style: TextStyle(
-                                                fontSize: 18.0,
-                                                color: Colors.black),
-                                          ),
-                                        )),
-                                        Divider(
-                                          height: 5,
-                                        ),
-                                        IntlPhoneField(
-                                          initialCountryCode: "KE",
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                              fillColor: Colors.white,
-                                              filled: true,
-                                              labelText: "Phone Number",
-                                              labelStyle: _labelStyle),
-                                          onChanged: (phone) {
-                                            print(phone.completeNumber);
-                                          },
-                                          onCountryChanged: (phone) {
-                                            print('Country code changed to: ' +
-                                                phone.countryCode);
-                                          },
-                                        ),
-                                        TextFormField(
-                                          keyboardType: TextInputType.number,
-                                          decoration: InputDecoration(
-                                              fillColor: Colors.white,
-                                              filled: true,
-                                              hintText: "Enter Amount",
-                                              labelStyle: _labelStyle),
-                                        ),
-                                        Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          margin: EdgeInsets.all(0.0),
-                                          child: ElevatedButton(
-                                            onPressed: () {},
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(20.0),
-                                              child: Text("Withdraw"),
-                                            ),
-                                            style: ButtonStyle(
-                                                elevation:
-                                                    MaterialStateProperty.all(
-                                                        0.0),
-                                                shape: MaterialStateProperty.all<
-                                                        RoundedRectangleBorder>(
-                                                    RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          0.0,
-                                                        ),
-                                                        side: BorderSide(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColor))),
-                                                backgroundColor:
-                                                    MaterialStateProperty.all(
-                                                        Theme.of(context)
-                                                            .primaryColor)),
-                                          ),
-                                        )
-                                      ],
-                                    )),
-                              ),
-                            ));
-                  },
-                  child: Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 25.0,
-                        backgroundColor: Theme.of(context).accentColor,
-                        child: Icon(
-                          Icons.arrow_forward_sharp,
-                          size: 35,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Text(
-                        "Transfer",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 12.0),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 25.0,
-                      backgroundColor: Theme.of(context).accentColor,
-                      child: Icon(
-                        Icons.phone_iphone_outlined,
-                        size: 35,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.0,
-                    ),
-                    Text(
-                      "Buy Airtime",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, fontSize: 12.0),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            _tabSection(context),
-          ],
+                ],
+              ),
+              _tabSection(context),
+            ],
+          ),
         ),
       ),
     );

@@ -266,8 +266,8 @@ class SurveyModel {
 class BannerModel {
   String shares;
   String sharesamount;
-  Null bannerset;
-  Null banneramount;
+  String bannerset;
+  String banneramount;
   String bannerurl;
 
   BannerModel(

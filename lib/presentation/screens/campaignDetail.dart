@@ -7,6 +7,7 @@ import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/database/campaignDatabase.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/presentation/screens/videoCampaign.dart';
+import 'package:just_audio/just_audio.dart';
 
 class CampaignDetails extends StatefulWidget {
   final String amount;
@@ -18,6 +19,7 @@ class CampaignDetails extends StatefulWidget {
   final String surveyId;
   final VideoModel videoModel;
   final CampaignModel campaignModel;
+  final AudioModel audioModel;
 
   CampaignDetails({
     this.amount,
@@ -28,6 +30,7 @@ class CampaignDetails extends StatefulWidget {
     this.name,
     this.type,
     this.videoModel,
+    this.audioModel,
     this.campaignModel,
   });
 
@@ -36,6 +39,20 @@ class CampaignDetails extends StatefulWidget {
 }
 
 class _CampaignDetailsState extends State<CampaignDetails> {
+  AudioPlayer player;
+  bool playing = false;
+  @override
+  void initState() {
+    super.initState();
+    player = AudioPlayer();
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget _checkTypeofCampaignForDetails() {
@@ -135,53 +152,125 @@ class _CampaignDetailsState extends State<CampaignDetails> {
           ),
         );
       } else if (widget.type == "Ringtone") {
-        return Padding(
-          padding: const EdgeInsets.all(15.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  CircleAvatar(
-                    radius: 20,
-                    backgroundColor: const Color.fromRGBO(114, 145, 219, 1),
-                    child: Icon(
-                      Icons.music_note,
-                      color: Theme.of(context).primaryColor,
-                      size: 25,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 15.0,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Adopt Ringtone,",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16.0),
+        return InkWell(
+          onTap: () {
+            showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "Adopt Ringtone",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            IconButton(
+                                icon: Icon(
+                                  Icons.cancel_sharp,
+                                  size: 30,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                })
+                          ],
                         ),
+                      ),
+                      Divider(
+                        height: 5,
+                        color: Colors.grey[400],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            height: 30,
+                          ),
+                          IconButton(
+                              icon: Icon(Icons.play_arrow,
+                                  color: Theme.of(context).primaryColor),
+                              onPressed: () async {
+                                await player
+                                    .setAsset(widget.audioModel.audiourl);
+                                player.play();
+                              })
+                        ],
                       ),
                       SizedBox(
-                        height: 4.0,
+                        height: 30,
                       ),
-                      Container(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          "Sorry! Not supported for iOS devices",
-                          style: TextStyle(fontSize: 13.0, color: Colors.red),
-                        ),
-                      ),
+                      TextButton.icon(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  Theme.of(context).primaryColor)),
+                          onPressed: () {},
+                          icon: Icon(
+                            Icons.music_note_outlined,
+                            color: Colors.white,
+                          ),
+                          label: Text(
+                            "Set Ringtone",
+                            style: TextStyle(color: Colors.white),
+                          )),
+                      SizedBox(
+                        height: 30.0,
+                      )
                     ],
-                  ),
-                ],
-              ),
-              Icon(Icons.arrow_forward_ios)
-            ],
+                  );
+                });
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: const Color.fromRGBO(114, 145, 219, 1),
+                      child: Icon(
+                        Icons.music_note,
+                        color: Theme.of(context).primaryColor,
+                        size: 25,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15.0,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Adopt Ringtone,",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16.0),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4.0,
+                        ),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Set ringtone",
+                            style: TextStyle(fontSize: 13.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Icon(Icons.arrow_forward_ios)
+              ],
+            ),
           ),
         );
       } else if (widget.type == "Survey") {

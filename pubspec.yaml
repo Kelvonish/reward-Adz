@@ -23,9 +23,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  audioplayers: ^0.19.0
   cached_network_image: ^3.0.0
   change_app_package_name: ^1.0.0
-  connectivity_plus: ^1.0.0
+  connectivity: ^3.0.6
   cupertino_icons: ^1.0.2
   firebase_auth: ^1.1.1
   flick_video_player: ^0.3.1
@@ -40,6 +41,7 @@ dependencies:
   http: ^0.13.1
   intl: ^0.17.0
   intl_phone_field: ^2.0.0
+  just_audio: ^0.7.5
   location: ^4.1.1
   pin_code_fields: ^7.1.0
   provider: ^5.0.0
