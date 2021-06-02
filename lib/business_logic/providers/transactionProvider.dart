@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
-import 'package:sqflite/sqflite.dart';
 
 import 'package:rewardadz/data/models/transactionModel.dart';
 import 'package:rewardadz/data/services/transactionNetworkService.dart';

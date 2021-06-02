@@ -66,17 +66,14 @@ class _CreateAccountState extends State<CreateAccount> {
                           Form(
                             key: _formKey2,
                             child: IntlPhoneField(
-                              validator: (value) => value.length <= 8
-                                  ? "Enter a valid number"
-                                  : null,
                               controller: _phoneController,
                               initialCountryCode: "KE",
                               keyboardType: TextInputType.number,
+                              autoValidate: false,
                               decoration: InputDecoration(
                                 fillColor: Colors.white,
                                 filled: true,
                                 labelText: "Phone Number",
-                                //labelStyle: _labelStyle
                               ),
                               onChanged: (phone) {
                                 setState(() {
@@ -200,17 +197,8 @@ class _CreateAccountState extends State<CreateAccount> {
                         IntlPhoneField(
                           controller: _phoneController,
                           dropDownArrowColor: Theme.of(context).primaryColor,
-                          inputFormatters: [
-                            new LengthLimitingTextInputFormatter(9)
-                          ],
                           initialCountryCode: "KE",
                           autoValidate: false,
-                          validator: (value) {
-                            if (value.length != 9) {
-                              return "Please enter a valid number";
-                            }
-                            return null;
-                          },
                           onChanged: (value) {
                             setState(() {
                               country = value.countryISOCode.toUpperCase();
