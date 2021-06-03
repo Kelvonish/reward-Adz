@@ -62,11 +62,11 @@ class GetCampaignsClass {
                   : null,
               banner: json['banner'] != null
                   ? BannerModel(
-                      shares: json['shares'],
-                      sharesamount: json['sharesamount'],
-                      bannerset: json['bannerset'],
-                      banneramount: json['banneramount'],
-                      bannerurl: json['bannerurl'],
+                      shares: json['banner']['shares'],
+                      sharesamount: json['banner']['sharesamount'],
+                      bannerset: json['banner']['bannerset'],
+                      banneramount: json['banner']['banneramount'],
+                      bannerurl: json['banner']['bannerurl'],
                     )
                   : null,
               video: json['video'] != null
@@ -135,11 +135,11 @@ class GetCampaignsClass {
                   : null,
               banner: json['banner'] != null
                   ? BannerModel(
-                      shares: json['shares'],
-                      sharesamount: json['sharesamount'],
-                      bannerset: json['bannerset'],
-                      banneramount: json['banneramount'],
-                      bannerurl: json['bannerurl'],
+                      shares: json['banner']['shares'],
+                      sharesamount: json['banner']['sharesamount'],
+                      bannerset: json['banner']['bannerset'],
+                      banneramount: json['banner']['banneramount'],
+                      bannerurl: json['banner']['bannerurl'],
                     )
                   : null,
               survey: null,

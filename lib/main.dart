@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:rewardadz/business_logic/providers/participateCampaign.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/database/campaignDatabase.dart';
@@ -15,14 +17,16 @@ import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
 
 import 'package:rewardadz/presentation/screens/navigator.dart';
-import 'package:rewardadz/presentation/screens/test.dart';
+import 'package:rewardadz/presentation/widgets/audioPlayer.dart';
 
-void main() {
-  //WidgetsFlutterBinding.ensureInitialized();
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await FlutterDownloader.initialize();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor:
         Colors.white, // navigation bar color // status bar color
   ));
+
   runApp(MyApp());
 }
 
@@ -60,6 +64,8 @@ class _MyAppState extends State<MyApp> {
               create: (_) => CampaignDatabaseProvider()),
           ChangeNotifierProvider<TransactionProvider>(
               create: (_) => TransactionProvider()),
+          ChangeNotifierProvider<ParticipateCampaignProvider>(
+              create: (_) => ParticipateCampaignProvider()),
         ],
         child: MaterialApp(
           debugShowCheckedModeBanner: false,

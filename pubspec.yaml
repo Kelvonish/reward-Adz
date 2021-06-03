@@ -31,6 +31,7 @@ dependencies:
   firebase_auth: ^1.1.1
   flick_video_player: ^0.3.1
   flutter_custom_tabs: ^0.6.0
+  flutter_downloader: ^1.6.1
   flutter_facebook_login: ^3.0.0
   flutter_native_splash: ^1.1.7+1
   flutter_spinkit: ^5.0.0
@@ -43,6 +44,8 @@ dependencies:
   intl_phone_field: ^2.0.0
   just_audio: ^0.7.5
   location: ^4.1.1
+  path_provider: ^2.0.2
+  permission_handler: ^8.0.0+2
   pin_code_fields: ^7.1.0
   provider: ^5.0.0
   rolling_nav_bar: ^0.0.4

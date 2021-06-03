@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
+import 'package:rewardadz/business_logic/providers/participateCampaign.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/database/campaignDatabase.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/presentation/screens/videoCampaign.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:rewardadz/presentation/widgets/audioPlayer.dart';
+import 'package:rewardadz/presentation/widgets/downloadAudio.dart';
 
 class CampaignDetails extends StatefulWidget {
   final String amount;
@@ -39,19 +42,7 @@ class CampaignDetails extends StatefulWidget {
 }
 
 class _CampaignDetailsState extends State<CampaignDetails> {
-  AudioPlayer player;
   bool playing = false;
-  @override
-  void initState() {
-    super.initState();
-    player = AudioPlayer();
-  }
-
-  @override
-  void dispose() {
-    player.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -157,69 +148,74 @@ class _CampaignDetailsState extends State<CampaignDetails> {
             showModalBottomSheet(
                 context: context,
                 builder: (context) {
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Adopt Ringtone",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            IconButton(
-                                icon: Icon(
-                                  Icons.cancel_sharp,
-                                  size: 30,
-                                  color: Theme.of(context).primaryColor,
+                  return Container(
+                    color: Colors.white,
+                    child: Consumer<ParticipateCampaignProvider>(
+                      builder: (context, value, child) => Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Adopt Ringtone",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                })
-                          ],
-                        ),
-                      ),
-                      Divider(
-                        height: 5,
-                        color: Colors.grey[400],
-                      ),
-                      Row(
-                        children: [
+                                IconButton(
+                                    icon: Icon(
+                                      Icons.cancel_sharp,
+                                      size: 30,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    })
+                              ],
+                            ),
+                          ),
+                          Divider(
+                            height: 5,
+                            color: Colors.grey[400],
+                          ),
+                          AudioPlayerWidget(audioModel: widget.audioModel),
                           SizedBox(
                             height: 30,
                           ),
-                          IconButton(
-                              icon: Icon(Icons.play_arrow,
-                                  color: Theme.of(context).primaryColor),
-                              onPressed: () async {
-                                await player
-                                    .setAsset(widget.audioModel.audiourl);
-                                player.play();
-                              })
+                          TextButton.icon(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Theme.of(context).primaryColor)),
+                              onPressed: () {
+                                value.downloadAudio(widget.audioModel);
+                              },
+                              icon: Icon(
+                                Icons.music_note_outlined,
+                                color: Colors.white,
+                              ),
+                              label: Text(
+                                "Set Ringtone",
+                                style: TextStyle(color: Colors.white),
+                              )),
+                          SizedBox(
+                            height: 30.0,
+                          ),
+                          value.downloading
+                              ? Container(
+                                  color: Theme.of(context).primaryColor,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      "Downloading...",
+                                      style: TextStyle(color: Colors.white),
+                                    ),
+                                  ),
+                                )
+                              : Text("")
                         ],
                       ),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      TextButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  Theme.of(context).primaryColor)),
-                          onPressed: () {},
-                          icon: Icon(
-                            Icons.music_note_outlined,
-                            color: Colors.white,
-                          ),
-                          label: Text(
-                            "Set Ringtone",
-                            style: TextStyle(color: Colors.white),
-                          )),
-                      SizedBox(
-                        height: 30.0,
-                      )
-                    ],
+                    ),
                   );
                 });
           },
