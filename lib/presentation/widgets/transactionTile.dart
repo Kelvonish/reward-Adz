@@ -21,20 +21,23 @@ class TranscationTile extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              CircleAvatar(
-                  radius: 20,
-                  backgroundColor: Theme.of(context).accentColor,
-                  child: type == "credit"
-                      ? Icon(
-                          Icons.monetization_on_outlined,
-                          color: Theme.of(context).primaryColor,
-                          size: 25,
-                        )
-                      : Icon(
-                          Icons.reply,
-                          color: Colors.red,
-                          size: 25,
-                        )),
+              type == "credit"
+                  ? CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Theme.of(context).accentColor,
+                      child: Icon(
+                        Icons.monetization_on_outlined,
+                        color: Theme.of(context).primaryColor,
+                        size: 25,
+                      ))
+                  : CircleAvatar(
+                      radius: 20,
+                      backgroundColor: Colors.red[100],
+                      child: Icon(
+                        Icons.reply,
+                        color: Colors.red,
+                        size: 25,
+                      )),
               SizedBox(
                 width: 15.0,
               ),

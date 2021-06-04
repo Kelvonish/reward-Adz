@@ -7,7 +7,7 @@ import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvi
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/database/campaignDatabase.dart';
 import 'package:rewardadz/data/local storage/locationPreference.dart';
-import 'package:rewardadz/data/models/userModel.dart';
+
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
 import 'package:rewardadz/presentation/screens/landingpage.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +17,8 @@ import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
 
 import 'package:rewardadz/presentation/screens/navigator.dart';
-import 'package:rewardadz/presentation/widgets/audioPlayer.dart';
+
+import 'presentation/screens/account Creation/verifyOtp.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -128,6 +129,8 @@ class _CheckSessionState extends State<CheckSession> {
                   return AddAccountDetails(
                     user: snapshot.data,
                   );
+                } else if (snapshot.data.data.status == 0) {
+                  return VerifyOtp(user: snapshot.data);
                 } else
                   return BottomNavigator();
             }

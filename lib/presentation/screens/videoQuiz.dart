@@ -7,6 +7,8 @@ import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/surveyModel.dart';
 
+import '../../business_logic/providers/participateCampaign.dart';
+
 class VideoQuiz extends StatefulWidget {
   final String surveyId;
   final String name;
@@ -191,40 +193,21 @@ class _VideoQuizState extends State<VideoQuiz> {
                                 ],
                               );
                             }),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          margin: EdgeInsets.only(top: 30.0),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    Theme.of(context).primaryColor)),
-                            onPressed: () {
-                              for (int index = 0;
-                                  index < surveyAnswers.data.length;
-                                  index++) {
-                                var qn = index + 1;
-                                if (surveyAnswers.data[index].type == "radio") {
-                                  if (surveyAnswers.data[index].choosenAnswer ==
-                                      null) {
-                                    Fluttertoast.showToast(
-                                        msg: "Question $qn is not answered");
-                                  } else {
-                                    if (surveyAnswers
-                                            .data[index]
-                                            .answers[surveyAnswers
-                                                .data[index].choosenAnswer]
-                                            .choice !=
-                                        "correct") {
-                                      Fluttertoast.showToast(
-                                          msg: "Question $qn is not correct");
-                                    }
-                                  }
-                                }
-                              }
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(15.0),
-                              child: Text("Submit"),
+                        Consumer<ParticipateCampaignProvider>(
+                          builder: (context, value, child) => Container(
+                            width: MediaQuery.of(context).size.width,
+                            margin: EdgeInsets.only(top: 30.0),
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Theme.of(context).primaryColor)),
+                              onPressed: () {
+                                value.checkVideoAnswers(context, surveyAnswers);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Text("Submit"),
+                              ),
                             ),
                           ),
                         ),

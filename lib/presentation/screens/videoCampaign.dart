@@ -45,6 +45,19 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
           backgroundColor: Colors.black,
           body: Stack(
             children: [
+              Positioned(
+                top: 40,
+                left: 15,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
               _videoEnded
                   ? Positioned(
                       top: 40,
@@ -90,8 +103,10 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
                     ),
               Center(
                 child: Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  child: FlickVideoPlayer(flickManager: flickManager),
+                  height: MediaQuery.of(context).size.height * 0.3,
+                  child: FlickVideoPlayer(
+                    flickManager: flickManager,
+                  ),
                 ),
               ),
             ],

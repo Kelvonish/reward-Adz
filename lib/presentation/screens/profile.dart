@@ -14,6 +14,8 @@ import 'package:rewardadz/presentation/screens/termsOfService.dart';
 import 'package:rewardadz/presentation/widgets/profileImage.dart';
 import 'package:provider/provider.dart';
 
+import '../../main.dart';
+
 class Profile extends StatefulWidget {
   @override
   _ProfileState createState() => _ProfileState();
@@ -438,10 +440,10 @@ class _ProfileState extends State<Profile> {
                                         listen: false)
                                     .loggedUser = null;
 
-                                Navigator.of(context).pushReplacement(
+                                Navigator.of(context).pushAndRemoveUntil(
                                     MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            MyApp()));
+                                        builder: (context) => MyApp()),
+                                    (Route<dynamic> route) => false);
                               } else {
                                 Navigator.pop(context);
                               }
