@@ -186,7 +186,7 @@ class UserNetworkService {
 
   Future<bool> sendOtp(UserModel user) async {
     Map data = {
-      "id": 107,
+      "id": user.data.id,
     };
 
     try {
@@ -214,7 +214,7 @@ class UserNetworkService {
   Future<bool> verifyOtp(UserModel user, String otpCode) async {
     Map data = {
       "code": otpCode,
-      "id": 107,
+      "id": user.data.id,
     };
 
     try {
@@ -242,5 +242,51 @@ class UserNetworkService {
       Fluttertoast.showToast(msg: "Error : " + e.toString());
       return false;
     }
+  }
+
+  Future<UserModel> getUser(String userId) async {
+    try {
+      String url = BASE_URL + "users/$userId";
+
+      var parsedUrl = Uri.parse(url);
+
+      var response = await http.get(parsedUrl);
+      var returnedData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return UserModel.fromJson(returnedData);
+      } else {
+        if (returnedData['data'] is String) {
+          Fluttertoast.showToast(msg: returnedData['data']);
+        }
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Error getting user: " + e.toString());
+      return null;
+    }
+    return null;
+  }
+
+  Future<UserModel> resetPassword(int userId, String newPassword) async {
+    Map data = {'uid': userId, 'newpassword': newPassword};
+
+    try {
+      String url = BASE_URL + "reset/inmobile";
+      var body = json.encode(data);
+      print(body);
+      var parsedUrl = Uri.parse(url);
+
+      var response = await http.post(parsedUrl,
+          headers: {"Content-Type": "application/json"}, body: body);
+      var returnedData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return UserModel.fromJson(returnedData);
+      } else {
+        Fluttertoast.showToast(msg: "error 500. Reseting password");
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Nothing " + e.toString());
+      return null;
+    }
+    return null;
   }
 }

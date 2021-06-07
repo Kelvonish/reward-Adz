@@ -21,6 +21,11 @@ class _WalletState extends State<Wallet> {
     getAllData();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   getAllData() async {
     await Provider.of<TransactionProvider>(context, listen: false).getEarnings(
         Provider.of<UserProvider>(context, listen: false)

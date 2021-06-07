@@ -8,13 +8,13 @@ import 'package:rewardadz/main.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/verifyOtp.dart';
 import 'package:rewardadz/data/local storage/userPreference.dart';
-import 'package:rewardadz/presentation/screens/navigator.dart';
 
 class UserProvider extends ChangeNotifier {
   UserPreferences userPref = UserPreferences();
   UserNetworkService userClass = UserNetworkService();
   bool signUpButtonLoading = false;
   bool loginButtonLoading = false;
+  bool resetButtonLoading = false;
   bool accountDetailButton = false;
   UserModel loggedUser;
 
@@ -124,11 +124,25 @@ class UserProvider extends ChangeNotifier {
         Fluttertoast.showToast(
             msg: "Successfully logged in!",
             backgroundColor: Theme.of(context).primaryColor);
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (BuildContext context) => MyApp()));
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => MyApp()),
+            (Route<dynamic> route) => false);
       }
       loginButtonLoading = false;
       notifyListeners();
+    }
+  }
+
+  getUser(String userId) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+    } else {
+      UserModel result = await userClass.getUser(userId);
+
+      if (result != null) {
+        userPref.saveUser(result);
+      }
     }
   }
 
@@ -147,13 +161,15 @@ class UserProvider extends ChangeNotifier {
 
       if (result != null) {
         userPref.saveUser(result);
-        loginButtonLoading = false;
-        notifyListeners();
+
         Fluttertoast.showToast(
             msg: "Successfully logged in!",
             backgroundColor: Theme.of(context).primaryColor);
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (BuildContext context) => MyApp()));
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => MyApp()),
+            (Route<dynamic> route) => false);
+        loginButtonLoading = false;
+        notifyListeners();
       }
       loginButtonLoading = false;
       notifyListeners();
@@ -195,10 +211,11 @@ class UserProvider extends ChangeNotifier {
       bool verified = await userClass.verifyOtp(user, otpCode);
 
       if (verified) {
-        loginButtonLoading = false;
-        notifyListeners();
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MyApp()));
+        var result = await userClass.getUser(user.data.id.toString());
+        userPref.saveUser(result);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => MyApp()),
+            (Route<dynamic> route) => false);
       }
       loginButtonLoading = false;
       notifyListeners();
@@ -211,6 +228,34 @@ class UserProvider extends ChangeNotifier {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       await userClass.sendOtp(user);
+    }
+  }
+
+  resetPassword({BuildContext context, int userId, String newPassword}) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+    } else {
+      resetButtonLoading = true;
+      notifyListeners();
+
+      UserModel result = await userClass.resetPassword(userId, newPassword);
+
+      if (result != null) {
+        userPref.saveUser(result);
+
+        Fluttertoast.showToast(
+            msg: "Password reset Successfully",
+            backgroundColor: Theme.of(context).primaryColor);
+
+        Navigator.pop(context);
+      } else {
+        Fluttertoast.showToast(msg: "Error reseting. Nothing happened");
+        resetButtonLoading = false;
+        notifyListeners();
+      }
+      resetButtonLoading = false;
+      notifyListeners();
     }
   }
 }

@@ -1,9 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
-import 'package:rewardadz/data/models/campaignModel.dart';
-import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/editprofile.dart';
 import 'package:rewardadz/presentation/screens/notifications.dart';
 import 'package:rewardadz/presentation/widgets/advertismentTileWidget.dart';
@@ -209,7 +206,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     Image.asset("assets/empty.png"),
                                     Center(
                                       child: Text(
-                                        "No Campaigns available right now!",
+                                        "No Campaigns available right now in your area",
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w300),

@@ -57,38 +57,54 @@ class ParticipateCampaignProvider extends ChangeNotifier {
             surveyErrors.add("Question $qn is not correct");
           }
         }
+      } else if (surveyAnswers.data[index].type == "textfield") {
+        if (surveyAnswers.data[index].textFieldAnswer == null) {
+          surveyErrors.add("Question $qn is not answered");
+        }
+      } else if (surveyAnswers.data[index].type == "checkboxes") {
+        for (int i = 0; i > surveyAnswers.data[index].answers.length; i++) {
+          if (surveyAnswers.data[index].answers[i].selectedAnswer == true) {
+            if (surveyAnswers.data[index].answers[i].choice == "incorrect") {
+              surveyErrors
+                  .add("Selected answer for question $qn is not correct");
+            }
+          }
+        }
       }
     }
     if (surveyErrors.isEmpty) {
       Fluttertoast.showToast(
           msg: "Congratulations! you answered all questions succesfully");
     } else {
-      // set up the button
-      Widget okButton = TextButton(
-        child: Text("Cancel"),
-        onPressed: () {
-          Navigator.pop(context);
-        },
-      );
-
-      // set up the AlertDialog
-      AlertDialog alert = AlertDialog(
-        title: Text("You have errors!!"),
-        content: ListView.builder(itemBuilder: (context, index) {
-          return Text(surveyErrors[index]);
-        }),
-        actions: [
-          okButton,
-        ],
-      );
-
-      // show the dialog
-      showDialog(
+      showDialog<void>(
         context: context,
+        barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
-          return alert;
+          return AlertDialog(
+            title: Text('You have some Errors!!'),
+            content: Container(
+              width: double.maxFinite,
+              //height: 100,
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: surveyErrors.length,
+                  itemBuilder: (context, index) {
+                    return Text(surveyErrors[index]);
+                  }),
+            ),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Cancel',
+                    style: TextStyle(color: Theme.of(context).primaryColor)),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
         },
       );
     }
+    notifyListeners();
   }
 }

@@ -129,7 +129,7 @@ class _CheckSessionState extends State<CheckSession> {
                   return AddAccountDetails(
                     user: snapshot.data,
                   );
-                } else if (snapshot.data.data.status == 0) {
+                } else if (snapshot.data.data.status == 5) {
                   return VerifyOtp(user: snapshot.data);
                 } else
                   return BottomNavigator();

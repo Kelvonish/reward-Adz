@@ -238,7 +238,7 @@ class _CreateAccountState extends State<CreateAccount> {
                           controller: _passwordController,
                           validator: (val) {
                             if (!validatePassword(val)) {
-                              return "Minimum is 6 characters! Should contain uppercase,lowecase,character and number";
+                              return "Minimum is 6 characters! Should contain uppercase,lowecase, special character and number";
                             }
                             return null;
                           },

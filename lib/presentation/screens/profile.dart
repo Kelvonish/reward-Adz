@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:rewardadz/business_logic/Shared/validator.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
@@ -25,7 +28,8 @@ class _ProfileState extends State<Profile> {
   TextStyle _titleStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0);
   TextStyle _labelStyle = TextStyle(fontSize: 14.0);
-
+  TextEditingController _passwordController = TextEditingController();
+  TextEditingController _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
@@ -157,131 +161,213 @@ class _ProfileState extends State<Profile> {
                           child: Material(
                             type: MaterialType.transparency,
                             child: Container(
-                                height: 300,
+                                height: 370,
                                 margin: MediaQuery.of(context).viewInsets,
                                 color: Colors.white,
-                                child: Column(
-                                  children: [
-                                    Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 15.0, bottom: 8.0),
-                                        child: Icon(
-                                          Icons.lock,
-                                          size: 50,
-                                          color: Theme.of(context).primaryColor,
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      "Reset Password",
-                                      style: TextStyle(
-                                          fontSize: 18.0, color: Colors.black),
-                                    ),
-                                    Consumer<TogglePasswordProvider>(
-                                      builder: (context, data, child) => Form(
-                                          child: Column(
-                                        children: [
-                                          TextField(
-                                            onChanged: (value) {
-                                              setState(() {});
-                                            },
-                                            cursorColor:
-                                                Theme.of(context).primaryColor,
-                                            keyboardType:
-                                                TextInputType.visiblePassword,
-                                            obscureText: data.password4,
-                                            decoration: InputDecoration(
-                                                border: InputBorder.none,
-                                                focusedBorder: InputBorder.none,
-                                                enabledBorder: InputBorder.none,
-                                                errorBorder: InputBorder.none,
-                                                disabledBorder:
-                                                    InputBorder.none,
-                                                suffixIcon: IconButton(
-                                                  icon: data.password4
-                                                      ? Icon(
-                                                          Icons.visibility,
-                                                          color: Colors.grey,
-                                                        )
-                                                      : Icon(
-                                                          Icons.visibility_off,
-                                                          color: Colors.grey,
-                                                        ),
-                                                  onPressed:
-                                                      data.togglePassword4,
-                                                ),
-                                                fillColor: Colors.white,
-                                                filled: true,
-                                                labelText: "Password",
-                                                labelStyle: _labelStyle),
-                                          ),
-                                          Divider(
-                                            height: 8,
-                                          ),
-                                          TextField(
-                                            cursorColor:
-                                                Theme.of(context).primaryColor,
-                                            keyboardType:
-                                                TextInputType.visiblePassword,
-                                            obscureText: data.password5,
-                                            decoration: InputDecoration(
-                                                border: InputBorder.none,
-                                                suffixIcon: IconButton(
-                                                  icon: data.password5
-                                                      ? Icon(
-                                                          Icons.visibility,
-                                                          color: Colors.grey,
-                                                        )
-                                                      : Icon(
-                                                          Icons.visibility_off,
-                                                          color: Colors.grey,
-                                                        ),
-                                                  onPressed:
-                                                      data.togglePassword5,
-                                                ),
-                                                focusedBorder: InputBorder.none,
-                                                enabledBorder: InputBorder.none,
-                                                errorBorder: InputBorder.none,
-                                                disabledBorder:
-                                                    InputBorder.none,
-                                                fillColor: Colors.white,
-                                                filled: true,
-                                                labelText: "Confirm Password",
-                                                labelStyle: _labelStyle),
-                                          )
-                                        ],
-                                      )),
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      margin: EdgeInsets.all(15.0),
-                                      child: ElevatedButton(
-                                        onPressed: () {},
+                                child: Consumer<UserProvider>(
+                                  builder: (context, user, child) => Column(
+                                    children: [
+                                      Center(
                                         child: Padding(
-                                          padding: const EdgeInsets.all(20.0),
-                                          child: Text("Reset"),
+                                          padding: const EdgeInsets.only(
+                                              top: 15.0, bottom: 8.0),
+                                          child: Icon(
+                                            Icons.lock,
+                                            size: 50,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ),
                                         ),
-                                        style: ButtonStyle(
-                                            elevation:
-                                                MaterialStateProperty.all(0.0),
-                                            shape: MaterialStateProperty.all<
-                                                    RoundedRectangleBorder>(
-                                                RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                      0.0,
-                                                    ),
-                                                    side: BorderSide(
-                                                        color: Theme.of(context)
-                                                            .primaryColor))),
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                                    Theme.of(context)
-                                                        .primaryColor)),
                                       ),
-                                    )
-                                  ],
+                                      Text(
+                                        "Reset Password",
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            color: Colors.black),
+                                      ),
+                                      Consumer<TogglePasswordProvider>(
+                                        builder: (context, data, child) => Form(
+                                            child: Expanded(
+                                          child: Form(
+                                            key: _formKey,
+                                            child: Column(
+                                              children: [
+                                                TextFormField(
+                                                  onChanged: (value) {
+                                                    setState(() {});
+                                                  },
+                                                  cursorColor: Theme.of(context)
+                                                      .primaryColor,
+                                                  keyboardType: TextInputType
+                                                      .visiblePassword,
+                                                  obscureText: data.password4,
+                                                  controller:
+                                                      _passwordController,
+                                                  validator: (val) {
+                                                    if (!validatePassword(
+                                                        val)) {
+                                                      return "Minimum is 6 characters! Should contain uppercase,lowecase,special character and number";
+                                                    }
+                                                    return null;
+                                                  },
+                                                  decoration: InputDecoration(
+                                                      errorMaxLines: 2,
+                                                      border: InputBorder.none,
+                                                      focusedBorder:
+                                                          InputBorder.none,
+                                                      enabledBorder:
+                                                          InputBorder.none,
+                                                      errorBorder:
+                                                          InputBorder.none,
+                                                      disabledBorder:
+                                                          InputBorder.none,
+                                                      suffixIcon: IconButton(
+                                                        icon: data.password4
+                                                            ? Icon(
+                                                                Icons
+                                                                    .visibility,
+                                                                color:
+                                                                    Colors.grey,
+                                                              )
+                                                            : Icon(
+                                                                Icons
+                                                                    .visibility_off,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                        onPressed: data
+                                                            .togglePassword4,
+                                                      ),
+                                                      fillColor: Colors.white,
+                                                      filled: true,
+                                                      labelText: "Password",
+                                                      labelStyle: _labelStyle),
+                                                ),
+                                                Divider(
+                                                  height: 8,
+                                                ),
+                                                TextFormField(
+                                                  cursorColor: Theme.of(context)
+                                                      .primaryColor,
+                                                  keyboardType: TextInputType
+                                                      .visiblePassword,
+                                                  obscureText: data.password5,
+                                                  controller:
+                                                      _confirmPasswordController,
+                                                  validator: (val) {
+                                                    if (val.isEmpty)
+                                                      return 'Confirm Password field cannot be empty';
+                                                    if (val !=
+                                                        _passwordController
+                                                            .text) {
+                                                      return 'Passwords do not match';
+                                                    }
+                                                    return null;
+                                                  },
+                                                  decoration: InputDecoration(
+                                                      border: InputBorder.none,
+                                                      suffixIcon: IconButton(
+                                                        icon: data.password5
+                                                            ? Icon(
+                                                                Icons
+                                                                    .visibility,
+                                                                color:
+                                                                    Colors.grey,
+                                                              )
+                                                            : Icon(
+                                                                Icons
+                                                                    .visibility_off,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                        onPressed: data
+                                                            .togglePassword5,
+                                                      ),
+                                                      focusedBorder:
+                                                          InputBorder.none,
+                                                      enabledBorder:
+                                                          InputBorder.none,
+                                                      errorBorder:
+                                                          InputBorder.none,
+                                                      disabledBorder:
+                                                          InputBorder.none,
+                                                      fillColor: Colors.white,
+                                                      filled: true,
+                                                      labelText:
+                                                          "Confirm Password",
+                                                      labelStyle: _labelStyle),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        )),
+                                      ),
+                                      user.resetButtonLoading
+                                          ? Center(
+                                              child: SpinKitChasingDots(
+                                                color: Theme.of(context)
+                                                    .primaryColor,
+                                              ),
+                                            )
+                                          : Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              margin: EdgeInsets.all(15.0),
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  if (_formKey.currentState
+                                                      .validate()) {
+                                                    if (user.loggedUser.data
+                                                            .type ==
+                                                        "Email") {
+                                                      user.resetPassword(
+                                                          context: context,
+                                                          userId: user
+                                                              .loggedUser
+                                                              .data
+                                                              .id,
+                                                          newPassword:
+                                                              _confirmPasswordController
+                                                                  .text);
+                                                    } else {
+                                                      Fluttertoast.showToast(
+                                                          msg: "You are logged in using " +
+                                                              user.loggedUser
+                                                                  .data.type +
+                                                              " password is not needed");
+                                                    }
+                                                  }
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      20.0),
+                                                  child: Text("Reset"),
+                                                ),
+                                                style: ButtonStyle(
+                                                    elevation:
+                                                        MaterialStateProperty
+                                                            .all(0.0),
+                                                    shape: MaterialStateProperty.all<
+                                                            RoundedRectangleBorder>(
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                              0.0,
+                                                            ),
+                                                            side: BorderSide(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .primaryColor))),
+                                                    backgroundColor:
+                                                        MaterialStateProperty.all(
+                                                            Theme.of(context)
+                                                                .primaryColor)),
+                                              ),
+                                            )
+                                    ],
+                                  ),
                                 )),
                           ),
                         );

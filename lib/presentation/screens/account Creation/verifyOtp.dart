@@ -3,9 +3,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:provider/provider.dart';
 import 'package:quiver/async.dart';
+import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
+import 'package:rewardadz/data/local%20storage/userPreference.dart';
 import 'package:rewardadz/data/models/userModel.dart';
-import 'package:rewardadz/presentation/screens/navigator.dart';
+import 'package:rewardadz/main.dart';
 
 class VerifyOtp extends StatefulWidget {
   final UserModel user;
@@ -215,6 +217,31 @@ class _VerifyOtpState extends State<VerifyOtp> {
                       ),
                 SizedBox(
                   height: 30,
+                ),
+                InkWell(
+                  onTap: () async {
+                    UserPreferences userPref = UserPreferences();
+                    bool done = await userPref.removeUser();
+                    await Provider.of<AuthenticationProvider>(context,
+                            listen: false)
+                        .logoutSocial();
+                    if (done) {
+                      Provider.of<UserProvider>(context, listen: false)
+                          .loggedUser = null;
+
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => MyApp()),
+                          (Route<dynamic> route) => false);
+                    }
+                  },
+                  child: Text(
+                    "Logout",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w300,
+                        fontSize: 16.0),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
               ],
             ),

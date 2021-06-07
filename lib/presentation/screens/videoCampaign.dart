@@ -73,7 +73,6 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
                                       )));
                         },
                         child: Container(
-                          width: 125,
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(25)),

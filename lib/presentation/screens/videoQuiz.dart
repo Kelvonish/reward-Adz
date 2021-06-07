@@ -19,6 +19,7 @@ class VideoQuiz extends StatefulWidget {
 }
 
 class _VideoQuizState extends State<VideoQuiz> {
+  FullSurveyModel surveyAnswers = FullSurveyModel(data: []);
   @override
   void initState() {
     super.initState();
@@ -26,7 +27,15 @@ class _VideoQuizState extends State<VideoQuiz> {
         .getVideoSurvey(widget.surveyId);
   }
 
-  FullSurveyModel surveyAnswers = FullSurveyModel(data: []);
+  @override
+  void dispose() {
+    Provider.of<ParticipateCampaignProvider>(context, listen: false)
+        .surveyErrors = [];
+
+    super.dispose();
+    surveyAnswers.data = [];
+  }
+
   @override
   Widget build(BuildContext context) {
     _buildAnswers(
@@ -70,9 +79,6 @@ class _VideoQuizState extends State<VideoQuiz> {
                     onChanged: (val) {
                       setState(() {
                         surveyAnswers.data[position].choosenAnswer = index;
-                        //surveyAnswers.data[position].answers.clear();
-
-                        // print(surveyAnswers.data[position].answers.length);
                       });
                     }),
               );
@@ -126,10 +132,10 @@ class _VideoQuizState extends State<VideoQuiz> {
                       .data[position].answers[index].selectedAnswer,
                   value: surveyAnswers
                       .data[position].answers[index].selectedAnswer,
-                  onChanged: (bool value) {
+                  onChanged: (bool val) {
                     setState(() {
                       surveyAnswers
-                          .data[position].answers[index].selectedAnswer = value;
+                          .data[position].answers[index].selectedAnswer = val;
                     });
                   },
                 ),
@@ -202,6 +208,9 @@ class _VideoQuizState extends State<VideoQuiz> {
                                   backgroundColor: MaterialStateProperty.all(
                                       Theme.of(context).primaryColor)),
                               onPressed: () {
+                                value.surveyErrors = [];
+                                print(" Length od answers " +
+                                    surveyAnswers.data.length.toString());
                                 value.checkVideoAnswers(context, surveyAnswers);
                               },
                               child: Padding(
