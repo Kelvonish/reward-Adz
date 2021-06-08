@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:provider/provider.dart';
+import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
+import 'package:rewardadz/presentation/widgets/notificationTile.dart';
 
 class Notifications extends StatefulWidget {
   @override
@@ -7,9 +12,22 @@ class Notifications extends StatefulWidget {
 
 class _NotificationsState extends State<Notifications> {
   @override
+  void initState() {
+    super.initState();
+    Provider.of<TransactionProvider>(context, listen: false).getNotifications(
+        Provider.of<UserProvider>(context, listen: false)
+            .loggedUser
+            .data
+            .id
+            .toString());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).primaryColor,
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
@@ -23,19 +41,42 @@ class _NotificationsState extends State<Notifications> {
           ),
           body: Container(
             margin: EdgeInsets.all(10.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Image.asset("assets/notification.png"),
-                Center(
-                  child: Text(
-                    "No notifications available",
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.w300),
-                  ),
-                ),
-              ],
-            ),
+            width: MediaQuery.of(context).size.width,
+            child: Consumer<TransactionProvider>(
+                builder: (context, value, child) => Container(
+                      child: value.notificationsLoading
+                          ? Center(
+                              child: SpinKitChasingDots(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                            )
+                          : value.notifications == null
+                              ? Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset("assets/notification.png"),
+                                    Center(
+                                      child: Text(
+                                        "No notifications available",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              : Container(
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount:
+                                          value.notifications.data.length,
+                                      itemBuilder: (context, index) {
+                                        return NotificationTile(
+                                          data: value.notifications.data[index],
+                                        );
+                                      }),
+                                ),
+                    )),
           ),
         ),
       ),

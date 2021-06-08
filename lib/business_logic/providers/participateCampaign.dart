@@ -7,6 +7,7 @@ import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rewardadz/business_logic/providers/notificationsProvider.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 
 import '../../data/models/surveyModel.dart';
@@ -15,6 +16,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
   bool downloading = false;
   bool checkingAnswers = false;
   List<String> surveyErrors = [];
+  SendNotification notification = SendNotification();
   downloadAudio(AudioModel audioModel) async {
     final status = await Permission.storage.request();
     if (status.isGranted) {
@@ -73,8 +75,8 @@ class ParticipateCampaignProvider extends ChangeNotifier {
       }
     }
     if (surveyErrors.isEmpty) {
-      Fluttertoast.showToast(
-          msg: "Congratulations! you answered all questions succesfully");
+      notification.sendNotification(
+          "Congratulation! ", "You have earned 30 from video campaign");
     } else {
       showDialog<void>(
         context: context,

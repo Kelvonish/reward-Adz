@@ -60,7 +60,7 @@ create table $dbName (
     } else if (campaign.survey != null) {
       return campaign.survey.amount;
     } else if (campaign.banner != null) {
-      return campaign.banner.banneramount;
+      return campaign.banner.sharesamount;
     }
     return "Unknown";
   }

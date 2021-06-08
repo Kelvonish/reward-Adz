@@ -18,7 +18,25 @@ class _WalletState extends State<Wallet> {
   @override
   void initState() {
     super.initState();
-    getAllData();
+    Provider.of<TransactionProvider>(context, listen: false).getEarnings(
+        Provider.of<UserProvider>(context, listen: false)
+            .loggedUser
+            .data
+            .id
+            .toString());
+
+    Provider.of<TransactionProvider>(context, listen: false).getWithdrawals(
+        Provider.of<UserProvider>(context, listen: false)
+            .loggedUser
+            .data
+            .id
+            .toString());
+    Provider.of<TransactionProvider>(context, listen: false).getTransfers(
+        Provider.of<UserProvider>(context, listen: false)
+            .loggedUser
+            .data
+            .id
+            .toString());
   }
 
   @override

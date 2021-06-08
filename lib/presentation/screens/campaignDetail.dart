@@ -13,27 +13,12 @@ import 'package:rewardadz/presentation/widgets/audioPlayer.dart';
 import 'package:rewardadz/presentation/widgets/downloadAudio.dart';
 
 class CampaignDetails extends StatefulWidget {
-  final String amount;
-  final String name;
-  final String mainUrl;
-  final String otherUrl;
-  final String category;
   final String type;
-  final String surveyId;
-  final VideoModel videoModel;
+
   final CampaignModel campaignModel;
-  final AudioModel audioModel;
 
   CampaignDetails({
-    this.amount,
-    this.mainUrl,
-    this.otherUrl,
-    this.category,
-    this.surveyId,
-    this.name,
     this.type,
-    this.videoModel,
-    this.audioModel,
     this.campaignModel,
   });
 
@@ -49,22 +34,27 @@ class _CampaignDetailsState extends State<CampaignDetails> {
     Widget _checkTypeofCampaignForDetails() {
       if (widget.type == "Ringtone") {
         return Text(
-          "Sorry! Ringtone not supported for iOS devices",
-          style: TextStyle(
-              fontSize: 13.0, color: Colors.red, fontWeight: FontWeight.bold),
+          "Set as ringtone to earn",
+          style: TextStyle(fontSize: 13.0, color: Colors.white),
         );
       } else if (widget.type == "Video") {
         return Text(
           "Watch the video and answer questions correctly to earn Ksh " +
-              widget.amount,
+              widget.campaignModel.video.watchedvideosamount,
           style: TextStyle(
               fontSize: 13.0, color: Colors.white, fontWeight: FontWeight.w300),
         );
       } else if (widget.type == "Survey") {
         return Text(
-          "Answer survey questions to earn Ksh " + widget.amount,
+          "Answer survey questions to earn Ksh " +
+              widget.campaignModel.survey.amount,
           style: TextStyle(
               fontSize: 13.0, color: Colors.white, fontWeight: FontWeight.w300),
+        );
+      } else if (widget.type == "Banner") {
+        return Text(
+          "Share banner and earn",
+          style: TextStyle(fontSize: 13.0, color: Colors.white),
         );
       }
       return null;
@@ -86,8 +76,8 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                 context,
                 MaterialPageRoute(
                     builder: (context) => VideoCampaignPage(
-                          name: widget.name,
-                          videoModel: widget.videoModel,
+                          name: widget.campaignModel.name,
+                          videoModel: widget.campaignModel.video,
                         )));
           },
           child: Padding(
@@ -129,7 +119,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                           alignment: Alignment.topLeft,
                           child: Text(
                             "Watch video and answer subsequent questions to earn Ksh " +
-                                widget.amount,
+                                widget.campaignModel.video.watchedvideosamount,
                             style: TextStyle(fontSize: 13.0),
                           ),
                         ),
@@ -144,7 +134,14 @@ class _CampaignDetailsState extends State<CampaignDetails> {
         );
       } else if (widget.type == "Ringtone") {
         return InkWell(
-          onTap: () {
+          onTap: () async {
+            await Provider.of<CampaignDatabaseProvider>(context, listen: false)
+                .insertCampaign(
+                    widget.campaignModel,
+                    Provider.of<UserProvider>(context, listen: false)
+                        .loggedUser
+                        .data
+                        .id);
             showModalBottomSheet(
                 context: context,
                 builder: (context) {
@@ -179,7 +176,8 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                             height: 5,
                             color: Colors.grey[400],
                           ),
-                          AudioPlayerWidget(audioModel: widget.audioModel),
+                          AudioPlayerWidget(
+                              audioModel: widget.campaignModel.audio),
                           SizedBox(
                             height: 30,
                           ),
@@ -188,7 +186,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                                   backgroundColor: MaterialStateProperty.all(
                                       Theme.of(context).primaryColor)),
                               onPressed: () {
-                                value.downloadAudio(widget.audioModel);
+                                value.downloadAudio(widget.campaignModel.audio);
                               },
                               icon: Icon(
                                 Icons.music_note_outlined,
@@ -256,7 +254,8 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                         Container(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Set ringtone",
+                            "Set ringtone and earn " +
+                                widget.campaignModel.audio.award,
                             style: TextStyle(fontSize: 13.0),
                           ),
                         ),
@@ -288,7 +287,10 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                                 .id);
 
                     Provider.of<GetCampaignProvider>(context, listen: false)
-                        .getSurvey(context, widget.surveyId, widget.name);
+                        .getSurvey(
+                            context,
+                            widget.campaignModel.survey.surveyid,
+                            widget.campaignModel.name);
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
@@ -330,7 +332,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                                   alignment: Alignment.topLeft,
                                   child: Text(
                                     "Answer survey questions to earn Ksh " +
-                                        widget.amount,
+                                        widget.campaignModel.survey.amount,
                                     style: TextStyle(
                                         fontSize: 13.0, color: Colors.black),
                                   ),
@@ -345,6 +347,69 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                   ),
                 ),
         );
+      } else if (widget.type == "Banner") {
+        return InkWell(
+          onTap: () async {
+            await Provider.of<CampaignDatabaseProvider>(context, listen: false)
+                .insertCampaign(
+                    widget.campaignModel,
+                    Provider.of<UserProvider>(context, listen: false)
+                        .loggedUser
+                        .data
+                        .id);
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 20,
+                      backgroundColor: const Color.fromRGBO(114, 145, 219, 1),
+                      child: Icon(
+                        Icons.assignment,
+                        color: Theme.of(context).primaryColor,
+                        size: 25,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15.0,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Share Banner",
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16.0),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 4.0,
+                        ),
+                        Container(
+                          alignment: Alignment.topLeft,
+                          child: Text(
+                            "Share Banner to earn  " +
+                                widget.campaignModel.banner.sharesamount,
+                            style:
+                                TextStyle(fontSize: 13.0, color: Colors.black),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                Icon(Icons.arrow_forward_ios)
+              ],
+            ),
+          ),
+        );
       }
       return Text("");
     }
@@ -357,7 +422,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
             child: Column(
               children: [
                 CachedNetworkImage(
-                  imageUrl: widget.mainUrl,
+                  imageUrl: widget.campaignModel.campimg,
                   fit: BoxFit.fitHeight,
                   imageBuilder: (context, imageProvider) => Container(
                     width: MediaQuery.of(context).size.width,
@@ -392,7 +457,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                       Row(
                         children: [
                           CachedNetworkImage(
-                            imageUrl: widget.otherUrl,
+                            imageUrl: widget.campaignModel.organization.logo,
                             imageBuilder: (context, imageProvider) => Container(
                               width: 50.0,
                               height: 50.0,
@@ -414,13 +479,14 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                widget.name ?? "",
+                                widget.campaignModel.name ?? "",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 15.0),
                               ),
                               Text(
-                                widget.category ?? "",
+                                widget.campaignModel.organization.industry ??
+                                    "",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 10.0),
@@ -518,28 +584,13 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                       SizedBox(
                         width: 15.0,
                       ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Share with friends",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 16.0),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 4.0,
-                          ),
-                          Container(
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              "Share the ringtone with 5 friends \n and earn Ksh 500",
-                              style: TextStyle(fontSize: 13.0),
-                            ),
-                          ),
-                        ],
+                      Container(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          "Share with friends",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16.0),
+                        ),
                       ),
                     ],
                   ),

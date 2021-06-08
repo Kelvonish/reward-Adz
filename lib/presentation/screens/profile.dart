@@ -165,30 +165,32 @@ class _ProfileState extends State<Profile> {
                                 margin: MediaQuery.of(context).viewInsets,
                                 color: Colors.white,
                                 child: Consumer<UserProvider>(
-                                  builder: (context, user, child) => Column(
-                                    children: [
-                                      Center(
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 15.0, bottom: 8.0),
-                                          child: Icon(
-                                            Icons.lock,
-                                            size: 50,
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                  builder: (context, user, child) => Expanded(
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Center(
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                top: 15.0, bottom: 8.0),
+                                            child: Icon(
+                                              Icons.lock,
+                                              size: 50,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Text(
-                                        "Reset Password",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            color: Colors.black),
-                                      ),
-                                      Consumer<TogglePasswordProvider>(
-                                        builder: (context, data, child) => Form(
-                                            child: Expanded(
-                                          child: Form(
+                                        Text(
+                                          "Reset Password",
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              color: Colors.black),
+                                        ),
+                                        Consumer<TogglePasswordProvider>(
+                                          builder: (context, data, child) =>
+                                              Form(
+                                                  child: Form(
                                             key: _formKey,
                                             child: Column(
                                               children: [
@@ -299,74 +301,76 @@ class _ProfileState extends State<Profile> {
                                                 )
                                               ],
                                             ),
-                                          ),
-                                        )),
-                                      ),
-                                      user.resetButtonLoading
-                                          ? Center(
-                                              child: SpinKitChasingDots(
-                                                color: Theme.of(context)
-                                                    .primaryColor,
-                                              ),
-                                            )
-                                          : Container(
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              margin: EdgeInsets.all(15.0),
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  if (_formKey.currentState
-                                                      .validate()) {
-                                                    if (user.loggedUser.data
-                                                            .type ==
-                                                        "Email") {
-                                                      user.resetPassword(
-                                                          context: context,
-                                                          userId: user
-                                                              .loggedUser
-                                                              .data
-                                                              .id,
-                                                          newPassword:
-                                                              _confirmPasswordController
-                                                                  .text);
-                                                    } else {
-                                                      Fluttertoast.showToast(
-                                                          msg: "You are logged in using " +
-                                                              user.loggedUser
-                                                                  .data.type +
-                                                              " password is not needed");
-                                                    }
-                                                  }
-                                                },
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(
-                                                      20.0),
-                                                  child: Text("Reset"),
+                                          )),
+                                        ),
+                                        user.resetButtonLoading
+                                            ? Center(
+                                                child: SpinKitChasingDots(
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
                                                 ),
-                                                style: ButtonStyle(
-                                                    elevation:
-                                                        MaterialStateProperty
-                                                            .all(0.0),
-                                                    shape: MaterialStateProperty.all<
-                                                            RoundedRectangleBorder>(
-                                                        RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                              0.0,
-                                                            ),
-                                                            side: BorderSide(
-                                                                color: Theme.of(
-                                                                        context)
-                                                                    .primaryColor))),
-                                                    backgroundColor:
-                                                        MaterialStateProperty.all(
-                                                            Theme.of(context)
-                                                                .primaryColor)),
-                                              ),
-                                            )
-                                    ],
+                                              )
+                                            : Container(
+                                                width: MediaQuery.of(context)
+                                                    .size
+                                                    .width,
+                                                margin: EdgeInsets.all(15.0),
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    if (_formKey.currentState
+                                                        .validate()) {
+                                                      if (user.loggedUser.data
+                                                              .type ==
+                                                          "Email") {
+                                                        user.resetPassword(
+                                                            context: context,
+                                                            userId: user
+                                                                .loggedUser
+                                                                .data
+                                                                .id,
+                                                            newPassword:
+                                                                _confirmPasswordController
+                                                                    .text);
+                                                      } else {
+                                                        Navigator.pop(context);
+                                                        Fluttertoast.showToast(
+                                                            msg: "You are logged in using " +
+                                                                user.loggedUser
+                                                                    .data.type +
+                                                                " password is not needed");
+                                                      }
+                                                    }
+                                                  },
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            20.0),
+                                                    child: Text("Reset"),
+                                                  ),
+                                                  style: ButtonStyle(
+                                                      elevation:
+                                                          MaterialStateProperty
+                                                              .all(0.0),
+                                                      shape: MaterialStateProperty.all<
+                                                              RoundedRectangleBorder>(
+                                                          RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                0.0,
+                                                              ),
+                                                              side: BorderSide(
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .primaryColor))),
+                                                      backgroundColor:
+                                                          MaterialStateProperty.all(
+                                                              Theme.of(context)
+                                                                  .primaryColor)),
+                                                ),
+                                              )
+                                      ],
+                                    ),
                                   ),
                                 )),
                           ),

@@ -13,14 +13,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                 context,
                 MaterialPageRoute(
                     builder: (context) => CampaignDetails(
-                          mainUrl: data.campimg,
-                          otherUrl: data.organization.logo,
-                          name: data.name,
-                          category: data.organization.industry,
-                          amount: data.audio.award,
                           type: "Ringtone",
-                          videoModel: null,
-                          audioModel: data.audio,
                           campaignModel: data,
                         )))
             : showAlertDialogBox(context);
@@ -44,14 +37,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                 context,
                 MaterialPageRoute(
                     builder: (context) => CampaignDetails(
-                          mainUrl: data.campimg,
-                          otherUrl: data.organization.logo,
-                          name: data.name,
-                          category: data.organization.industry,
-                          amount: data.video.watchedvideosamount,
                           type: "Video",
-                          videoModel: data.video,
-                          audioModel: null,
                           campaignModel: data,
                         )))
             : showAlertDialogBox(context);
@@ -75,16 +61,8 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                 context,
                 MaterialPageRoute(
                     builder: (context) => CampaignDetails(
-                          mainUrl: data.campimg,
-                          otherUrl: data.organization.logo,
-                          name: data.name,
-                          category: data.organization.industry,
-                          amount: data.survey.amount,
                           type: "Survey",
-                          videoModel: null,
-                          surveyId: data.survey.surveyid,
                           campaignModel: data,
-                          audioModel: null,
                         )))
             : showAlertDialogBox(context);
       },
@@ -107,15 +85,8 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
                 context,
                 MaterialPageRoute(
                     builder: (context) => CampaignDetails(
-                          mainUrl: data.campimg,
-                          otherUrl: data.organization.logo,
-                          name: data.name,
-                          category: data.organization.industry,
-                          amount: data.banner.sharesamount,
                           type: "Banner",
-                          videoModel: null,
                           campaignModel: data,
-                          audioModel: null,
                         )))
             : showAlertDialogBox(context);
       },

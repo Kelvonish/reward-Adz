@@ -4,7 +4,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
-import 'package:rewardadz/data/models/campaignModel.dart';
+
 import 'package:rewardadz/data/models/surveyModel.dart';
 
 import '../../business_logic/providers/participateCampaign.dart';

@@ -3,6 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
 
 import 'package:rewardadz/data/models/transactionModel.dart';
+import 'package:rewardadz/data/models/notificationModel.dart';
 import 'package:rewardadz/data/services/transactionNetworkService.dart';
 
 class TransactionProvider extends ChangeNotifier {
@@ -10,9 +11,11 @@ class TransactionProvider extends ChangeNotifier {
   TransactionModel allEarnings;
   TransactionModel allWithdrawals;
   TransactionModel allTransfers;
+  NotificationModel notifications;
   bool earningsLoading = false;
   bool withdrawsLoading = false;
   bool transfersLoading = false;
+  bool notificationsLoading = false;
   checkInternetConnection() async {
     isInternetConnected = await ConnectivityService().checkInternetConnection();
     notifyListeners();
@@ -54,6 +57,19 @@ class TransactionProvider extends ChangeNotifier {
       allTransfers = await TransactionNetworkClass().getTransfers(userId);
     }
     transfersLoading = false;
+    notifyListeners();
+  }
+
+  getNotifications(String userId) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+    } else {
+      notificationsLoading = true;
+      notifyListeners();
+      notifications = await TransactionNetworkClass().getNotifications(userId);
+    }
+    notificationsLoading = false;
     notifyListeners();
   }
 }

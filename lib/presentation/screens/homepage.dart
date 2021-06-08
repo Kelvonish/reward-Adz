@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rewardadz/business_logic/providers/notificationsProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/presentation/screens/editprofile.dart';
 import 'package:rewardadz/presentation/screens/notifications.dart';
