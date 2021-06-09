@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
@@ -15,6 +16,14 @@ class Wallet extends StatefulWidget {
 }
 
 class _WalletState extends State<Wallet> {
+  var phoneNumber;
+  String countryCode;
+  TextEditingController withdrawAmountController = TextEditingController();
+  TextEditingController transferPhoneController = TextEditingController();
+  TextEditingController transferAmountController = TextEditingController();
+  final _withdrawFormKey = GlobalKey<FormState>();
+  final _transferFormKey = GlobalKey<FormState>();
+
   @override
   void initState() {
     super.initState();
@@ -267,10 +276,10 @@ class _WalletState extends State<Wallet> {
                                 child: Material(
                                   type: MaterialType.transparency,
                                   child: Container(
-                                      height: 158,
                                       margin: MediaQuery.of(context).viewInsets,
                                       color: Colors.white,
                                       child: Column(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Center(
                                               child: Padding(
@@ -285,13 +294,23 @@ class _WalletState extends State<Wallet> {
                                           Divider(
                                             height: 5,
                                           ),
-                                          TextFormField(
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                                fillColor: Colors.white,
-                                                filled: true,
-                                                hintText: "Enter Amount",
-                                                labelStyle: _labelStyle),
+                                          Form(
+                                            key: _withdrawFormKey,
+                                            child: TextFormField(
+                                              validator: (value) =>
+                                                  value.isEmpty
+                                                      ? "Please Enter Amount"
+                                                      : null,
+                                              controller:
+                                                  withdrawAmountController,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              decoration: InputDecoration(
+                                                  fillColor: Colors.white,
+                                                  filled: true,
+                                                  hintText: "Enter Amount",
+                                                  labelStyle: _labelStyle),
+                                            ),
                                           ),
                                           Container(
                                             width: MediaQuery.of(context)
@@ -299,7 +318,38 @@ class _WalletState extends State<Wallet> {
                                                 .width,
                                             margin: EdgeInsets.all(0.0),
                                             child: ElevatedButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                if (_withdrawFormKey
+                                                    .currentState
+                                                    .validate()) {
+                                                  if (withdrawAmountController
+                                                      .text.isEmpty) {
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Please Enter Amount");
+                                                  } else {
+                                                    if (int.parse(
+                                                            withdrawAmountController
+                                                                .text) >
+                                                        Provider.of<UserProvider>(
+                                                                context,
+                                                                listen: false)
+                                                            .loggedUser
+                                                            .balance) {
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "You cannot withdraw more than your balance");
+                                                    } else if (int.parse(
+                                                            withdrawAmountController
+                                                                .text) <
+                                                        50) {
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "Minimum withdraw amount is 50");
+                                                    }
+                                                  }
+                                                }
+                                              },
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(20.0),
@@ -366,10 +416,10 @@ class _WalletState extends State<Wallet> {
                                 child: Material(
                                   type: MaterialType.transparency,
                                   child: Container(
-                                      height: 234,
                                       margin: MediaQuery.of(context).viewInsets,
                                       color: Colors.white,
                                       child: Column(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
                                           Center(
                                               child: Padding(
@@ -387,27 +437,37 @@ class _WalletState extends State<Wallet> {
                                           IntlPhoneField(
                                             initialCountryCode: "KE",
                                             keyboardType: TextInputType.number,
+                                            controller: transferPhoneController,
                                             decoration: InputDecoration(
                                                 fillColor: Colors.white,
                                                 filled: true,
                                                 labelText: "Phone Number",
                                                 labelStyle: _labelStyle),
                                             onChanged: (phone) {
-                                              print(phone.completeNumber);
+                                              setState(() {
+                                                phoneNumber =
+                                                    phone.completeNumber;
+                                              });
                                             },
-                                            onCountryChanged: (phone) {
-                                              print(
-                                                  'Country code changed to: ' +
-                                                      phone.countryCode);
-                                            },
+                                            onCountryChanged: (phone) {},
                                           ),
-                                          TextFormField(
-                                            keyboardType: TextInputType.number,
-                                            decoration: InputDecoration(
-                                                fillColor: Colors.white,
-                                                filled: true,
-                                                hintText: "Enter Amount",
-                                                labelStyle: _labelStyle),
+                                          Form(
+                                            key: _transferFormKey,
+                                            child: TextFormField(
+                                              validator: (value) =>
+                                                  value.isEmpty
+                                                      ? "Please Enter Amount"
+                                                      : null,
+                                              controller:
+                                                  transferAmountController,
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              decoration: InputDecoration(
+                                                  fillColor: Colors.white,
+                                                  filled: true,
+                                                  hintText: "Enter Amount",
+                                                  labelStyle: _labelStyle),
+                                            ),
                                           ),
                                           Container(
                                             width: MediaQuery.of(context)
@@ -415,11 +475,41 @@ class _WalletState extends State<Wallet> {
                                                 .width,
                                             margin: EdgeInsets.all(0.0),
                                             child: ElevatedButton(
-                                              onPressed: () {},
+                                              onPressed: () {
+                                                if (_transferFormKey
+                                                    .currentState
+                                                    .validate()) {
+                                                  if (phoneNumber.length < 9) {
+                                                    Fluttertoast.showToast(
+                                                        msg:
+                                                            "Please Enter a valid number");
+                                                  } else {
+                                                    if (int.parse(
+                                                            transferAmountController
+                                                                .text) >
+                                                        Provider.of<UserProvider>(
+                                                                context,
+                                                                listen: false)
+                                                            .loggedUser
+                                                            .balance) {
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "You cannot transfer more than your balance");
+                                                    } else if (int.parse(
+                                                            withdrawAmountController
+                                                                .text) <
+                                                        50) {
+                                                      Fluttertoast.showToast(
+                                                          msg:
+                                                              "Minimum transfer amount is 50");
+                                                    }
+                                                  }
+                                                }
+                                              },
                                               child: Padding(
                                                 padding:
                                                     const EdgeInsets.all(20.0),
-                                                child: Text("Withdraw"),
+                                                child: Text("Transfer"),
                                               ),
                                               style: ButtonStyle(
                                                   elevation:

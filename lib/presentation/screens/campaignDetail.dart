@@ -357,6 +357,10 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                         .loggedUser
                         .data
                         .id);
+
+            Provider.of<ParticipateCampaignProvider>(context, listen: false)
+                .saveAndShare(context, widget.campaignModel.banner.bannerurl,
+                    widget.campaignModel.sId);
           },
           child: Padding(
             padding: const EdgeInsets.all(15.0),

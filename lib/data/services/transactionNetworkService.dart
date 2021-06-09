@@ -92,4 +92,30 @@ class TransactionNetworkClass {
     }
     return null;
   }
+
+  Future transfer(int userId, String phone, String amount) async {
+    Map data = {"amount": amount, "phone": phone, "uid": userId};
+
+    try {
+      String url = BASE_URL + "transfer";
+      var body = json.encode(data);
+
+      var parsedUrl = Uri.parse(url);
+
+      var response = await http.post(parsedUrl,
+          headers: {"Content-Type": "application/json"}, body: body);
+      var returnedData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return returnedData;
+      } else {
+        if (returnedData['data'] is String) {
+          Fluttertoast.showToast(msg: returnedData['data']);
+        }
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Nothing " + e.toString());
+      return null;
+    }
+    return null;
+  }
 }

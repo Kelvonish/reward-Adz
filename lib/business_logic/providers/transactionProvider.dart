@@ -16,6 +16,8 @@ class TransactionProvider extends ChangeNotifier {
   bool withdrawsLoading = false;
   bool transfersLoading = false;
   bool notificationsLoading = false;
+  bool withdrawModalLoading = false;
+  bool transferModalLoading = false;
   checkInternetConnection() async {
     isInternetConnected = await ConnectivityService().checkInternetConnection();
     notifyListeners();
@@ -70,6 +72,34 @@ class TransactionProvider extends ChangeNotifier {
       notifications = await TransactionNetworkClass().getNotifications(userId);
     }
     notificationsLoading = false;
+    notifyListeners();
+  }
+
+  transfer(int userId, String amount, String phone) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+    } else {
+      transferModalLoading = true;
+      notifyListeners();
+      notifications =
+          await TransactionNetworkClass().transfer(userId, phone, amount);
+    }
+    transferModalLoading = false;
+    notifyListeners();
+  }
+
+  withdraw(int userId, String amount, String phone) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+    } else {
+      withdrawModalLoading = true;
+      notifyListeners();
+      notifications =
+          await TransactionNetworkClass().transfer(userId, phone, amount);
+    }
+    withdrawModalLoading = false;
     notifyListeners();
   }
 }
