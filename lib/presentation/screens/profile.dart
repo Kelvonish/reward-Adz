@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -309,6 +311,7 @@ class _ProfileState extends State<Profile> {
                                                 onPressed: () {
                                                   if (_formKey.currentState
                                                       .validate()) {
+                                                    inspect(user.loggedUser);
                                                     if (user.loggedUser.data
                                                             .type ==
                                                         "Email") {

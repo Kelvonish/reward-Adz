@@ -211,6 +211,34 @@ class UserNetworkService {
     }
   }
 
+  Future<bool> forgotPassword(String phoneNumber) async {
+    Map data = {
+      "phone": phoneNumber,
+    };
+
+    try {
+      String url = BASE_URL + "reset";
+      var body = json.encode(data);
+      print(body);
+      var parsedUrl = Uri.parse(url);
+
+      var response = await http.post(parsedUrl,
+          headers: {"Content-Type": "application/json"}, body: body);
+      //var returnedData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(
+            msg: "A new password has been sent to your email");
+        return true;
+      } else {
+        Fluttertoast.showToast(msg: "User not found");
+        return false;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Error : " + e.toString());
+      return false;
+    }
+  }
+
   Future<bool> verifyOtp(UserModel user, String otpCode) async {
     Map data = {
       "code": otpCode,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:rewardadz/business_logic/Shared/validator.dart';
@@ -24,26 +25,27 @@ class _LoginState extends State<Login> {
   var _scaffoldState;
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
+  String resetPhone;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         key: _scaffoldState,
-        body: SingleChildScrollView(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).primaryColor,
-                  const Color.fromRGBO(114, 145, 219, 1),
-                  Theme.of(context).accentColor
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
+        body: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [
+                Theme.of(context).primaryColor,
+                const Color.fromRGBO(114, 145, 219, 1),
+                Theme.of(context).accentColor
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
+          ),
+          child: SingleChildScrollView(
             child: Column(
               children: [
                 Container(
@@ -258,10 +260,10 @@ class _LoginState extends State<Login> {
                               child: Material(
                                 type: MaterialType.transparency,
                                 child: Container(
-                                    height: 186,
                                     margin: MediaQuery.of(context).viewInsets,
                                     color: Colors.white,
                                     child: Column(
+                                      mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Center(
                                             child: Padding(
@@ -285,7 +287,10 @@ class _LoginState extends State<Login> {
                                               labelText: "Phone Number",
                                               labelStyle: _labelStyle),
                                           onChanged: (phone) {
-                                            print(phone.completeNumber);
+                                            setState(() {
+                                              resetPhone = phone.completeNumber
+                                                  .toString();
+                                            });
                                           },
                                           onCountryChanged: (phone) {
                                             print('Country code changed to: ' +
@@ -297,7 +302,21 @@ class _LoginState extends State<Login> {
                                               MediaQuery.of(context).size.width,
                                           margin: EdgeInsets.all(0.0),
                                           child: ElevatedButton(
-                                            onPressed: () {},
+                                            onPressed: () {
+                                              if (resetPhone != null &&
+                                                  resetPhone.length > 7) {
+                                                Navigator.pop(context);
+
+                                                Provider.of<UserProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .forgotPassword(resetPhone);
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                    msg:
+                                                        "Please enter a valid phone number");
+                                              }
+                                            },
                                             child: Padding(
                                               padding:
                                                   const EdgeInsets.all(20.0),

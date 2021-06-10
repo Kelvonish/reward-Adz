@@ -68,9 +68,10 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => VideoQuiz(
-                                        name: widget.name,
-                                        surveyId: widget.videoModel.surveyid,
-                                      )));
+                                      name: widget.name,
+                                      surveyId: widget.videoModel.surveyid,
+                                      amount: widget
+                                          .videoModel.watchedvideosamount)));
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -105,6 +106,11 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
                   height: MediaQuery.of(context).size.height * 0.3,
                   child: FlickVideoPlayer(
                     flickManager: flickManager,
+                    flickVideoWithControls: FlickVideoWithControls(
+                      controls: FlickPortraitControls(
+                        progressBarSettings: FlickProgressBarSettings(),
+                      ),
+                    ),
                   ),
                 ),
               ),

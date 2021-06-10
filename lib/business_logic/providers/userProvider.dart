@@ -119,11 +119,6 @@ class UserProvider extends ChangeNotifier {
 
       if (result != null) {
         userPref.saveUser(result);
-        loginButtonLoading = false;
-        notifyListeners();
-        Fluttertoast.showToast(
-            msg: "Successfully logged in!",
-            backgroundColor: Theme.of(context).primaryColor);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => MyApp()),
             (Route<dynamic> route) => false);
@@ -162,14 +157,9 @@ class UserProvider extends ChangeNotifier {
       if (result != null) {
         userPref.saveUser(result);
 
-        Fluttertoast.showToast(
-            msg: "Successfully logged in!",
-            backgroundColor: Theme.of(context).primaryColor);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => MyApp()),
             (Route<dynamic> route) => false);
-        loginButtonLoading = false;
-        notifyListeners();
       }
       loginButtonLoading = false;
       notifyListeners();
@@ -229,6 +219,19 @@ class UserProvider extends ChangeNotifier {
     } else {
       await userClass.sendOtp(user);
     }
+  }
+
+  forgotPassword(String phoneNumber) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+    } else {
+      loginButtonLoading = true;
+      notifyListeners();
+      await userClass.forgotPassword(phoneNumber);
+    }
+    loginButtonLoading = false;
+    notifyListeners();
   }
 
   resetPassword({BuildContext context, int userId, String newPassword}) async {

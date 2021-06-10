@@ -49,7 +49,7 @@ class _CreateAccountState extends State<CreateAccount> {
                       height: 186,
                       margin: MediaQuery.of(context).viewInsets,
                       color: Colors.white,
-                      child: Column(
+                      child: ListView(
                         children: [
                           Center(
                               child: Padding(
@@ -164,21 +164,21 @@ class _CreateAccountState extends State<CreateAccount> {
     }
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Theme.of(context).primaryColor,
-                const Color.fromRGBO(114, 145, 219, 1),
-                Theme.of(context).accentColor
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
+      body: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Theme.of(context).primaryColor,
+              const Color.fromRGBO(114, 145, 219, 1),
+              Theme.of(context).accentColor
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
+        ),
+        child: SingleChildScrollView(
           child: Column(
             children: [
               Container(

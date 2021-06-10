@@ -23,7 +23,7 @@ class SendNotification {
     });
   }
 
-  void sendNotification(String title, String body) async {
+  void sendNotification(String title, String body, int id) async {
     await initializeNotification();
     final bool result = await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
@@ -50,6 +50,6 @@ class SendNotification {
         iOS: iOSPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin
-        .show(0, title, body, platformChannelSpecifics, payload: 'Earning');
+        .show(id, title, body, platformChannelSpecifics, payload: 'Earning');
   }
 }

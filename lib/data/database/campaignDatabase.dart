@@ -78,20 +78,10 @@ create table $dbName (
     };
 
     var t = await campaignExists(campaign.sId);
-    print("printing t : ");
-    print(t);
-    if (t.isEmpty) {
-      int d = await db.insert(dbName, values);
 
-      if (d != null) {
-        Fluttertoast.showToast(msg: "yeey! saved");
-        return true;
-      } else {
-        Fluttertoast.showToast(msg: "Not saved");
-      }
-    } else {
-      Fluttertoast.showToast(msg: "campaign exists");
-    }
+    if (t.isEmpty) {
+      await db.insert(dbName, values);
+    } else {}
     notifyListeners();
     return false;
   }

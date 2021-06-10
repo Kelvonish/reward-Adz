@@ -1,30 +1,37 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
-
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/models/surveyModel.dart';
-
 import '../../business_logic/providers/participateCampaign.dart';
 
 class VideoQuiz extends StatefulWidget {
   final String surveyId;
   final String name;
-  VideoQuiz({this.surveyId, this.name});
+  final String amount;
+  VideoQuiz({this.surveyId, this.name, this.amount});
 
   @override
   _VideoQuizState createState() => _VideoQuizState();
 }
 
 class _VideoQuizState extends State<VideoQuiz> {
-  FullSurveyModel surveyAnswers = FullSurveyModel(data: []);
+  FullSurveyModel surveyAnswers = FullSurveyModel();
   @override
   void initState() {
     super.initState();
-    Provider.of<GetCampaignProvider>(context, listen: false)
+    initializeState();
+  }
+
+  initializeState() async {
+    await Provider.of<GetCampaignProvider>(context, listen: false)
         .getVideoSurvey(widget.surveyId);
+    setState(() {
+      surveyAnswers =
+          Provider.of<GetCampaignProvider>(context, listen: false).videoSurvey;
+    });
   }
 
   @override
@@ -33,21 +40,15 @@ class _VideoQuizState extends State<VideoQuiz> {
         .surveyErrors = [];
 
     super.dispose();
-    surveyAnswers.data = [];
   }
 
   @override
   Widget build(BuildContext context) {
-    _buildAnswers(
-        BuildContext context, SurveyDataModel answerData, int position) {
-      if (surveyAnswers.data.contains(answerData)) {
-      } else {
-        surveyAnswers.data.add(answerData);
-      }
-      if (answerData.type == "radio") {
+    _buildAnswers(BuildContext context, int position) {
+      if (surveyAnswers.data[position].type == "radio") {
         return ListView.builder(
             shrinkWrap: true,
-            itemCount: answerData.answers.length,
+            itemCount: surveyAnswers.data[position].answers.length,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return Container(
@@ -59,16 +60,16 @@ class _VideoQuizState extends State<VideoQuiz> {
                     selectedTileColor: Theme.of(context).primaryColor,
                     tileColor: Colors.grey[200],
                     title: Text(
-                      answerData.answers[index].title,
+                      surveyAnswers.data[position].answers[index].title,
                       style: surveyAnswers.data[position].choosenAnswer == index
                           ? TextStyle(
                               fontWeight: FontWeight.bold, color: Colors.white)
                           : TextStyle(fontWeight: FontWeight.normal),
                     ),
                     activeColor: Colors.white,
-                    value: answerData.answers[index].title,
+                    value: surveyAnswers.data[position].answers[index].title,
                     toggleable: true,
-                    groupValue: answerData.sId,
+                    groupValue: surveyAnswers.data[position].sId,
                     selected:
                         surveyAnswers.data[position].choosenAnswer == index
                             ? true
@@ -83,7 +84,7 @@ class _VideoQuizState extends State<VideoQuiz> {
                     }),
               );
             });
-      } else if (answerData.type == "textfield") {
+      } else if (surveyAnswers.data[position].type == "textfield") {
         return Container(
           margin: EdgeInsets.only(top: 10),
           child: TextFormField(
@@ -105,10 +106,10 @@ class _VideoQuizState extends State<VideoQuiz> {
             ),
           ),
         );
-      } else if (answerData.type == "checkboxes") {
+      } else if (surveyAnswers.data[position].type == "checkboxes") {
         return ListView.builder(
             shrinkWrap: true,
-            itemCount: answerData.answers.length,
+            itemCount: surveyAnswers.data[position].answers.length,
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
               return Container(
@@ -117,7 +118,7 @@ class _VideoQuizState extends State<VideoQuiz> {
                   selectedTileColor: Theme.of(context).primaryColor,
                   tileColor: Colors.grey[200],
                   title: Text(
-                    answerData.answers[index].title,
+                    surveyAnswers.data[position].answers[index].title,
                     style: surveyAnswers
                             .data[position].answers[index].selectedAnswer
                         ? TextStyle(
@@ -136,6 +137,7 @@ class _VideoQuizState extends State<VideoQuiz> {
                     setState(() {
                       surveyAnswers
                           .data[position].answers[index].selectedAnswer = val;
+                      surveyAnswers.data[position].choosenAnswer = 1;
                     });
                   },
                 ),
@@ -149,6 +151,14 @@ class _VideoQuizState extends State<VideoQuiz> {
       child: SafeArea(
         child: Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                final nav = Navigator.of(context);
+                nav.pop();
+                nav.pop();
+              },
+              icon: Icon(Icons.arrow_back),
+            ),
             iconTheme: IconThemeData(color: Colors.black),
             backgroundColor: Colors.white,
             elevation: 0.0,
@@ -171,7 +181,7 @@ class _VideoQuizState extends State<VideoQuiz> {
                       children: [
                         ListView.builder(
                             shrinkWrap: true,
-                            itemCount: value.videoSurvey.data.length,
+                            itemCount: surveyAnswers.data.length,
                             physics: NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) {
                               var questionNumber = index + 1;
@@ -184,18 +194,17 @@ class _VideoQuizState extends State<VideoQuiz> {
                                   Text("Question " +
                                       questionNumber.toString() +
                                       "/" +
-                                      value.videoSurvey.data.length.toString()),
+                                      surveyAnswers.data.length.toString()),
                                   SizedBox(
                                     height: 5.0,
                                   ),
                                   Text(
-                                    value.videoSurvey.data[index].question,
+                                    surveyAnswers.data[index].question,
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 17.0),
                                   ),
-                                  _buildAnswers(context,
-                                      value.videoSurvey.data[index], index),
+                                  _buildAnswers(context, index),
                                 ],
                               );
                             }),
@@ -209,9 +218,16 @@ class _VideoQuizState extends State<VideoQuiz> {
                                       Theme.of(context).primaryColor)),
                               onPressed: () {
                                 value.surveyErrors = [];
-                                print(" Length od answers " +
-                                    surveyAnswers.data.length.toString());
-                                value.checkVideoAnswers(context, surveyAnswers);
+                                value.checkVideoAnswers(
+                                    context,
+                                    surveyAnswers,
+                                    widget.name,
+                                    widget.amount,
+                                    Provider.of<UserProvider>(context,
+                                            listen: false)
+                                        .loggedUser
+                                        .data
+                                        .fname);
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(15.0),

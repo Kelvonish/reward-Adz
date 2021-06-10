@@ -40,8 +40,9 @@ class _AddAccountDetailsState extends State<AddAccountDetails> {
           context: context,
           builder: (context) => Container(
               color: Colors.white,
-              height: 250,
+              height: 280,
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
                     height: 200,

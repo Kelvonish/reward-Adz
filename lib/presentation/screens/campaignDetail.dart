@@ -596,9 +596,18 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                               fontWeight: FontWeight.bold, fontSize: 16.0),
                         ),
                       ),
+                      SizedBox(height: 20),
                     ],
                   ),
                 ),
+                Consumer<ParticipateCampaignProvider>(
+                    builder: (context, value, child) => value.sharingbanner
+                        ? Center(
+                            child: SpinKitChasingDots(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                          )
+                        : Text(""))
               ],
             ),
           ),

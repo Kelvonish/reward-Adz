@@ -123,7 +123,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     height: 80,
                     child: value.loading
                         ? ListView.builder(
-                            itemCount: 3,
+                            itemCount: 5,
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
                             itemBuilder: (context, index) {

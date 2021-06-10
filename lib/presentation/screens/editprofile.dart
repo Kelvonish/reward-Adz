@@ -46,45 +46,6 @@ class _EditProfileState extends State<EditProfile> {
       _dateController.text = _formatDate(_selectedDate);
     }
 
-    void _pickDateDialog(
-      BuildContext context,
-    ) {
-      showCupertinoModalPopup(
-          barrierDismissible: false,
-          context: context,
-          builder: (context) => Container(
-              color: Colors.white,
-              height: 250,
-              child: Column(
-                children: [
-                  Container(
-                    height: 200,
-                    child: CupertinoDatePicker(
-                        use24hFormat: false,
-                        minuteInterval: 1,
-                        mode: CupertinoDatePickerMode.date,
-                        initialDateTime: DateTime(2002, 1, 1),
-                        maximumDate: DateTime(2003, 1, 1),
-                        onDateTimeChanged: (DateTime pickedDate) {
-                          setState(() {
-                            _selectedDate = pickedDate;
-                          });
-                        }),
-                  ),
-                  CupertinoButton(
-                      child: (Text(
-                        "Done",
-                        style: TextStyle(color: Colors.black),
-                      )),
-                      onPressed: () {
-                        print(_dateController.text);
-
-                        Navigator.of(context).pop();
-                      })
-                ],
-              )));
-    }
-
     return Container(
       color: Theme.of(context).primaryColor,
       child: SafeArea(
@@ -175,9 +136,7 @@ class _EditProfileState extends State<EditProfile> {
                     ),
                     TextFormField(
                       enableInteractiveSelection: false,
-                      onTap: () {
-                        _pickDateDialog(context);
-                      },
+                      enabled: false,
                       readOnly: true,
                       controller: _dateController,
                       keyboardType: TextInputType.datetime,

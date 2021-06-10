@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -7,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
 import 'package:rewardadz/business_logic/providers/notificationsProvider.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:share_plus/share_plus.dart';
@@ -17,6 +19,12 @@ class ParticipateCampaignProvider extends ChangeNotifier {
   bool sharingbanner = false;
   bool checkingAnswers = false;
   List<String> surveyErrors = [];
+  bool isInternetConnected;
+
+  checkInternetConnection() async {
+    isInternetConnected = await ConnectivityService().checkInternetConnection();
+    notifyListeners();
+  }
 
   SendNotification notification = SendNotification();
   downloadAudio(AudioModel audioModel) async {
@@ -74,7 +82,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
         if (await _requestPermission(Permission.photos)) {
           directory = await getTemporaryDirectory();
         } else {
-          return false;
+          Fluttertoast.showToast(msg: "Permission not granted");
         }
       }
       File saveFile = File(directory.path + "$filename.png");
@@ -83,19 +91,32 @@ class ParticipateCampaignProvider extends ChangeNotifier {
         await directory.create(recursive: true);
       }
       if (await directory.exists()) {
-        var response = await get(Uri.parse(url));
-        print(response);
-        saveFile.writeAsBytesSync(response.bodyBytes);
-        Share.shareFiles([directory.path + "$filename.png"],
-            text: 'Great picture',
-            sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+        await checkInternetConnection();
+        if (isInternetConnected == false) {
+          Fluttertoast.showToast(msg: "No internet connection");
+        } else {
+          sharingbanner = true;
+          notifyListeners();
+
+          var response = await get(Uri.parse(url));
+
+          saveFile.writeAsBytesSync(response.bodyBytes);
+          Share.shareFiles([directory.path + "$filename.png"],
+              text: '#rewardAdz #Earn',
+              sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+          sharingbanner = true;
+          notifyListeners();
+        }
       }
     } catch (e) {
       print(e);
     }
+    sharingbanner = false;
+    notifyListeners();
   }
 
-  checkVideoAnswers(BuildContext context, FullSurveyModel surveyAnswers) {
+  checkVideoAnswers(BuildContext context, FullSurveyModel surveyAnswers,
+      String name, String amount, String user) {
     for (int index = 0; index < surveyAnswers.data.length; index++) {
       var qn = index + 1;
       if (surveyAnswers.data[index].type == "radio") {
@@ -117,21 +138,35 @@ class ParticipateCampaignProvider extends ChangeNotifier {
           } else {
             surveyErrors.add("Please answer all questions !");
           }
+        } else if (surveyAnswers.data[index].textFieldAnswer.length < 5) {
+          if (surveyErrors.contains("Please answer all questions !")) {
+          } else {
+            surveyErrors.add("Answer for question $qn not valid !");
+          }
         }
       } else if (surveyAnswers.data[index].type == "checkboxes") {
-        surveyAnswers.data[index].answers.forEach((element) {
-          if (element.selectedAnswer == true) {
-            if (element.choice != "correct") {
-              surveyErrors
-                  .add("Selected answer for question $qn is not correct");
+        if (surveyAnswers.data[index].choosenAnswer != null) {
+          surveyAnswers.data[index].answers.forEach((element) {
+            if (element.selectedAnswer == true) {
+              if (element.choice != "correct") {
+                surveyErrors
+                    .add("Selected answer for question $qn is not correct");
+              }
             }
+          });
+        } else {
+          if (surveyErrors.contains("Please answer all questions !")) {
+          } else {
+            surveyErrors.add("Please answer all questions !");
           }
-        });
+        }
       }
     }
     if (surveyErrors.isEmpty) {
-      notification.sendNotification(
-          "Congratulation! ", "You have earned 30 from video campaign");
+      Random random = new Random();
+      int randomNumber = random.nextInt(100);
+      notification.sendNotification("Congratulations $user",
+          "You have earned $amount from $name", randomNumber);
     } else {
       showDialog<void>(
         context: context,
@@ -170,36 +205,5 @@ class ParticipateCampaignProvider extends ChangeNotifier {
       );
     }
     notifyListeners();
-  }
-
-  Future<Null> saveAndShare1(BuildContext context, String imageUrl) async {
-    //isBtn2 = true;
-
-    final RenderBox box = context.findRenderObject();
-    final status = await Permission.storage.request();
-    if (status.isGranted) {
-      var url = imageUrl;
-      var uri = Uri.parse(url);
-      var response = await get(uri);
-      final documentDirectory =
-          await (await getExternalStorageDirectory()).create(recursive: true);
-
-      Directory appDocDir = await getApplicationDocumentsDirectory();
-      String appDocPath = appDocDir.path;
-      print(appDocPath);
-
-      File imgFile = new File('$appDocPath/$url');
-      imgFile.writeAsBytesSync(response.bodyBytes);
-      Share.shareFiles(['$appDocPath/$url'],
-          text: 'Great picture',
-          sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-      /*Share.shareFile(File('$documentDirectory/$url'),
-          subject: 'URL conversion + Share',
-          text: 'Hey! Checkout the Share Files repo',
-          sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);*/
-    }
-    Share.share('Hey! Checkout the Share Files repo',
-        subject: 'URL conversion + Share',
-        sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
   }
 }
