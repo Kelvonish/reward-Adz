@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rewardadz/business_logic/providers/dynamicLinksProvider.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/homepage.dart';
 import 'package:rewardadz/presentation/screens/profile.dart';
@@ -15,6 +16,16 @@ class BottomNavigator extends StatefulWidget {
 
 class _BottomNavigatorState extends State<BottomNavigator> {
   int activeIndex = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    handleDynamicLink();
+  }
+
+  handleDynamicLink() async {
+    await DynamicLinkService(context: context).handleDynamicLinks();
+  }
 
   var iconData = <IconData>[
     Icons.bar_chart_outlined,

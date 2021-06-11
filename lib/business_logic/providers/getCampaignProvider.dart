@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -7,6 +9,7 @@ import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/data/models/surveyModel.dart';
 import 'package:rewardadz/presentation/screens/survey/surveyPage.dart';
 import 'package:rewardadz/data/local storage/locationPreference.dart';
+import '../../data/models/campaignModel.dart';
 import '../../data/models/campaignModel.dart';
 import '../../data/services/getCampaignsNetworkService.dart';
 import '../Shared/getLocation.dart';
@@ -21,7 +24,9 @@ class GetCampaignProvider extends ChangeNotifier {
   bool loadingSurvey = false;
   var location;
   bool isInternetConnected = true;
+  bool loadingCampaignDetails = false;
   FullSurveyModel videoSurvey;
+  CampaignModel linkCampaignDetails;
 
   GetCampaignsClass campaignClass = GetCampaignsClass();
 
@@ -109,6 +114,24 @@ class GetCampaignProvider extends ChangeNotifier {
         videoSurvey = returnedSurvey;
       }
       loadingSurvey = false;
+      notifyListeners();
+    }
+  }
+
+  Future getSingleCampaign(String id) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+    } else {
+      loadingCampaignDetails = true;
+      notifyListeners();
+      CampaignModel returnedCampaign =
+          await campaignClass.getSingleCampaign(id);
+      if (returnedCampaign != null) {
+        linkCampaignDetails = returnedCampaign;
+        inspect(linkCampaignDetails);
+      }
+      loadingCampaignDetails = false;
       notifyListeners();
     }
   }

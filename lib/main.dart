@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:rewardadz/business_logic/providers/dynamicLinksProvider.dart';
 import 'package:rewardadz/business_logic/providers/participateCampaign.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';

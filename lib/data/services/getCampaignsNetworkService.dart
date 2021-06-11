@@ -7,6 +7,10 @@ import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/surveyModel.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 
+import '../models/campaignModel.dart';
+import '../models/campaignModel.dart';
+import '../models/campaignModel.dart';
+
 //import 'package:fluttertoast/fluttertoast.dart';
 class GetCampaignsClass {
   List<CampaignModel> campaignList = [];
@@ -346,6 +350,86 @@ class GetCampaignsClass {
         return FullSurveyModel.fromJson(returnedData);
       } else {
         Fluttertoast.showToast(msg: "Error getting survey");
+        return null;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      return null;
+    }
+  }
+
+  Future<CampaignModel> getSingleCampaign(String id) async {
+    try {
+      String uri = BASE_URL + "campaign/id/$id";
+      var url = Uri.parse(uri);
+
+      var response = await http.get(url);
+      var returnedData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        CampaignModel data = CampaignModel(
+          isactive: returnedData['data']['isactive'],
+          sId: returnedData['data']['_id'],
+          name: returnedData['data']['name'],
+          type: returnedData['data']['type'],
+          organization: returnedData['data']['organization'] != null
+              ? OrganizationModel(
+                  id: returnedData['data']['organization']['id'],
+                  name: returnedData['data']['organization']['name'],
+                  email: returnedData['data']['organization']['email'],
+                  industry: returnedData['data']['organization']['industry'],
+                  phone: returnedData['data']['organization']['phone'],
+                  logo: returnedData['data']['organization']['logo'],
+                  userId: returnedData['data']['organization']['user_id'],
+                  balance: returnedData['data']['organization']['balance'],
+                  createdAt: returnedData['data']['organization']['createdAt'],
+                  updatedAt: returnedData['data']['organization']['updatedAt'],
+                )
+              : null,
+          status: returnedData['status'],
+          campimg: returnedData['data']['campimg'],
+          objective: returnedData['data']['objective'],
+          iV: returnedData['data']['__v'],
+          audio: returnedData['data']['audio'] != null
+              ? AudioModel(
+                  uniquecalls: returnedData['data']['audio']['uniquecalls'],
+                  award: returnedData['data']['audio']['award'],
+                  volume: returnedData['data']['audio']['volume'],
+                  audiourl: returnedData['data']['audio']['audiourl'])
+              : null,
+          banner: returnedData['data']['banner'] != null
+              ? BannerModel(
+                  shares: returnedData['data']['banner']['shares'],
+                  sharesamount: returnedData['data']['banner']['sharesamount'],
+                  bannerset: returnedData['data']['banner']['bannerset'],
+                  banneramount: returnedData['data']['banner']['banneramount'],
+                  bannerurl: returnedData['data']['banner']['bannerurl'],
+                )
+              : null,
+          video: returnedData['video'] != null
+              ? VideoModel(
+                  surveyid: returnedData['data']['video']['surveyid'],
+                  watchedvideosamount: returnedData['data']['video']
+                      ['watchedvideosamount'],
+                  url: returnedData['data']['video']['url'])
+              : null,
+          survey: returnedData['data']['survey'] != null
+              ? SurveyModel(
+                  amount: returnedData['data']['survey']['amount'],
+                  surveyid: returnedData['data']['survey']['surveyid'])
+              : null,
+          endage: returnedData['data']['endage'],
+          gender: returnedData['data']['gender'],
+          startage: returnedData['data']['startage'],
+          dailybudget: returnedData['data']['dailybudget'],
+          featured: returnedData['data']['featured'],
+          fromdate: returnedData['data']['fromdate'],
+          paymentmode: returnedData['data']['paymentmode'],
+          todate: returnedData['data']['todate'],
+          totalbudget: returnedData['data']['totalbudget'],
+        );
+        return data;
+      } else {
+        Fluttertoast.showToast(msg: "Error getting campaign");
         return null;
       }
     } catch (e) {
