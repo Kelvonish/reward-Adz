@@ -27,7 +27,7 @@ class _TermsOfServiceWebViewState extends State<TermsOfServiceWebView> {
             body: Stack(
               children: [
                 WebView(
-                  initialUrl: 'https://rewardads-dev.adalabsafrica.com/terms',
+                  initialUrl: 'https://portal.rewardadz.com/terms',
                   javascriptMode: JavascriptMode.unrestricted,
                   onPageFinished: (finish) {
                     setState(() {

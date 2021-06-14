@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
 import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
-import 'package:rewardadz/data/models/transactionModel.dart';
 import 'package:rewardadz/presentation/widgets/transactionTile.dart';
 
 class Wallet extends StatefulWidget {
@@ -28,24 +27,12 @@ class _WalletState extends State<Wallet> {
   void initState() {
     super.initState();
     Provider.of<TransactionProvider>(context, listen: false).getEarnings(
-        Provider.of<UserProvider>(context, listen: false)
-            .loggedUser
-            .data
-            .id
-            .toString());
+        Provider.of<UserProvider>(context, listen: false).loggedUser);
 
     Provider.of<TransactionProvider>(context, listen: false).getWithdrawals(
-        Provider.of<UserProvider>(context, listen: false)
-            .loggedUser
-            .data
-            .id
-            .toString());
+        Provider.of<UserProvider>(context, listen: false).loggedUser);
     Provider.of<TransactionProvider>(context, listen: false).getTransfers(
-        Provider.of<UserProvider>(context, listen: false)
-            .loggedUser
-            .data
-            .id
-            .toString());
+        Provider.of<UserProvider>(context, listen: false).loggedUser);
   }
 
   @override
@@ -55,24 +42,13 @@ class _WalletState extends State<Wallet> {
 
   getAllData() async {
     await Provider.of<TransactionProvider>(context, listen: false).getEarnings(
-        Provider.of<UserProvider>(context, listen: false)
-            .loggedUser
-            .data
-            .id
-            .toString());
+        Provider.of<UserProvider>(context, listen: false).loggedUser);
 
     await Provider.of<TransactionProvider>(context, listen: false)
-        .getWithdrawals(Provider.of<UserProvider>(context, listen: false)
-            .loggedUser
-            .data
-            .id
-            .toString());
+        .getWithdrawals(
+            Provider.of<UserProvider>(context, listen: false).loggedUser);
     await Provider.of<TransactionProvider>(context, listen: false).getTransfers(
-        Provider.of<UserProvider>(context, listen: false)
-            .loggedUser
-            .data
-            .id
-            .toString());
+        Provider.of<UserProvider>(context, listen: false).loggedUser);
   }
 
   TextStyle _labelStyle = TextStyle(fontWeight: FontWeight.w400);
@@ -479,7 +455,8 @@ class _WalletState extends State<Wallet> {
                                                 if (_transferFormKey
                                                     .currentState
                                                     .validate()) {
-                                                  if (phoneNumber.length < 9) {
+                                                  if (phoneNumber == null ||
+                                                      phoneNumber.length < 9) {
                                                     Fluttertoast.showToast(
                                                         msg:
                                                             "Please Enter a valid number");

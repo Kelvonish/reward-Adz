@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/userModel.dart';
@@ -55,7 +56,7 @@ class GetCampaignProvider extends ChangeNotifier {
     }
   }
 
-  Future searchCampaigns(String searchQuery) async {
+  Future searchCampaigns(String searchQuery, String token) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
@@ -70,22 +71,23 @@ class GetCampaignProvider extends ChangeNotifier {
         }
       }
       campaignClass.searchCampaignList.clear();
-      await campaignClass.searchCampaigns(location, searchQuery);
+      await campaignClass.searchCampaigns(location, searchQuery, token);
       searchCampaignList = campaignClass.searchCampaignList;
       searchLoading = false;
       notifyListeners();
     }
   }
 
-  Future getSurvey(
-      BuildContext context, String surveyId, String campaignName) async {
+  Future getSurvey(BuildContext context, String surveyId, String campaignName,
+      String token) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       loadingSurvey = true;
       notifyListeners();
-      FullSurveyModel returnedSurvey = await campaignClass.getSurvey(surveyId);
+      FullSurveyModel returnedSurvey =
+          await campaignClass.getSurvey(surveyId, token);
       if (returnedSurvey != null) {
         loadingSurvey = false;
         notifyListeners();
@@ -102,14 +104,15 @@ class GetCampaignProvider extends ChangeNotifier {
     }
   }
 
-  Future getVideoSurvey(String surveyId) async {
+  Future getVideoSurvey(String surveyId, String token) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       loadingSurvey = true;
 
-      FullSurveyModel returnedSurvey = await campaignClass.getSurvey(surveyId);
+      FullSurveyModel returnedSurvey =
+          await campaignClass.getSurvey(surveyId, token);
       if (returnedSurvey != null) {
         videoSurvey = returnedSurvey;
       }
@@ -118,7 +121,7 @@ class GetCampaignProvider extends ChangeNotifier {
     }
   }
 
-  Future getSingleCampaign(String id) async {
+  Future getSingleCampaign(String id, String token) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
@@ -126,7 +129,7 @@ class GetCampaignProvider extends ChangeNotifier {
       loadingCampaignDetails = true;
       notifyListeners();
       CampaignModel returnedCampaign =
-          await campaignClass.getSingleCampaign(id);
+          await campaignClass.getSingleCampaign(id, token);
       if (returnedCampaign != null) {
         linkCampaignDetails = returnedCampaign;
         inspect(linkCampaignDetails);

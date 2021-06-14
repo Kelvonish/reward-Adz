@@ -4,16 +4,23 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/business_logic/constants/constants.dart';
 import 'package:rewardadz/data/models/transactionModel.dart';
 import 'package:rewardadz/data/models/notificationModel.dart';
-import 'package:rewardadz/presentation/screens/notifications.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 
 class TransactionNetworkClass {
-  Future<TransactionModel> getEarnings(String userId) async {
+  Future<TransactionModel> getEarnings(
+    UserModel user,
+  ) async {
     try {
-      String url = BASE_URL + "earnings/$userId/type/earnings/page/0/limit/50";
+      String url = BASE_URL +
+          "earnings/${user.data.id.toString()}/type/earnings/page/0/limit/50";
 
       var parsedUrl = Uri.parse(url);
 
-      var response = await http.get(parsedUrl);
+      var response = await http.get(parsedUrl, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-access-token': user.token,
+      });
 
       if (response.statusCode == 200) {
         var returnedData = json.decode(response.body);
@@ -28,14 +35,18 @@ class TransactionNetworkClass {
     return null;
   }
 
-  Future<TransactionModel> getWithdrawals(String userId) async {
+  Future<TransactionModel> getWithdrawals(UserModel user) async {
     try {
-      String url =
-          BASE_URL + "earnings/$userId/type/withdrawals/page/0/limit/50";
+      String url = BASE_URL +
+          "earnings/${user.data.id.toString()}/type/withdrawals/page/0/limit/50";
 
       var parsedUrl = Uri.parse(url);
 
-      var response = await http.get(parsedUrl);
+      var response = await http.get(parsedUrl, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-access-token': user.token,
+      });
 
       if (response.statusCode == 200) {
         var returnedData = json.decode(response.body);
@@ -50,13 +61,18 @@ class TransactionNetworkClass {
     return null;
   }
 
-  Future<TransactionModel> getTransfers(String userId) async {
+  Future<TransactionModel> getTransfers(UserModel user) async {
     try {
-      String url = BASE_URL + "earnings/$userId/type/transfers/page/0/limit/50";
+      String url = BASE_URL +
+          "earnings/${user.data.id.toString()}/type/transfers/page/0/limit/50";
 
       var parsedUrl = Uri.parse(url);
 
-      var response = await http.get(parsedUrl);
+      var response = await http.get(parsedUrl, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-access-token': user.token,
+      });
 
       if (response.statusCode == 200) {
         var returnedData = json.decode(response.body);
@@ -71,13 +87,18 @@ class TransactionNetworkClass {
     return null;
   }
 
-  Future<NotificationModel> getNotifications(String userId) async {
+  Future<NotificationModel> getNotifications(UserModel user) async {
     try {
-      String url = BASE_URL + "notifycenter/all/userid/$userId/page/0/limit/83";
+      String url = BASE_URL +
+          "notifycenter/all/userid/${user.data.id.toString()}/page/0/limit/83";
 
       var parsedUrl = Uri.parse(url);
 
-      var response = await http.get(parsedUrl);
+      var response = await http.get(parsedUrl, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-access-token': user.token,
+      });
 
       if (response.statusCode == 200) {
         var returnedData = json.decode(response.body);
@@ -93,8 +114,8 @@ class TransactionNetworkClass {
     return null;
   }
 
-  Future transfer(int userId, String phone, String amount) async {
-    Map data = {"amount": amount, "phone": phone, "uid": userId};
+  Future transfer(UserModel user, String phone, String amount) async {
+    Map data = {"amount": amount, "phone": phone, "uid": user.data.id};
 
     try {
       String url = BASE_URL + "transfer";
@@ -103,7 +124,11 @@ class TransactionNetworkClass {
       var parsedUrl = Uri.parse(url);
 
       var response = await http.post(parsedUrl,
-          headers: {"Content-Type": "application/json"}, body: body);
+          headers: {
+            "Content-Type": "application/json",
+            'x-access-token': user.token,
+          },
+          body: body);
       var returnedData = json.decode(response.body);
       if (response.statusCode == 200) {
         return returnedData;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/Shared/sortCampaignByType.dart';
 import 'package:rewardadz/business_logic/providers/topAdvertisersProvider.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
 
 import 'package:rewardadz/presentation/widgets/campaignCardShimmer.dart';
 
@@ -22,7 +23,8 @@ class _OrganizationCampaignsState extends State<OrganizationCampaigns> {
   void initState() {
     super.initState();
     Provider.of<TopAdvertisersProvider>(context, listen: false)
-        .getOrganizationCampaigns(widget.organizationId);
+        .getOrganizationCampaigns(widget.organizationId,
+            Provider.of<UserProvider>(context, listen: false).loggedUser.token);
   }
 
   @override
@@ -99,18 +101,27 @@ class _OrganizationCampaignsState extends State<OrganizationCampaigns> {
                                     );
                                   })
                               : data.organizationCampaignsList.length == 0
-                                  ? Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.7,
-                                      child: Center(
-                                        child: Text(
-                                          "The organization has not published a campaign yet!",
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 18.0),
+                                  ? Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Center(
+                                            child: Image.asset(
+                                                "assets/empty.png")),
+                                        Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          child: Center(
+                                            child: Text(
+                                              "Organization has not published a campaign yet!",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 18.0,
+                                                  fontWeight: FontWeight.w300),
+                                            ),
+                                          ),
                                         ),
-                                      ),
+                                      ],
                                     )
                                   : ListView.builder(
                                       shrinkWrap: true,

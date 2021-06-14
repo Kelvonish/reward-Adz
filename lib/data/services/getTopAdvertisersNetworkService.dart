@@ -9,12 +9,17 @@ class TopAdvertisersNetworkService {
   List<TopAdvertisersModel> topAdvertisersList = [];
   List<CampaignModel> organizationCampiagnsList = [];
 
-  Future getTopAdvertisers() async {
+  Future getTopAdvertisers(String token) async {
+    print(token);
     String url = BASE_URL + "campaign/topcampaigns";
 
     try {
       var uri = Uri.parse(url);
-      var response = await http.get(uri);
+      var response = await http.get(uri, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-access-token': token,
+      });
       if (response.statusCode == 200) {
         var returnedData = jsonDecode(response.body);
         returnedData['data'].forEach((json) {
@@ -44,9 +49,7 @@ class TopAdvertisersNetworkService {
   }
 
   Future getOrganizationCampaigns(
-    var location,
-    String organizationId,
-  ) async {
+      var location, String organizationId, String token) async {
     try {
       String url = BASE_URL +
           "organization/org/latitude/" +
@@ -58,7 +61,11 @@ class TopAdvertisersNetworkService {
           "/page/1/limit/20";
       var parsedUrl = Uri.parse(url);
 
-      var response = await http.get(parsedUrl);
+      var response = await http.get(parsedUrl, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-access-token': token,
+      });
 
       if (response.statusCode == 200) {
         var campaigns = jsonDecode(response.body);

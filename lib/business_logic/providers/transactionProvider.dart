@@ -4,6 +4,7 @@ import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
 
 import 'package:rewardadz/data/models/transactionModel.dart';
 import 'package:rewardadz/data/models/notificationModel.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/data/services/transactionNetworkService.dart';
 
 class TransactionProvider extends ChangeNotifier {
@@ -23,59 +24,59 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getEarnings(String userId) async {
+  getEarnings(UserModel user) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       earningsLoading = true;
       notifyListeners();
-      allEarnings = await TransactionNetworkClass().getEarnings(userId);
+      allEarnings = await TransactionNetworkClass().getEarnings(user);
     }
     earningsLoading = false;
     notifyListeners();
   }
 
-  getWithdrawals(String userId) async {
+  getWithdrawals(UserModel user) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       withdrawsLoading = true;
       notifyListeners();
-      allWithdrawals = await TransactionNetworkClass().getWithdrawals(userId);
+      allWithdrawals = await TransactionNetworkClass().getWithdrawals(user);
     }
     withdrawsLoading = false;
     notifyListeners();
   }
 
-  getTransfers(String userId) async {
+  getTransfers(UserModel user) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       transfersLoading = true;
       notifyListeners();
-      allTransfers = await TransactionNetworkClass().getTransfers(userId);
+      allTransfers = await TransactionNetworkClass().getTransfers(user);
     }
     transfersLoading = false;
     notifyListeners();
   }
 
-  getNotifications(String userId) async {
+  getNotifications(UserModel user) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       notificationsLoading = true;
       notifyListeners();
-      notifications = await TransactionNetworkClass().getNotifications(userId);
+      notifications = await TransactionNetworkClass().getNotifications(user);
     }
     notificationsLoading = false;
     notifyListeners();
   }
 
-  transfer(int userId, String amount, String phone) async {
+  transfer(UserModel user, String amount, String phone) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
@@ -83,13 +84,13 @@ class TransactionProvider extends ChangeNotifier {
       transferModalLoading = true;
       notifyListeners();
       notifications =
-          await TransactionNetworkClass().transfer(userId, phone, amount);
+          await TransactionNetworkClass().transfer(user, phone, amount);
     }
     transferModalLoading = false;
     notifyListeners();
   }
 
-  withdraw(int userId, String amount, String phone) async {
+  withdraw(UserModel user, String amount, String phone) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
@@ -97,7 +98,7 @@ class TransactionProvider extends ChangeNotifier {
       withdrawModalLoading = true;
       notifyListeners();
       notifications =
-          await TransactionNetworkClass().transfer(userId, phone, amount);
+          await TransactionNetworkClass().transfer(user, phone, amount);
     }
     withdrawModalLoading = false;
     notifyListeners();

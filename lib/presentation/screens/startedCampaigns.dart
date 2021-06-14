@@ -54,7 +54,6 @@ class _StartedCampaignsState extends State<StartedCampaigns> {
                                   type: _campaign[index]["campaignType"],
                                   category: _campaign[index]
                                       ["campaignOrganizationIndustry"],
-                                  isActive: true,
                                   mainUrl: _campaign[index]["campaignMainUrl"],
                                   name: _campaign[index]["campaignName"],
                                   otherUrl: _campaign[index]

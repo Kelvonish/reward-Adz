@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
 import 'package:rewardadz/business_logic/Shared/sortCampaignByType.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -42,7 +43,11 @@ class _SearchState extends State<Search> {
                       Fluttertoast.showToast(msg: "Please enter a text");
                     } else {
                       Provider.of<GetCampaignProvider>(context, listen: false)
-                          .searchCampaigns(value);
+                          .searchCampaigns(
+                              value,
+                              Provider.of<UserProvider>(context, listen: false)
+                                  .loggedUser
+                                  .token);
                     }
                   }),
             )),
@@ -96,8 +101,12 @@ class _SearchState extends State<Search> {
                                   )
                                 : data.searchCampaignList.length == 0
                                     ? Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: [
-                                          Image.asset("assets/empty.png"),
+                                          Center(
+                                              child: Image.asset(
+                                                  "assets/empty.png")),
                                           Container(
                                             width: MediaQuery.of(context)
                                                 .size

@@ -30,7 +30,8 @@ class _MyHomePageState extends State<MyHomePage> {
         .getCampaignsProvider(
             Provider.of<UserProvider>(context, listen: false).loggedUser);
     Provider.of<TopAdvertisersProvider>(context, listen: false)
-        .getTopAdvertisers();
+        .getTopAdvertisers(
+            Provider.of<UserProvider>(context, listen: false).loggedUser.token);
   }
 
   getAllData() {
@@ -38,7 +39,8 @@ class _MyHomePageState extends State<MyHomePage> {
         .getCampaignsProvider(
             Provider.of<UserProvider>(context, listen: false).loggedUser);
     Provider.of<TopAdvertisersProvider>(context, listen: false)
-        .getTopAdvertisers();
+        .getTopAdvertisers(
+            Provider.of<UserProvider>(context, listen: false).loggedUser.token);
   }
 
   @override

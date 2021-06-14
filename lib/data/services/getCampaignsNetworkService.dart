@@ -27,7 +27,11 @@ class GetCampaignsClass {
           location[1];
 
       var parsedUrl = Uri.parse(url);
-      var response = await http.get(parsedUrl);
+      var response = await http.get(parsedUrl, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-access-token': user.token,
+      });
 
       if (response.statusCode == 200) {
         var campaigns = jsonDecode(response.body);
@@ -175,10 +179,7 @@ class GetCampaignsClass {
     }
   }
 
-  Future searchCampaigns(
-    var location,
-    String query,
-  ) async {
+  Future searchCampaigns(var location, String query, String token) async {
     try {
       String url = BASE_URL +
           "campaign/search/latitude/" +
@@ -186,12 +187,18 @@ class GetCampaignsClass {
           "/longitude/" +
           location[1] +
           "/page/1/limit/10";
-      var parsedUrl = Uri.parse(url);
+      var parsedUrl = Uri.parse(
+        url,
+      );
       Map data = {'name': query};
       //encode Map to JSON
       var body = json.encode(data);
       var response = await http.post(parsedUrl,
-          headers: {"Content-Type": "application/json"}, body: body);
+          headers: {
+            "Content-Type": "application/json",
+            'x-access-token': token
+          },
+          body: body);
 
       if (response.statusCode == 200) {
         var campaigns = jsonDecode(response.body);
@@ -338,12 +345,16 @@ class GetCampaignsClass {
     }
   }
 
-  getSurvey(String surveyId) async {
+  getSurvey(String surveyId, String token) async {
     try {
       String uri = BASE_URL + "mysurvey/$surveyId";
       var url = Uri.parse(uri);
 
-      var response = await http.get(url);
+      var response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-access-token': token,
+      });
       var returnedData = json.decode(response.body);
 
       if (response.statusCode == 200) {
@@ -358,12 +369,16 @@ class GetCampaignsClass {
     }
   }
 
-  Future<CampaignModel> getSingleCampaign(String id) async {
+  Future<CampaignModel> getSingleCampaign(String id, String token) async {
     try {
       String uri = BASE_URL + "campaign/id/$id";
       var url = Uri.parse(uri);
 
-      var response = await http.get(url);
+      var response = await http.get(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-access-token': token,
+      });
       var returnedData = json.decode(response.body);
       if (response.statusCode == 200) {
         CampaignModel data = CampaignModel(

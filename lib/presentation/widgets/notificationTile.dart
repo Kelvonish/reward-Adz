@@ -19,10 +19,10 @@ class NotificationTile extends StatelessWidget {
           ListTile(
             leading: CircleAvatar(
                 radius: 20,
-                backgroundColor: Theme.of(context).accentColor,
+                backgroundColor: Theme.of(context).primaryColor,
                 child: Icon(
-                  Icons.notifications,
-                  color: Theme.of(context).primaryColor,
+                  Icons.notifications_none_outlined,
+                  color: Colors.white,
                   size: 25,
                 )),
             title: Text(

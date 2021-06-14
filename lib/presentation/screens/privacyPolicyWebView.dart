@@ -28,7 +28,7 @@ class _PrivacyPolicyWebViewState extends State<PrivacyPolicyWebView> {
               children: [
                 WebView(
                   gestureNavigationEnabled: true,
-                  initialUrl: 'https://rewardads-dev.adalabsafrica.com/privacy',
+                  initialUrl: 'https://portal.rewardadz.com/privacy',
                   javascriptMode: JavascriptMode.unrestricted,
                   onPageFinished: (finish) {
                     setState(() {

@@ -163,7 +163,7 @@ Widget checkTypeForAction(
                               backgroundColor: MaterialStateProperty.all(
                                   Theme.of(context).primaryColor)),
                           onPressed: () {
-                            value.downloadAudio(campaignModel.audio);
+                            //value.downloadAudio(campaignModel.audio);
                           },
                           icon: Icon(
                             Icons.music_note_outlined,
@@ -263,8 +263,13 @@ Widget checkTypeForAction(
                             .id);
 
                 Provider.of<GetCampaignProvider>(context, listen: false)
-                    .getSurvey(context, campaignModel.survey.surveyid,
-                        campaignModel.name);
+                    .getSurvey(
+                        context,
+                        campaignModel.survey.surveyid,
+                        campaignModel.name,
+                        Provider.of<UserProvider>(context, listen: false)
+                            .loggedUser
+                            .token);
               },
               child: Padding(
                 padding: const EdgeInsets.all(15.0),

@@ -27,7 +27,8 @@ class _VideoQuizState extends State<VideoQuiz> {
 
   initializeState() async {
     await Provider.of<GetCampaignProvider>(context, listen: false)
-        .getVideoSurvey(widget.surveyId);
+        .getVideoSurvey(widget.surveyId,
+            Provider.of<UserProvider>(context, listen: false).loggedUser.token);
     setState(() {
       surveyAnswers =
           Provider.of<GetCampaignProvider>(context, listen: false).videoSurvey;

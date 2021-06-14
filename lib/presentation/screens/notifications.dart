@@ -15,11 +15,7 @@ class _NotificationsState extends State<Notifications> {
   void initState() {
     super.initState();
     Provider.of<TransactionProvider>(context, listen: false).getNotifications(
-        Provider.of<UserProvider>(context, listen: false)
-            .loggedUser
-            .data
-            .id
-            .toString());
+        Provider.of<UserProvider>(context, listen: false).loggedUser);
   }
 
   @override
@@ -57,7 +53,15 @@ class _NotificationsState extends State<Notifications> {
                                     Image.asset("assets/notification.png"),
                                     Center(
                                       child: Text(
-                                        "No notifications available",
+                                        "No notifications available right now!",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w300),
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        "Check back later.",
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontWeight: FontWeight.w300),

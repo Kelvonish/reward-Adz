@@ -20,6 +20,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
   bool checkingAnswers = false;
   List<String> surveyErrors = [];
   bool isInternetConnected;
+  TextEditingController _linkController = TextEditingController();
 
   checkInternetConnection() async {
     isInternetConnected = await ConnectivityService().checkInternetConnection();
@@ -27,6 +28,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
   }
 
   SendNotification notification = SendNotification();
+
   downloadAudio(AudioModel audioModel) async {
     final status = await Permission.storage.request();
     if (status.isGranted) {
@@ -40,17 +42,14 @@ class ParticipateCampaignProvider extends ChangeNotifier {
         savedDirectory.create();
       }
 
-      /*
       final taskId = await FlutterDownloader.enqueue(
           url: audioModel.audiourl,
           savedDir: baseStorage.path,
           openFileFromNotification: true,
-          fileName: "Saf audio");
+          fileName: "Saf audio.mp3");
       print("downloaded file here...");
       print(taskId);
       Fluttertoast.showToast(msg: "Downloaded");
-      */
-
     }
     downloading = false;
     notifyListeners();
@@ -104,7 +103,91 @@ class ParticipateCampaignProvider extends ChangeNotifier {
           Share.shareFiles([directory.path + "$filename.png"],
               text: '#rewardAdz #Earn',
               sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-          sharingbanner = true;
+          showCupertinoModalPopup(
+              context: context,
+              builder: (context) => Container(
+                    margin: EdgeInsets.all(15.0),
+                    child: Material(
+                      type: MaterialType.transparency,
+                      child: Container(
+                          margin: MediaQuery.of(context).viewInsets,
+                          color: Colors.white,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Center(
+                                  child: Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: Text(
+                                  "Submit Shared Post Link",
+                                  style: TextStyle(
+                                      fontSize: 18.0, color: Colors.black),
+                                ),
+                              )),
+                              Divider(
+                                height: 5,
+                              ),
+                              Form(
+                                child: TextFormField(
+                                  validator: (value) => value.isEmpty
+                                      ? "Please Enter a valid link"
+                                      : null,
+                                  controller: _linkController,
+                                  keyboardType: TextInputType.number,
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    hintText: "Enter Link",
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width,
+                                margin: EdgeInsets.all(0.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    bool _validURL =
+                                        Uri.parse(_linkController.text)
+                                            .isAbsolute;
+                                    if (_validURL) {
+                                      if (_linkController.text
+                                          .contains("twitter.com")) {
+                                      } else {
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                "That is not a link to the twitter post");
+                                      }
+                                    } else {
+                                      Fluttertoast.showToast(
+                                          msg: "Please enter a valid link");
+                                    }
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Text("Verify"),
+                                  ),
+                                  style: ButtonStyle(
+                                      elevation: MaterialStateProperty.all(0.0),
+                                      shape: MaterialStateProperty.all<
+                                              RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                0.0,
+                                              ),
+                                              side: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .primaryColor))),
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                              Theme.of(context).primaryColor)),
+                                ),
+                              )
+                            ],
+                          )),
+                    ),
+                  ));
+          sharingbanner = false;
           notifyListeners();
         }
       }

@@ -20,21 +20,21 @@ class TopAdvertisersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getTopAdvertisers() async {
+  getTopAdvertisers(String token) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       loading = true;
 
-      await c.getTopAdvertisers();
+      await c.getTopAdvertisers(token);
       topAdvertisersList = c.topAdvertisersList;
       loading = false;
       notifyListeners();
     }
   }
 
-  getOrganizationCampaigns(String organizationId) async {
+  getOrganizationCampaigns(String organizationId, String token) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
@@ -48,7 +48,7 @@ class TopAdvertisersProvider extends ChangeNotifier {
         }
       }
       c.organizationCampiagnsList.clear();
-      await c.getOrganizationCampaigns(location, organizationId);
+      await c.getOrganizationCampaigns(location, organizationId, token);
       organizationCampaignsList = c.organizationCampiagnsList;
       organizationPageLoading = false;
       notifyListeners();
