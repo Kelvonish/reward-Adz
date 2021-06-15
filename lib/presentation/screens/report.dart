@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/presentation/screens/startedCampaigns.dart';
 import 'package:rewardadz/presentation/screens/completedCampaigns.dart';
 import 'package:rewardadz/presentation/screens/ongoingCampaigns.dart';
@@ -9,6 +12,14 @@ class Report extends StatefulWidget {
 }
 
 class _ReportState extends State<Report> {
+  @override
+  void initState() {
+    super.initState();
+    Provider.of<GetCampaignProvider>(context, listen: false)
+        .getCompletedCampaigns(
+            Provider.of<UserProvider>(context, listen: false).loggedUser);
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(

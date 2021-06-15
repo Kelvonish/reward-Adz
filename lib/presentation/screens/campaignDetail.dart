@@ -124,7 +124,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       CircleAvatar(
-                        backgroundColor: Colors.white,
+                        backgroundColor: Theme.of(context).accentColor,
                         child: Icon(
                           Icons.campaign,
                           color: Theme.of(context).primaryColor,
@@ -204,8 +204,7 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                       children: [
                         CircleAvatar(
                           radius: 20,
-                          backgroundColor:
-                              const Color.fromRGBO(114, 145, 219, 1),
+                          backgroundColor: Theme.of(context).accentColor,
                           child: Icon(
                             Icons.share,
                             color: Theme.of(context).primaryColor,

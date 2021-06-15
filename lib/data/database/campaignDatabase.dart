@@ -18,7 +18,7 @@ class CampaignDatabaseProvider extends ChangeNotifier {
       await db.execute('''
 create table $dbName ( 
   userId integer , 
-  campaignId text primary key,
+  campaignId text not null,
   campaignName text not null,
   campaignMainUrl text not null,
   campaignOrganizationLogo text not null,
@@ -110,7 +110,7 @@ create table $completedDbName (
       "campaignAmount": checkAmount(campaign),
     };
 
-    var t = await campaignExists(campaign.sId);
+    var t = await campaignExists(campaign.sId, userId);
 
     if (t.isEmpty) {
       await db.insert(dbName, values);
@@ -149,11 +149,12 @@ create table $completedDbName (
         .query(completedDbName, where: 'CampaignId=?', whereArgs: [campaignId]);
   }
 
-  Future campaignExists(String campaignId) async {
+  Future campaignExists(String campaignId, int userId) async {
     if (db == null) {
       await open();
     }
-    return db.query(dbName, where: 'CampaignId=?', whereArgs: [campaignId]);
+    return db.query(dbName,
+        where: 'CampaignId=? and userId=?', whereArgs: [campaignId, userId]);
   }
 
   Future<int> delete(String id) async {

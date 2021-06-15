@@ -6,9 +6,8 @@ import 'package:rewardadz/business_logic/constants/constants.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/surveyModel.dart';
 import 'package:rewardadz/data/models/userModel.dart';
+import 'package:rewardadz/data/models/completedCampaignsModel.dart';
 
-import '../models/campaignModel.dart';
-import '../models/campaignModel.dart';
 import '../models/campaignModel.dart';
 
 //import 'package:fluttertoast/fluttertoast.dart';
@@ -17,6 +16,7 @@ class GetCampaignsClass {
   List<CampaignModel> searchCampaignList = [];
 
   Future fetchCampaigns(var location, UserModel user) async {
+    print(user.data.id);
     try {
       String url = BASE_URL +
           "campaign/list/page/1/limit/75?gender=" +
@@ -359,6 +359,33 @@ class GetCampaignsClass {
 
       if (response.statusCode == 200) {
         return FullSurveyModel.fromJson(returnedData);
+      } else {
+        Fluttertoast.showToast(msg: "Error getting survey");
+        return null;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString());
+      return null;
+    }
+  }
+
+  getCompletedCampaigns(UserModel user) async {
+    try {
+      String uri = BASE_URL +
+          "viewedads/" +
+          user.data.id.toString() +
+          "/page/1/limit/75";
+      var url = Uri.parse(uri);
+
+      var response = await http.post(url, headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'x-access-token': user.token,
+      });
+      var returnedData = json.decode(response.body);
+
+      if (response.statusCode == 200) {
+        return CompletedCampaignsModel.fromJson(returnedData);
       } else {
         Fluttertoast.showToast(msg: "Error getting survey");
         return null;

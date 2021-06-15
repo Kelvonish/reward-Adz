@@ -5,6 +5,7 @@ import 'package:rewardadz/business_logic/constants/constants.dart';
 import 'package:rewardadz/data/models/transactionModel.dart';
 import 'package:rewardadz/data/models/notificationModel.dart';
 import 'package:rewardadz/data/models/userModel.dart';
+import 'package:rewardadz/data/models/awardUserModel.dart';
 
 class TransactionNetworkClass {
   Future<TransactionModel> getEarnings(
@@ -127,6 +128,51 @@ class TransactionNetworkClass {
           headers: {
             "Content-Type": "application/json",
             'x-access-token': user.token,
+          },
+          body: body);
+      var returnedData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return returnedData;
+      } else {
+        if (returnedData['data'] is String) {
+          Fluttertoast.showToast(msg: returnedData['data']);
+        }
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Nothing " + e.toString());
+      return null;
+    }
+    return null;
+  }
+
+  Future awardUser(AwardUserModel awardModel,
+      AwardNotificationModel notification, String token) async {
+    Map data = {
+      "awardUser": {
+        "campid": awardModel.campid,
+        "uid": awardModel.uid,
+        "action": awardModel.action,
+        "status": awardModel.status,
+        "lat": awardModel.lat,
+        "lng": awardModel.lng,
+        "devicename": awardModel.devicename
+      },
+      "notification": {
+        'title': notification.title,
+        'description': notification.description
+      }
+    };
+
+    try {
+      String url = BASE_URL + "award/user/processaward";
+      var body = json.encode(data);
+
+      var parsedUrl = Uri.parse(url);
+
+      var response = await http.post(parsedUrl,
+          headers: {
+            "Content-Type": "application/json",
+            'x-access-token': token,
           },
           body: body);
       var returnedData = json.decode(response.body);

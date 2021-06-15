@@ -26,18 +26,14 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<GetCampaignProvider>(context, listen: false)
-        .getCampaignsProvider(
-            Provider.of<UserProvider>(context, listen: false).loggedUser);
+    Provider.of<GetCampaignProvider>(context, listen: false).getCampaigns(
+        Provider.of<UserProvider>(context, listen: false).loggedUser);
     Provider.of<TopAdvertisersProvider>(context, listen: false)
         .getTopAdvertisers(
             Provider.of<UserProvider>(context, listen: false).loggedUser.token);
   }
 
   getAllData() {
-    Provider.of<GetCampaignProvider>(context, listen: false)
-        .getCampaignsProvider(
-            Provider.of<UserProvider>(context, listen: false).loggedUser);
     Provider.of<TopAdvertisersProvider>(context, listen: false)
         .getTopAdvertisers(
             Provider.of<UserProvider>(context, listen: false).loggedUser.token);
@@ -50,7 +46,9 @@ class _MyHomePageState extends State<MyHomePage> {
       body: RefreshIndicator(
         backgroundColor: Theme.of(context).primaryColor,
         onRefresh: () {
-          return getAllData();
+          return Provider.of<GetCampaignProvider>(context, listen: false)
+              .refreshCampaigns(
+                  Provider.of<UserProvider>(context, listen: false).loggedUser);
         },
         child: Container(
           margin: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),

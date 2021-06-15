@@ -32,6 +32,7 @@ class _VideoQuizState extends State<VideoQuiz> {
     setState(() {
       surveyAnswers =
           Provider.of<GetCampaignProvider>(context, listen: false).videoSurvey;
+      surveyAnswers.data..shuffle();
     });
   }
 

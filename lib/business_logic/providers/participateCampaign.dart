@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
 import 'package:rewardadz/business_logic/providers/notificationsProvider.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
+import 'package:rewardadz/data/models/completedCampaignsModel.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../data/models/surveyModel.dart';
 
@@ -53,6 +54,23 @@ class ParticipateCampaignProvider extends ChangeNotifier {
     }
     downloading = false;
     notifyListeners();
+  }
+
+  bool checkParticipation(String campId, CompletedCampaignsModel campaigns) {
+    bool participated;
+    if (campaigns.data.isEmpty) {
+      participated = false;
+    } else {
+      for (int i = 0; i < campaigns.data.length; i++) {
+        if (campaigns.data[i].campaign.sId == campId) {
+          participated = true;
+          break;
+        } else {
+          participated = false;
+        }
+      }
+    }
+    return participated;
   }
 
   Future<bool> _requestPermission(Permission permission) async {
@@ -289,4 +307,6 @@ class ParticipateCampaignProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  submitSurveyAnswers() {}
 }

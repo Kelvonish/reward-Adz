@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import '../../data/database/campaignDatabase.dart';
 import '../../data/models/campaignModel.dart';
@@ -42,21 +43,32 @@ Widget checkTypeForAction(
   if (type == "Video") {
     return InkWell(
       onTap: () async {
-        await Provider.of<CampaignDatabaseProvider>(context, listen: false)
-            .insertCampaign(
-                campaignModel,
-                Provider.of<UserProvider>(context, listen: false)
-                    .loggedUser
-                    .data
-                    .id);
+        bool participated =
+            Provider.of<ParticipateCampaignProvider>(context, listen: false)
+                .checkParticipation(
+                    campaignModel.sId,
+                    Provider.of<GetCampaignProvider>(context, listen: false)
+                        .completedCampaigns);
+        if (participated) {
+          Fluttertoast.showToast(
+              msg: "You have already participated in the campaign!");
+        } else {
+          await Provider.of<CampaignDatabaseProvider>(context, listen: false)
+              .insertCampaign(
+                  campaignModel,
+                  Provider.of<UserProvider>(context, listen: false)
+                      .loggedUser
+                      .data
+                      .id);
 
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => VideoCampaignPage(
-                      name: campaignModel.name,
-                      videoModel: campaignModel.video,
-                    )));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => VideoCampaignPage(
+                        name: campaignModel.name,
+                        videoModel: campaignModel.video,
+                      )));
+        }
       },
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -68,7 +80,7 @@ Widget checkTypeForAction(
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor: const Color.fromRGBO(114, 145, 219, 1),
+                  backgroundColor: Theme.of(context).accentColor,
                   child: Icon(
                     Icons.play_arrow,
                     color: Theme.of(context).primaryColor,
@@ -204,7 +216,7 @@ Widget checkTypeForAction(
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor: const Color.fromRGBO(114, 145, 219, 1),
+                  backgroundColor: Theme.of(context).accentColor,
                   child: Icon(
                     Icons.music_note,
                     color: Theme.of(context).primaryColor,
@@ -281,8 +293,7 @@ Widget checkTypeForAction(
                       children: [
                         CircleAvatar(
                           radius: 20,
-                          backgroundColor:
-                              const Color.fromRGBO(114, 145, 219, 1),
+                          backgroundColor: Theme.of(context).accentColor,
                           child: Icon(
                             Icons.assignment,
                             color: Theme.of(context).primaryColor,
@@ -351,7 +362,7 @@ Widget checkTypeForAction(
               children: [
                 CircleAvatar(
                   radius: 20,
-                  backgroundColor: const Color.fromRGBO(114, 145, 219, 1),
+                  backgroundColor: Theme.of(context).accentColor,
                   child: Icon(
                     Icons.assignment,
                     color: Theme.of(context).primaryColor,

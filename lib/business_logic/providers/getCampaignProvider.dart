@@ -8,12 +8,12 @@ import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/data/models/surveyModel.dart';
+import 'package:rewardadz/presentation/screens/completedCampaigns.dart';
 import 'package:rewardadz/presentation/screens/survey/surveyPage.dart';
 import 'package:rewardadz/data/local storage/locationPreference.dart';
 import '../../data/models/campaignModel.dart';
-import '../../data/models/campaignModel.dart';
+import '../../data/models/completedCampaignsModel.dart';
 import '../../data/services/getCampaignsNetworkService.dart';
-import '../Shared/getLocation.dart';
 
 class GetCampaignProvider extends ChangeNotifier {
   CampaignModel campaign = CampaignModel();
@@ -23,11 +23,13 @@ class GetCampaignProvider extends ChangeNotifier {
   bool searchLoading = false;
   bool searchPageInitalState = true;
   bool loadingSurvey = false;
+  bool loadingCompletedCampaigns = false;
   var location;
   bool isInternetConnected = true;
   bool loadingCampaignDetails = false;
   FullSurveyModel videoSurvey;
   CampaignModel linkCampaignDetails;
+  CompletedCampaignsModel completedCampaigns;
 
   GetCampaignsClass campaignClass = GetCampaignsClass();
 
@@ -36,12 +38,13 @@ class GetCampaignProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future getCampaignsProvider(UserModel user) async {
+  Future getCampaigns(UserModel user) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       loading = true;
+      notifyListeners();
       if (location == null) {
         location = await LocationPreference().getLocation();
         if (location == null) {
@@ -50,6 +53,30 @@ class GetCampaignProvider extends ChangeNotifier {
         }
       }
       await campaignClass.fetchCampaigns(location, user);
+      campaignList = campaignClass.campaignList;
+      loading = false;
+      notifyListeners();
+    }
+  }
+
+  Future refreshCampaigns(UserModel user) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+    } else {
+      if (campaignList.isEmpty) {
+        loading = true;
+        notifyListeners();
+      }
+      if (location == null) {
+        location = await LocationPreference().getLocation();
+        if (location == null) {
+          await LocationPreference().saveLocation();
+          location = await LocationPreference().getLocation();
+        }
+      }
+      await campaignClass.fetchCampaigns(location, user);
+      campaignList = [];
       campaignList = campaignClass.campaignList;
       loading = false;
       notifyListeners();
@@ -100,6 +127,21 @@ class GetCampaignProvider extends ChangeNotifier {
                     )));
       }
       loadingSurvey = false;
+      notifyListeners();
+    }
+  }
+
+  Future getCompletedCampaigns(UserModel user) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+    } else {
+      loadingCompletedCampaigns = true;
+      notifyListeners();
+      CompletedCampaignsModel returnedData =
+          await campaignClass.getCompletedCampaigns(user);
+      completedCampaigns = returnedData;
+      loadingCompletedCampaigns = false;
       notifyListeners();
     }
   }
