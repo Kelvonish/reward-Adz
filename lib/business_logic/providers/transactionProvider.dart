@@ -90,15 +90,15 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  withdraw(UserModel user, String amount, String phone) async {
+  withdraw(UserModel user, int amount) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       withdrawModalLoading = true;
       notifyListeners();
-      notifications =
-          await TransactionNetworkClass().transfer(user, phone, amount);
+      bool success = await TransactionNetworkClass().withdraw(user, amount);
+      if (success) {}
     }
     withdrawModalLoading = false;
     notifyListeners();
