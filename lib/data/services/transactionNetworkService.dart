@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import "package:http/http.dart" as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/business_logic/constants/constants.dart';
@@ -145,10 +146,45 @@ class TransactionNetworkClass {
     return null;
   }
 
-  Future awardUser(AwardUserModel awardModel,
+  Future<bool> withdraw(UserModel user, int amount) async {
+    Map data = {
+      "amount": amount,
+      "uid": user.data.id,
+      "status": 1,
+      "type": "telco"
+    };
+
+    try {
+      String url = BASE_URL + "withdraw";
+      var body = json.encode(data);
+
+      var parsedUrl = Uri.parse(url);
+
+      var response = await http.post(parsedUrl,
+          headers: {
+            "Content-Type": "application/json",
+            'x-access-token': user.token,
+          },
+          body: body);
+      var returnedData = json.decode(response.body);
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        if (returnedData['data'] is String) {
+          Fluttertoast.showToast(msg: returnedData['data']);
+        }
+        return false;
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: "Nothing " + e.toString());
+      return false;
+    }
+  }
+
+  Future<bool> awardUser(AwardUserModel awardModel,
       AwardNotificationModel notification, String token) async {
     Map data = {
-      "awardUser": {
+      "awarduser": {
         "campid": awardModel.campid,
         "uid": awardModel.uid,
         "action": awardModel.action,
@@ -166,22 +202,24 @@ class TransactionNetworkClass {
     try {
       String url = BASE_URL + "award/user/processaward";
       var body = json.encode(data);
+      inspect(body);
 
       var parsedUrl = Uri.parse(url);
 
       var response = await http.post(parsedUrl,
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             'x-access-token': token,
           },
           body: body);
       var returnedData = json.decode(response.body);
       if (response.statusCode == 200) {
-        return returnedData;
-      } else {
-        if (returnedData['data'] is String) {
-          Fluttertoast.showToast(msg: returnedData['data']);
+        if (returnedData['status'] == "true") {
+          return true;
         }
+      } else {
+        Fluttertoast.showToast(msg: returnedData['message']);
+        return false;
       }
     } catch (e) {
       Fluttertoast.showToast(msg: "Nothing " + e.toString());

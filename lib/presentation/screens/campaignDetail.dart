@@ -234,7 +234,13 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                               color: Theme.of(context).primaryColor,
                             ),
                           )
-                        : Text(""))
+                        : value.awardingLoading
+                            ? Center(
+                                child: SpinKitChasingDots(
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              )
+                            : Text(""))
               ],
             ),
           ),

@@ -6,6 +6,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
+import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
 import 'package:rewardadz/presentation/widgets/transactionTile.dart';
 
@@ -288,69 +289,155 @@ class _WalletState extends State<Wallet> {
                                                   labelStyle: _labelStyle),
                                             ),
                                           ),
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            margin: EdgeInsets.all(0.0),
-                                            child: ElevatedButton(
-                                              onPressed: () {
-                                                if (_withdrawFormKey
-                                                    .currentState
-                                                    .validate()) {
-                                                  if (withdrawAmountController
-                                                      .text.isEmpty) {
-                                                    Fluttertoast.showToast(
-                                                        msg:
-                                                            "Please Enter Amount");
-                                                  } else {
-                                                    if (int.parse(
-                                                            withdrawAmountController
-                                                                .text) >
-                                                        Provider.of<UserProvider>(
-                                                                context,
-                                                                listen: false)
-                                                            .loggedUser
-                                                            .balance) {
+                                          Consumer<TransactionProvider>(
+                                            builder: (context, value, child) =>
+                                                Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              margin: EdgeInsets.all(0.0),
+                                              child: ElevatedButton(
+                                                onPressed: () {
+                                                  if (_withdrawFormKey
+                                                      .currentState
+                                                      .validate()) {
+                                                    if (withdrawAmountController
+                                                        .text.isEmpty) {
                                                       Fluttertoast.showToast(
                                                           msg:
-                                                              "You cannot withdraw more than your balance");
-                                                    } else if (int.parse(
-                                                            withdrawAmountController
-                                                                .text) <
-                                                        50) {
-                                                      Fluttertoast.showToast(
-                                                          msg:
-                                                              "Minimum withdraw amount is 50");
+                                                              "Please Enter Amount");
+                                                    } else {
+                                                      if (int.parse(
+                                                              withdrawAmountController
+                                                                  .text) >
+                                                          Provider.of<UserProvider>(
+                                                                  context,
+                                                                  listen: false)
+                                                              .loggedUser
+                                                              .balance) {
+                                                        Fluttertoast.showToast(
+                                                            msg:
+                                                                "You cannot withdraw more than your balance");
+                                                      } else if (int.parse(
+                                                              withdrawAmountController
+                                                                  .text) <
+                                                          50) {
+                                                        Fluttertoast.showToast(
+                                                            msg:
+                                                                "Minimum withdraw amount is 50");
+                                                      } else if (int.parse(
+                                                              withdrawAmountController
+                                                                  .text) >
+                                                          70000) {
+                                                        Fluttertoast.showToast(
+                                                            msg:
+                                                                "Maximum amount per transaction is Ksh 70000");
+                                                      } else {
+                                                        int transactionFees;
+                                                        if (int.parse(
+                                                                withdrawAmountController
+                                                                    .text) <
+                                                            1000) {
+                                                          transactionFees = 16;
+                                                        } else {
+                                                          transactionFees = 22;
+                                                        }
+
+                                                        int netAmount = int.parse(
+                                                                withdrawAmountController
+                                                                    .text) -
+                                                            transactionFees;
+                                                        Navigator.pop(context);
+                                                        showDialog<void>(
+                                                            context: context,
+                                                            barrierDismissible:
+                                                                false,
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return AlertDialog(
+                                                                title: Center(
+                                                                    child: Icon(
+                                                                  Icons
+                                                                      .info_outline,
+                                                                  color: Theme.of(
+                                                                          context)
+                                                                      .primaryColor,
+                                                                  size: 50,
+                                                                )),
+                                                                content: Container(
+                                                                    width: double
+                                                                        .maxFinite,
+                                                                    child: Text(
+                                                                        "You have withdrawn ${withdrawAmountController.text}. You will received ${netAmount.toString()} since ${transactionFees.toString()} is transaction fee")),
+                                                                actions: <
+                                                                    Widget>[
+                                                                  TextButton(
+                                                                    child: Text(
+                                                                        'Cancel',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Theme.of(context).primaryColor)),
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop();
+                                                                    },
+                                                                  ),
+                                                                  TextButton(
+                                                                    child: Text(
+                                                                        'Withdraw',
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Theme.of(context).primaryColor)),
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.of(
+                                                                              context)
+                                                                          .pop();
+                                                                    },
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            });
+                                                        /* value.withdraw(
+                                                            Provider.of<UserProvider>(
+                                                                    context,
+                                                                    listen:
+                                                                        false)
+                                                                .loggedUser,
+                                                            netAmount);*/
+                                                      }
                                                     }
                                                   }
-                                                }
-                                              },
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(20.0),
-                                                child: Text("Withdraw"),
+                                                },
+                                                child: Padding(
+                                                  padding: const EdgeInsets.all(
+                                                      20.0),
+                                                  child: Text("Withdraw"),
+                                                ),
+                                                style: ButtonStyle(
+                                                    elevation:
+                                                        MaterialStateProperty
+                                                            .all(0.0),
+                                                    shape: MaterialStateProperty.all<
+                                                            RoundedRectangleBorder>(
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                              0.0,
+                                                            ),
+                                                            side: BorderSide(
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .primaryColor))),
+                                                    backgroundColor:
+                                                        MaterialStateProperty.all(
+                                                            Theme.of(context)
+                                                                .primaryColor)),
                                               ),
-                                              style: ButtonStyle(
-                                                  elevation:
-                                                      MaterialStateProperty.all(
-                                                          0.0),
-                                                  shape: MaterialStateProperty.all<
-                                                          RoundedRectangleBorder>(
-                                                      RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                            0.0,
-                                                          ),
-                                                          side: BorderSide(
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .primaryColor))),
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all(
-                                                          Theme.of(context)
-                                                              .primaryColor)),
                                             ),
                                           )
                                         ],

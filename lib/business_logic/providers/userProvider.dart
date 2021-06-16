@@ -137,6 +137,7 @@ class UserProvider extends ChangeNotifier {
 
       if (result != null) {
         userPref.saveUser(result);
+        await getLoggedInUser();
       }
     }
   }

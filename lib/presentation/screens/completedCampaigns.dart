@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/presentation/widgets/completedCampaignTile.dart';
 
 class CompletedCampaigns extends StatefulWidget {
@@ -22,45 +23,78 @@ class _CompletedCampaignsState extends State<CompletedCampaigns> {
                   ),
                 )
               : value.completedCampaigns == null
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset("assets/completed.png"),
-                        Text(
-                          "All the campaigns you have completed will be shown here",
-                          style: TextStyle(fontWeight: FontWeight.w300),
-                        )
-                      ],
+                  ? RefreshIndicator(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      onRefresh: () {
+                        return Provider.of<GetCampaignProvider>(context,
+                                listen: false)
+                            .getCompletedCampaigns(Provider.of<UserProvider>(
+                                    context,
+                                    listen: false)
+                                .loggedUser);
+                      },
+                      child: ListView(
+                        //mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset("assets/completed.png"),
+                          Text(
+                            "All the campaigns you have completed will be shown here",
+                            style: TextStyle(fontWeight: FontWeight.w300),
+                          )
+                        ],
+                      ),
                     )
                   : value.completedCampaigns.data.isEmpty
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Image.asset("assets/completed.png"),
-                            Text(
-                              "All the campaigns you have completed will be shown here",
-                              style: TextStyle(fontWeight: FontWeight.w300),
-                            )
-                          ],
+                      ? RefreshIndicator(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          onRefresh: () {
+                            return Provider.of<GetCampaignProvider>(context,
+                                    listen: false)
+                                .getCompletedCampaigns(
+                                    Provider.of<UserProvider>(context,
+                                            listen: false)
+                                        .loggedUser);
+                          },
+                          child: ListView(
+                            //mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset("assets/completed.png"),
+                              Text(
+                                "All the campaigns you have completed will be shown here",
+                                style: TextStyle(fontWeight: FontWeight.w300),
+                              )
+                            ],
+                          ),
                         )
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: value.completedCampaigns.data.length,
-                          itemBuilder: (context, index) {
-                            return CompletedCampaignsTile(
-                              amount: value
-                                  .completedCampaigns.data[index].awards.amount
-                                  .toString(),
-                              category: value.completedCampaigns.data[index]
-                                  .campaign.organization.industry,
-                              mainUrl: value.completedCampaigns.data[index]
-                                  .campaign.campimg,
-                              name: value
-                                  .completedCampaigns.data[index].campaign.name,
-                              otherUrl: value.completedCampaigns.data[index]
-                                  .campaign.organization.logo,
-                            );
-                          }),
+                      : RefreshIndicator(
+                          backgroundColor: Theme.of(context).primaryColor,
+                          onRefresh: () {
+                            return Provider.of<GetCampaignProvider>(context,
+                                    listen: false)
+                                .getCompletedCampaigns(
+                                    Provider.of<UserProvider>(context,
+                                            listen: false)
+                                        .loggedUser);
+                          },
+                          child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: value.completedCampaigns.data.length,
+                              itemBuilder: (context, index) {
+                                return CompletedCampaignsTile(
+                                  amount: value.completedCampaigns.data[index]
+                                      .awards.amount
+                                      .toString(),
+                                  category: value.completedCampaigns.data[index]
+                                      .campaign.organization.industry,
+                                  mainUrl: value.completedCampaigns.data[index]
+                                      .campaign.campimg,
+                                  name: value.completedCampaigns.data[index]
+                                      .campaign.name,
+                                  otherUrl: value.completedCampaigns.data[index]
+                                      .campaign.organization.logo,
+                                );
+                              }),
+                        ),
         ));
   }
 }

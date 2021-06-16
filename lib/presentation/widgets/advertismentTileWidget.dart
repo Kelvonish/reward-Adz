@@ -19,6 +19,7 @@ class AdTile extends StatelessWidget {
               width: 60.0,
               height: 60.0,
               decoration: BoxDecoration(
+                //border: Border.all(color: Theme.of(context).primaryColor),
                 shape: BoxShape.circle,
                 image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
               ),

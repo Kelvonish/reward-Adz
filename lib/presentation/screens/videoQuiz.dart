@@ -1,17 +1,18 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
+import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/surveyModel.dart';
 import '../../business_logic/providers/participateCampaign.dart';
 
 class VideoQuiz extends StatefulWidget {
-  final String surveyId;
-  final String name;
-  final String amount;
-  VideoQuiz({this.surveyId, this.name, this.amount});
+  final CampaignModel campaignModel;
+  VideoQuiz({this.campaignModel});
 
   @override
   _VideoQuizState createState() => _VideoQuizState();
@@ -26,8 +27,9 @@ class _VideoQuizState extends State<VideoQuiz> {
   }
 
   initializeState() async {
+    inspect(widget.campaignModel);
     await Provider.of<GetCampaignProvider>(context, listen: false)
-        .getVideoSurvey(widget.surveyId,
+        .getVideoSurvey(widget.campaignModel.video.surveyid,
             Provider.of<UserProvider>(context, listen: false).loggedUser.token);
     setState(() {
       surveyAnswers =
@@ -165,7 +167,7 @@ class _VideoQuizState extends State<VideoQuiz> {
             backgroundColor: Colors.white,
             elevation: 0.0,
             title: Text(
-              widget.name,
+              widget.campaignModel.name,
               style: TextStyle(color: Colors.black),
             ),
           ),
@@ -211,32 +213,38 @@ class _VideoQuizState extends State<VideoQuiz> {
                               );
                             }),
                         Consumer<ParticipateCampaignProvider>(
-                          builder: (context, value, child) => Container(
-                            width: MediaQuery.of(context).size.width,
-                            margin: EdgeInsets.only(top: 30.0),
-                            child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(
-                                      Theme.of(context).primaryColor)),
-                              onPressed: () {
-                                value.surveyErrors = [];
-                                value.checkVideoAnswers(
-                                    context,
-                                    surveyAnswers,
-                                    widget.name,
-                                    widget.amount,
-                                    Provider.of<UserProvider>(context,
-                                            listen: false)
-                                        .loggedUser
-                                        .data
-                                        .fname);
-                              },
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: Text("Submit"),
-                              ),
-                            ),
-                          ),
+                          builder: (context, value, child) =>
+                              value.awardingLoading
+                                  ? Center(
+                                      child: SpinKitChasingDots(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    )
+                                  : Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      margin: EdgeInsets.only(top: 30.0),
+                                      child: ElevatedButton(
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Theme.of(context)
+                                                        .primaryColor)),
+                                        onPressed: () {
+                                          value.surveyErrors = [];
+                                          value.checkVideoAnswers(
+                                              context,
+                                              surveyAnswers,
+                                              widget.campaignModel,
+                                              Provider.of<UserProvider>(context,
+                                                      listen: false)
+                                                  .loggedUser);
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15.0),
+                                          child: Text("Submit"),
+                                        ),
+                                      ),
+                                    ),
                         ),
                       ],
                     ),

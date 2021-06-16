@@ -49,7 +49,7 @@ Widget checkTypeForAction(
                     campaignModel.sId,
                     Provider.of<GetCampaignProvider>(context, listen: false)
                         .completedCampaigns);
-        if (participated) {
+        if (false) {
           Fluttertoast.showToast(
               msg: "You have already participated in the campaign!");
         } else {
@@ -66,7 +66,7 @@ Widget checkTypeForAction(
               MaterialPageRoute(
                   builder: (context) => VideoCampaignPage(
                         name: campaignModel.name,
-                        videoModel: campaignModel.video,
+                        videoModel: campaignModel,
                       )));
         }
       },
@@ -349,8 +349,8 @@ Widget checkTypeForAction(
                     .id);
 
         Provider.of<ParticipateCampaignProvider>(context, listen: false)
-            .saveAndShare(
-                context, campaignModel.banner.bannerurl, campaignModel.sId);
+            .saveAndShare(context, campaignModel,
+                Provider.of<UserProvider>(context, listen: false).loggedUser);
       },
       child: Padding(
         padding: const EdgeInsets.all(15.0),

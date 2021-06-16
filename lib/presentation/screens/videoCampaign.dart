@@ -6,7 +6,7 @@ import 'package:video_player/video_player.dart';
 import 'package:flick_video_player/flick_video_player.dart';
 
 class VideoCampaignPage extends StatefulWidget {
-  final VideoModel videoModel;
+  final CampaignModel videoModel;
   final String name;
   VideoCampaignPage({this.videoModel, this.name});
   @override
@@ -26,7 +26,7 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
         });
       },
       videoPlayerController:
-          VideoPlayerController.network(widget.videoModel.url),
+          VideoPlayerController.network(widget.videoModel.video.url),
     );
   }
 
@@ -68,10 +68,8 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => VideoQuiz(
-                                      name: widget.name,
-                                      surveyId: widget.videoModel.surveyid,
-                                      amount: widget
-                                          .videoModel.watchedvideosamount)));
+                                        campaignModel: widget.videoModel,
+                                      )));
                         },
                         child: Container(
                           decoration: BoxDecoration(

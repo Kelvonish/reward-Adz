@@ -62,8 +62,8 @@ class Campaign {
   String objective;
   int publishedby;
   int iV;
-  Null audio;
-  Null banner;
+  AudioCompleted audio;
+  Banner banner;
   Video video;
   String endage;
   String gender;
@@ -120,7 +120,8 @@ class Campaign {
     publishedby = json['publishedby'];
     iV = json['__v'];
     audio = json['audio'];
-    banner = json['banner'];
+    banner =
+        json['banner'] != null ? new Banner.fromJson(json['banner']) : null;
     video = json['video'] != null ? new Video.fromJson(json['video']) : null;
     endage = json['endage'];
     gender = json['gender'];
@@ -151,7 +152,9 @@ class Campaign {
     data['publishedby'] = this.publishedby;
     data['__v'] = this.iV;
     data['audio'] = this.audio;
-    data['banner'] = this.banner;
+    if (this.banner != null) {
+      data['banner'] = this.banner.toJson();
+    }
     if (this.video != null) {
       data['video'] = this.video.toJson();
     }
@@ -249,6 +252,39 @@ class Organization {
   }
 }
 
+class Banner {
+  String shares;
+  String sharesamount;
+  Null bannerset;
+  Null banneramount;
+  String bannerurl;
+
+  Banner(
+      {this.shares,
+      this.sharesamount,
+      this.bannerset,
+      this.banneramount,
+      this.bannerurl});
+
+  Banner.fromJson(Map<String, dynamic> json) {
+    shares = json['shares'];
+    sharesamount = json['sharesamount'];
+    bannerset = json['bannerset'];
+    banneramount = json['banneramount'];
+    bannerurl = json['bannerurl'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['shares'] = this.shares;
+    data['sharesamount'] = this.sharesamount;
+    data['bannerset'] = this.bannerset;
+    data['banneramount'] = this.banneramount;
+    data['bannerurl'] = this.bannerurl;
+    return data;
+  }
+}
+
 class Video {
   String surveyid;
   String watchedvideosamount;
@@ -328,6 +364,31 @@ class Awards {
     data['lng'] = this.lng;
     data['createdAt'] = this.createdAt;
     data['updatedAt'] = this.updatedAt;
+    return data;
+  }
+}
+
+class AudioCompleted {
+  String uniquecalls;
+  String award;
+  String volume;
+  String audiourl;
+
+  AudioCompleted({this.uniquecalls, this.award, this.volume, this.audiourl});
+
+  AudioCompleted.fromJson(Map<String, dynamic> json) {
+    uniquecalls = json['uniquecalls'];
+    award = json['award'];
+    volume = json['volume'];
+    audiourl = json['audiourl'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['uniquecalls'] = this.uniquecalls;
+    data['award'] = this.award;
+    data['volume'] = this.volume;
+    data['audiourl'] = this.audiourl;
     return data;
   }
 }

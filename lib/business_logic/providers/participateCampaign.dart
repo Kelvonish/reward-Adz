@@ -1,17 +1,29 @@
+import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'package:rewardadz/business_logic/Shared/getDeviceInfo.dart';
 import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
+import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
 import 'package:rewardadz/business_logic/providers/notificationsProvider.dart';
+import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
+import 'package:rewardadz/data/local%20storage/locationPreference.dart';
+import 'package:rewardadz/data/models/awardUserModel.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/completedCampaignsModel.dart';
+import 'package:rewardadz/data/models/userModel.dart';
+import 'package:rewardadz/data/services/transactionNetworkService.dart';
 import 'package:share_plus/share_plus.dart';
 import '../../data/models/surveyModel.dart';
 
@@ -19,16 +31,19 @@ class ParticipateCampaignProvider extends ChangeNotifier {
   bool downloading = false;
   bool sharingbanner = false;
   bool checkingAnswers = false;
+  bool awardingLoading = false;
   List<String> surveyErrors = [];
   bool isInternetConnected;
   TextEditingController _linkController = TextEditingController();
+  TransactionNetworkClass transactionNetworkClass = TransactionNetworkClass();
+  LocationPreference locationClass = LocationPreference();
+  DeviceDetails deviceDetailsClass = DeviceDetails();
+  SendNotification notification = SendNotification();
 
   checkInternetConnection() async {
     isInternetConnected = await ConnectivityService().checkInternetConnection();
     notifyListeners();
   }
-
-  SendNotification notification = SendNotification();
 
   downloadAudio(AudioModel audioModel) async {
     final status = await Permission.storage.request();
@@ -42,15 +57,15 @@ class ParticipateCampaignProvider extends ChangeNotifier {
       if (!hasExisted) {
         savedDirectory.create();
       }
-
+      /*
       final taskId = await FlutterDownloader.enqueue(
           url: audioModel.audiourl,
           savedDir: baseStorage.path,
           openFileFromNotification: true,
           fileName: "Saf audio.mp3");
       print("downloaded file here...");
-      print(taskId);
-      Fluttertoast.showToast(msg: "Downloaded");
+      print(taskId);*/
+      Fluttertoast.showToast(msg: "Still in development phase");
     }
     downloading = false;
     notifyListeners();
@@ -58,6 +73,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
 
   bool checkParticipation(String campId, CompletedCampaignsModel campaigns) {
     bool participated;
+
     if (campaigns.data.isEmpty) {
       participated = false;
     } else {
@@ -73,6 +89,33 @@ class ParticipateCampaignProvider extends ChangeNotifier {
     return participated;
   }
 
+  Future<bool> awardUser(AwardUserModel awardUser,
+      AwardNotificationModel notificationModel, String token) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+      return false;
+    } else {
+      awardingLoading = true;
+      notifyListeners();
+      bool success = await transactionNetworkClass.awardUser(
+          awardUser, notificationModel, token);
+      if (success) {
+        Fluttertoast.showToast(msg: "You have been awarded");
+        Random random = new Random();
+        int randomNumber = random.nextInt(100);
+        notification.sendNotification(notificationModel.title,
+            notificationModel.description, randomNumber);
+        awardingLoading = false;
+        notifyListeners();
+        return true;
+      }
+      awardingLoading = false;
+      notifyListeners();
+    }
+    return false;
+  }
+
   Future<bool> _requestPermission(Permission permission) async {
     if (await permission.isGranted) {
       return true;
@@ -85,7 +128,8 @@ class ParticipateCampaignProvider extends ChangeNotifier {
     return false;
   }
 
-  Future saveAndShare(BuildContext context, String url, String filename) async {
+  Future saveAndShare(
+      BuildContext context, CampaignModel campaignModel, UserModel user) async {
     Directory directory;
     final RenderBox box = context.findRenderObject();
     try {
@@ -93,6 +137,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
         if (await _requestPermission(Permission.storage)) {
           directory = await getExternalStorageDirectory();
         } else {
+          Fluttertoast.showToast(msg: "Permission not granted");
           return false;
         }
       } else {
@@ -102,7 +147,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
           Fluttertoast.showToast(msg: "Permission not granted");
         }
       }
-      File saveFile = File(directory.path + "$filename.png");
+      File saveFile = File(directory.path + "${campaignModel.sId}.png");
       if (!await directory.exists()) {
         print("No directory");
         await directory.create(recursive: true);
@@ -114,12 +159,14 @@ class ParticipateCampaignProvider extends ChangeNotifier {
         } else {
           sharingbanner = true;
           notifyListeners();
-
-          var response = await get(Uri.parse(url));
+          Fluttertoast.showToast(
+              msg:
+                  "Please share to twitter as a tweet and submit the link to post");
+          var response = await get(Uri.parse(campaignModel.banner.bannerurl));
 
           saveFile.writeAsBytesSync(response.bodyBytes);
-          Share.shareFiles([directory.path + "$filename.png"],
-              text: '#rewardAdz #Earn',
+          Share.shareFiles([directory.path + "${campaignModel.sId}.png"],
+              text: campaignModel.banner.bannerset,
               sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
           showCupertinoModalPopup(
               context: context,
@@ -151,7 +198,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
                                       ? "Please Enter a valid link"
                                       : null,
                                   controller: _linkController,
-                                  keyboardType: TextInputType.number,
+                                  keyboardType: TextInputType.url,
                                   decoration: InputDecoration(
                                     fillColor: Colors.white,
                                     filled: true,
@@ -159,48 +206,108 @@ class ParticipateCampaignProvider extends ChangeNotifier {
                                   ),
                                 ),
                               ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                margin: EdgeInsets.all(0.0),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    bool _validURL =
-                                        Uri.parse(_linkController.text)
-                                            .isAbsolute;
-                                    if (_validURL) {
-                                      if (_linkController.text
-                                          .contains("twitter.com")) {
-                                      } else {
-                                        Fluttertoast.showToast(
-                                            msg:
-                                                "That is not a link to the twitter post");
-                                      }
-                                    } else {
-                                      Fluttertoast.showToast(
-                                          msg: "Please enter a valid link");
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(20.0),
-                                    child: Text("Verify"),
-                                  ),
-                                  style: ButtonStyle(
-                                      elevation: MaterialStateProperty.all(0.0),
-                                      shape: MaterialStateProperty.all<
-                                              RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                0.0,
-                                              ),
-                                              side: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .primaryColor))),
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              Theme.of(context).primaryColor)),
-                                ),
-                              )
+                              awardingLoading
+                                  ? Center(
+                                      child: SpinKitChasingDots(
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                    )
+                                  : Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      margin: EdgeInsets.all(0.0),
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          bool _validURL =
+                                              Uri.parse(_linkController.text)
+                                                  .isAbsolute;
+                                          if (_validURL) {
+                                            if (_linkController.text
+                                                .contains("twitter.com")) {
+                                              Navigator.pop(context);
+                                              String deviceDetails =
+                                                  await deviceDetailsClass
+                                                      .getDeviceInfo();
+                                              await locationClass.getLocation();
+                                              var location = await locationClass
+                                                  .getLocation();
+                                              AwardNotificationModel
+                                                  awardNotification =
+                                                  AwardNotificationModel(
+                                                      title: "Earning Award !",
+                                                      description:
+                                                          "Congratulations ${user.data.fname} you have earned ${user.data.currency} ${campaignModel.banner.sharesamount} from ${campaignModel.name}");
+                                              AwardUserModel awardUserModel =
+                                                  AwardUserModel(
+                                                      action: "Banner",
+                                                      campid: campaignModel.sId,
+                                                      devicename: deviceDetails,
+                                                      lat: double.parse(
+                                                          location[0]),
+                                                      lng: double.parse(
+                                                          location[1]),
+                                                      status: 1,
+                                                      uid: user.data.id
+                                                          .toString());
+
+                                              bool awarded = await awardUser(
+                                                  awardUserModel,
+                                                  awardNotification,
+                                                  user.token);
+                                              if (awarded) {
+                                                await Provider.of<UserProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .getUser(user.data.id
+                                                        .toString());
+                                                await Provider.of<
+                                                            GetCampaignProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .getCompletedCampaigns(
+                                                        user);
+                                                await Provider.of<
+                                                            TransactionProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .getNotifications(user);
+                                                final nav =
+                                                    Navigator.of(context);
+                                                nav.pop();
+                                              }
+                                            } else {
+                                              Fluttertoast.showToast(
+                                                  msg:
+                                                      "That is not a link to the twitter post");
+                                            }
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                msg:
+                                                    "Please enter a valid link");
+                                          }
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Text("Verify"),
+                                        ),
+                                        style: ButtonStyle(
+                                            elevation:
+                                                MaterialStateProperty.all(0.0),
+                                            shape: MaterialStateProperty.all<
+                                                    RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      0.0,
+                                                    ),
+                                                    side: BorderSide(
+                                                        color: Theme.of(context)
+                                                            .primaryColor))),
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Theme.of(context)
+                                                        .primaryColor)),
+                                      ),
+                                    )
                             ],
                           )),
                     ),
@@ -217,7 +324,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
   }
 
   checkVideoAnswers(BuildContext context, FullSurveyModel surveyAnswers,
-      String name, String amount, String user) {
+      CampaignModel campaignModel, UserModel user) async {
     for (int index = 0; index < surveyAnswers.data.length; index++) {
       var qn = index + 1;
       if (surveyAnswers.data[index].type == "radio") {
@@ -264,10 +371,35 @@ class ParticipateCampaignProvider extends ChangeNotifier {
       }
     }
     if (surveyErrors.isEmpty) {
-      Random random = new Random();
-      int randomNumber = random.nextInt(100);
-      notification.sendNotification("Congratulations $user",
-          "You have earned $amount from $name", randomNumber);
+      String deviceDetails = await deviceDetailsClass.getDeviceInfo();
+      await locationClass.getLocation();
+      var location = await locationClass.getLocation();
+      AwardNotificationModel awardNotification = AwardNotificationModel(
+          title: "Earning Award !",
+          description:
+              "Congratulations ${user.data.fname} you have earned ${user.data.currency} ${campaignModel.video.watchedvideosamount} from ${campaignModel.name}");
+      AwardUserModel awardUserModel = AwardUserModel(
+          action: "Video",
+          campid: campaignModel.sId,
+          devicename: deviceDetails,
+          lat: double.parse(location[0]),
+          lng: double.parse(location[1]),
+          status: 1,
+          uid: user.data.id.toString());
+
+      bool awarded =
+          await awardUser(awardUserModel, awardNotification, user.token);
+      if (awarded) {
+        await Provider.of<UserProvider>(context, listen: false)
+            .getUser(user.data.id.toString());
+        await Provider.of<GetCampaignProvider>(context, listen: false)
+            .getCompletedCampaigns(user);
+        await Provider.of<TransactionProvider>(context, listen: false)
+            .getNotifications(user);
+        final nav = Navigator.of(context);
+        nav.pop();
+        nav.pop();
+      }
     } else {
       showDialog<void>(
         context: context,

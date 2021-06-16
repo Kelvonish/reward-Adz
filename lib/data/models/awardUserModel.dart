@@ -1,5 +1,4 @@
 class AwardUserModel {
-  String amount;
   String campid;
   String uid;
   String action;
@@ -9,8 +8,7 @@ class AwardUserModel {
   String devicename;
 
   AwardUserModel(
-      {this.amount,
-      this.campid,
+      {this.campid,
       this.uid,
       this.action,
       this.status,
@@ -19,7 +17,6 @@ class AwardUserModel {
       this.devicename});
 
   AwardUserModel.fromJson(Map<String, dynamic> json) {
-    amount = json['amount'];
     campid = json['campid'];
     uid = json['uid'];
     action = json['action'];
@@ -31,7 +28,7 @@ class AwardUserModel {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['amount'] = this.amount;
+
     data['campid'] = this.campid;
     data['uid'] = this.uid;
     data['action'] = this.action;

@@ -19,12 +19,12 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
             : showAlertDialogBox(context);
       },
       child: MainCardTile(
-        name: data.name,
-        mainUrl: data.campimg,
-        isActive: data.isactive,
-        otherUrl: data.organization.logo,
-        category: data.organization.industry,
-        amount: data.audio.award,
+        name: data.name ?? "",
+        mainUrl: data.campimg ?? "",
+        isActive: data.isactive ?? "",
+        otherUrl: data.organization.logo ?? "",
+        category: data.organization.industry ?? "",
+        amount: data.audio.award ?? "",
         type: "Ringtone",
       ),
     );
@@ -43,12 +43,12 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
             : showAlertDialogBox(context);
       },
       child: MainCardTile(
-        name: data.name,
-        mainUrl: data.campimg,
-        isActive: data.isactive,
-        otherUrl: data.organization.logo,
-        category: data.organization.industry,
-        amount: data.video.watchedvideosamount,
+        name: data.name ?? "",
+        mainUrl: data.campimg ?? "",
+        isActive: data.isactive ?? "",
+        otherUrl: data.organization.logo ?? "",
+        category: data.organization.industry ?? "",
+        amount: data.video.watchedvideosamount ?? "",
         type: "Video",
       ),
     );
@@ -67,12 +67,12 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
             : showAlertDialogBox(context);
       },
       child: MainCardTile(
-        name: data.name,
-        mainUrl: data.campimg,
-        isActive: data.isactive,
-        otherUrl: data.organization.logo,
-        category: data.organization.industry,
-        amount: data.survey.amount,
+        name: data.name ?? "",
+        mainUrl: data.campimg ?? "",
+        isActive: data.isactive ?? "",
+        otherUrl: data.organization.logo ?? "",
+        category: data.organization.industry ?? "",
+        amount: data.survey.amount ?? "",
         type: "Survey",
       ),
     );
@@ -91,12 +91,12 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
             : showAlertDialogBox(context);
       },
       child: MainCardTile(
-        name: data.name,
-        mainUrl: data.campimg,
-        isActive: data.isactive,
-        otherUrl: data.organization.logo,
-        category: data.organization.industry,
-        amount: data.banner.sharesamount,
+        name: data.name ?? "",
+        mainUrl: data.campimg ?? "",
+        isActive: data.isactive ?? "",
+        otherUrl: data.organization.logo ?? "",
+        category: data.organization.industry ?? "",
+        amount: data.banner.sharesamount ?? "",
         type: "Banner",
       ),
     );
