@@ -7,8 +7,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
   if (data.audio != null) {
     return InkWell(
       onTap: () {
-        bool t = true;
-        t
+        data.isactive
             ? Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -31,8 +30,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
   } else if (data.video != null) {
     return InkWell(
       onTap: () {
-        bool t = true;
-        t
+        data.isactive
             ? Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -55,8 +53,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
   } else if (data.survey != null) {
     return InkWell(
       onTap: () {
-        bool t = true;
-        t
+        data.isactive
             ? Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -79,8 +76,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
   } else if (data.banner != null) {
     return InkWell(
       onTap: () {
-        bool t = true;
-        t
+        data.isactive
             ? Navigator.push(
                 context,
                 MaterialPageRoute(

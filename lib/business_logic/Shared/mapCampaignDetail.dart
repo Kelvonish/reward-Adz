@@ -49,7 +49,7 @@ Widget checkTypeForAction(
                     campaignModel.sId,
                     Provider.of<GetCampaignProvider>(context, listen: false)
                         .completedCampaigns);
-        if (false) {
+        if (participated) {
           Fluttertoast.showToast(
               msg: "You have already participated in the campaign!");
         } else {
@@ -125,86 +125,97 @@ Widget checkTypeForAction(
   } else if (type == "Ringtone") {
     return InkWell(
       onTap: () async {
-        await Provider.of<CampaignDatabaseProvider>(context, listen: false)
-            .insertCampaign(
-                campaignModel,
-                Provider.of<UserProvider>(context, listen: false)
-                    .loggedUser
-                    .data
-                    .id);
-        showModalBottomSheet(
-            context: context,
-            builder: (context) {
-              return Container(
-                color: Colors.white,
-                child: Consumer<ParticipateCampaignProvider>(
-                  builder: (context, value, child) => Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Adopt Ringtone",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            IconButton(
-                                icon: Icon(
-                                  Icons.cancel_sharp,
-                                  size: 30,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                })
-                          ],
-                        ),
-                      ),
-                      Divider(
-                        height: 5,
-                        color: Colors.grey[400],
-                      ),
-                      AudioPlayerWidget(audioModel: campaignModel.audio),
-                      SizedBox(
-                        height: 30,
-                      ),
-                      TextButton.icon(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  Theme.of(context).primaryColor)),
-                          onPressed: () {
-                            //value.downloadAudio(campaignModel.audio);
-                          },
-                          icon: Icon(
-                            Icons.music_note_outlined,
-                            color: Colors.white,
-                          ),
-                          label: Text(
-                            "Set Ringtone",
-                            style: TextStyle(color: Colors.white),
-                          )),
-                      SizedBox(
-                        height: 30.0,
-                      ),
-                      value.downloading
-                          ? Container(
-                              color: Theme.of(context).primaryColor,
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Text(
-                                  "Downloading...",
-                                  style: TextStyle(color: Colors.white),
-                                ),
+        bool participated =
+            Provider.of<ParticipateCampaignProvider>(context, listen: false)
+                .checkParticipation(
+                    campaignModel.sId,
+                    Provider.of<GetCampaignProvider>(context, listen: false)
+                        .completedCampaigns);
+        if (participated) {
+          Fluttertoast.showToast(
+              msg: "You have already participated in the campaign!");
+        } else {
+          await Provider.of<CampaignDatabaseProvider>(context, listen: false)
+              .insertCampaign(
+                  campaignModel,
+                  Provider.of<UserProvider>(context, listen: false)
+                      .loggedUser
+                      .data
+                      .id);
+          showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return Container(
+                  color: Colors.white,
+                  child: Consumer<ParticipateCampaignProvider>(
+                    builder: (context, value, child) => Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Adopt Ringtone",
+                                style: TextStyle(fontWeight: FontWeight.bold),
                               ),
-                            )
-                          : Text("")
-                    ],
+                              IconButton(
+                                  icon: Icon(
+                                    Icons.cancel_sharp,
+                                    size: 30,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  })
+                            ],
+                          ),
+                        ),
+                        Divider(
+                          height: 5,
+                          color: Colors.grey[400],
+                        ),
+                        AudioPlayerWidget(audioModel: campaignModel.audio),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        TextButton.icon(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    Theme.of(context).primaryColor)),
+                            onPressed: () {
+                              //value.downloadAudio(campaignModel.audio);
+                            },
+                            icon: Icon(
+                              Icons.music_note_outlined,
+                              color: Colors.white,
+                            ),
+                            label: Text(
+                              "Set Ringtone",
+                              style: TextStyle(color: Colors.white),
+                            )),
+                        SizedBox(
+                          height: 30.0,
+                        ),
+                        value.downloading
+                            ? Container(
+                                color: Theme.of(context).primaryColor,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    "Downloading...",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                ),
+                              )
+                            : Text("")
+                      ],
+                    ),
                   ),
-                ),
-              );
-            });
+                );
+              });
+        }
       },
       child: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -265,23 +276,35 @@ Widget checkTypeForAction(
             ))
           : InkWell(
               onTap: () async {
-                await Provider.of<CampaignDatabaseProvider>(context,
-                        listen: false)
-                    .insertCampaign(
-                        campaignModel,
-                        Provider.of<UserProvider>(context, listen: false)
-                            .loggedUser
-                            .data
-                            .id);
-
-                Provider.of<GetCampaignProvider>(context, listen: false)
-                    .getSurvey(
+                bool participated = Provider.of<ParticipateCampaignProvider>(
                         context,
-                        campaignModel.survey.surveyid,
-                        campaignModel.name,
-                        Provider.of<UserProvider>(context, listen: false)
-                            .loggedUser
-                            .token);
+                        listen: false)
+                    .checkParticipation(
+                        campaignModel.sId,
+                        Provider.of<GetCampaignProvider>(context, listen: false)
+                            .completedCampaigns);
+                if (participated) {
+                  Fluttertoast.showToast(
+                      msg: "You have already participated in the campaign!");
+                } else {
+                  await Provider.of<CampaignDatabaseProvider>(context,
+                          listen: false)
+                      .insertCampaign(
+                          campaignModel,
+                          Provider.of<UserProvider>(context, listen: false)
+                              .loggedUser
+                              .data
+                              .id);
+
+                  Provider.of<GetCampaignProvider>(context, listen: false)
+                      .getSurvey(
+                          context,
+                          campaignModel.survey.surveyid,
+                          campaignModel.name,
+                          Provider.of<UserProvider>(context, listen: false)
+                              .loggedUser
+                              .token);
+                }
               },
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
@@ -340,17 +363,28 @@ Widget checkTypeForAction(
   } else if (type == "Banner") {
     return InkWell(
       onTap: () async {
-        await Provider.of<CampaignDatabaseProvider>(context, listen: false)
-            .insertCampaign(
-                campaignModel,
-                Provider.of<UserProvider>(context, listen: false)
-                    .loggedUser
-                    .data
-                    .id);
+        bool participated =
+            Provider.of<ParticipateCampaignProvider>(context, listen: false)
+                .checkParticipation(
+                    campaignModel.sId,
+                    Provider.of<GetCampaignProvider>(context, listen: false)
+                        .completedCampaigns);
+        if (participated) {
+          Fluttertoast.showToast(
+              msg: "You have already participated in the campaign!");
+        } else {
+          await Provider.of<CampaignDatabaseProvider>(context, listen: false)
+              .insertCampaign(
+                  campaignModel,
+                  Provider.of<UserProvider>(context, listen: false)
+                      .loggedUser
+                      .data
+                      .id);
 
-        Provider.of<ParticipateCampaignProvider>(context, listen: false)
-            .saveAndShare(context, campaignModel,
-                Provider.of<UserProvider>(context, listen: false).loggedUser);
+          Provider.of<ParticipateCampaignProvider>(context, listen: false)
+              .saveAndShare(context, campaignModel,
+                  Provider.of<UserProvider>(context, listen: false).loggedUser);
+        }
       },
       child: Padding(
         padding: const EdgeInsets.all(15.0),

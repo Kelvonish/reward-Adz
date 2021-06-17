@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:http/http.dart';
+import 'package:rewardadz/business_logic/Shared/getDeviceInfo.dart';
 import 'package:rewardadz/business_logic/providers/dynamicLinksProvider.dart';
 import 'package:rewardadz/business_logic/providers/participateCampaign.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
@@ -18,12 +20,14 @@ import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
 
 import 'package:rewardadz/presentation/screens/navigator.dart';
+import 'package:rewardadz/presentation/screens/noAcessPage.dart';
 
 import 'presentation/screens/account Creation/verifyOtp.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize();
+
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     systemNavigationBarColor:
         Colors.white, // navigation bar color // status bar color
@@ -42,10 +46,23 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  bool isDeviceRooted = false;
   @override
   void initState() {
     super.initState();
-    LocationPreference().saveLocation();
+    getLocation();
+    isDeviceRootedFunction();
+  }
+
+  isDeviceRootedFunction() async {
+    bool success = await DeviceDetails().checkIfRooted();
+    setState(() {
+      isDeviceRooted = success;
+    });
+  }
+
+  getLocation() async {
+    await LocationPreference().saveLocation();
   }
 
   @override
@@ -77,7 +94,7 @@ class _MyAppState extends State<MyApp> {
               highlightColor: const Color.fromRGBO(114, 145, 219, 1),
               primarySwatch: Colors.blue,
               scaffoldBackgroundColor: Colors.white),
-          home: CheckSession(),
+          home: isDeviceRooted ? NoAccess() : CheckSession(),
         ));
   }
 }

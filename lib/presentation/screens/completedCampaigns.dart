@@ -23,48 +23,26 @@ class _CompletedCampaignsState extends State<CompletedCampaigns> {
                   ),
                 )
               : value.completedCampaigns == null
-                  ? RefreshIndicator(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      onRefresh: () {
-                        return Provider.of<GetCampaignProvider>(context,
-                                listen: false)
-                            .getCompletedCampaigns(Provider.of<UserProvider>(
-                                    context,
-                                    listen: false)
-                                .loggedUser);
-                      },
-                      child: ListView(
-                        //mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Image.asset("assets/completed.png"),
-                          Text(
-                            "All the campaigns you have completed will be shown here",
-                            style: TextStyle(fontWeight: FontWeight.w300),
-                          )
-                        ],
-                      ),
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Image.asset("assets/completed.png"),
+                        Text(
+                          "All the campaigns you have completed will be shown here",
+                          style: TextStyle(fontWeight: FontWeight.w300),
+                        )
+                      ],
                     )
                   : value.completedCampaigns.data.isEmpty
-                      ? RefreshIndicator(
-                          backgroundColor: Theme.of(context).primaryColor,
-                          onRefresh: () {
-                            return Provider.of<GetCampaignProvider>(context,
-                                    listen: false)
-                                .getCompletedCampaigns(
-                                    Provider.of<UserProvider>(context,
-                                            listen: false)
-                                        .loggedUser);
-                          },
-                          child: ListView(
-                            //mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset("assets/completed.png"),
-                              Text(
-                                "All the campaigns you have completed will be shown here",
-                                style: TextStyle(fontWeight: FontWeight.w300),
-                              )
-                            ],
-                          ),
+                      ? Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset("assets/completed.png"),
+                            Text(
+                              "All the campaigns you have completed will be shown here",
+                              style: TextStyle(fontWeight: FontWeight.w300),
+                            )
+                          ],
                         )
                       : RefreshIndicator(
                           backgroundColor: Theme.of(context).primaryColor,
