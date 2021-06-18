@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -24,8 +26,10 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   var _scaffoldState;
   TextEditingController _emailController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   String resetPhone;
+  String resetCountryCode = "254";
 
   @override
   Widget build(BuildContext context) {
@@ -81,12 +85,8 @@ class _LoginState extends State<Login> {
                             controller: _passwordController,
                             cursorColor: Theme.of(context).primaryColor,
                             keyboardType: TextInputType.visiblePassword,
-                            validator: (val) {
-                              if (!validatePassword(val)) {
-                                return "Minimum is 6 characters! Should contain uppercase,lowecase,character and number";
-                              }
-                              return null;
-                            },
+                            validator: (val) =>
+                                val.isEmpty ? "Please Enter password" : null,
                             obscureText: data.password3,
                             decoration: InputDecoration(
                                 errorMaxLines: 2,
@@ -280,21 +280,16 @@ class _LoginState extends State<Login> {
                                         ),
                                         IntlPhoneField(
                                           initialCountryCode: "KE",
+                                          controller: _phoneController,
                                           keyboardType: TextInputType.number,
                                           decoration: InputDecoration(
                                               fillColor: Colors.white,
                                               filled: true,
                                               labelText: "Phone Number",
                                               labelStyle: _labelStyle),
-                                          onChanged: (phone) {
-                                            setState(() {
-                                              resetPhone = phone.completeNumber
-                                                  .toString();
-                                            });
-                                          },
                                           onCountryChanged: (phone) {
-                                            print('Country code changed to: ' +
-                                                phone.countryCode);
+                                            resetCountryCode =
+                                                phone.countryCode;
                                           },
                                         ),
                                         Container(
@@ -303,10 +298,41 @@ class _LoginState extends State<Login> {
                                           margin: EdgeInsets.all(0.0),
                                           child: ElevatedButton(
                                             onPressed: () {
-                                              if (resetPhone != null &&
-                                                  resetPhone.length > 7) {
+                                              String trimmedCountryCode;
+                                              String trimmedNumber;
+                                              if (_phoneController.text !=
+                                                      null &&
+                                                  _phoneController.text.length >
+                                                      5) {
                                                 Navigator.pop(context);
-
+                                                if (resetCountryCode.contains(
+                                                    "+", 0)) {
+                                                  trimmedCountryCode =
+                                                      resetCountryCode
+                                                          .substring(
+                                                              1,
+                                                              resetCountryCode
+                                                                  .length);
+                                                } else {
+                                                  trimmedCountryCode =
+                                                      resetCountryCode;
+                                                }
+                                                if (_phoneController.text
+                                                    .contains("0", 0)) {
+                                                  trimmedNumber =
+                                                      _phoneController.text
+                                                          .substring(
+                                                              1,
+                                                              _phoneController
+                                                                  .text.length);
+                                                } else {
+                                                  trimmedNumber =
+                                                      _phoneController.text;
+                                                }
+                                                resetPhone =
+                                                    trimmedCountryCode +
+                                                        trimmedNumber;
+                                                inspect(resetPhone);
                                                 Provider.of<UserProvider>(
                                                         context,
                                                         listen: false)

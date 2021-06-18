@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
@@ -24,8 +25,10 @@ class _CreateAccountState extends State<CreateAccount> {
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _confirmPasswordController = TextEditingController();
-  String country;
-  String countryCode;
+
+  String countryIsoEmail;
+  String phoneNumberEmail;
+  String countryCodeEmail = "254";
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -33,11 +36,13 @@ class _CreateAccountState extends State<CreateAccount> {
     showPhoneModal(
         {BuildContext context,
         var facebook,
-        GoogleSignInAccount googleAccount}) {
+        GoogleSignInAccount googleAccount,
+        String type}) {
       final _formKey2 = GlobalKey<FormState>();
-      var _countryCode;
-      String _phone;
-      TextEditingController _phoneController = TextEditingController();
+      var _countryISoCodeSocial;
+      String _phoneSocial;
+      String _countryCodeSocial = "254";
+      TextEditingController _socialPhoneController = TextEditingController();
       showCupertinoModalPopup(
           barrierDismissible: false,
           context: context,
@@ -66,7 +71,7 @@ class _CreateAccountState extends State<CreateAccount> {
                           Form(
                             key: _formKey2,
                             child: IntlPhoneField(
-                              controller: _phoneController,
+                              controller: _socialPhoneController,
                               initialCountryCode: "KE",
                               keyboardType: TextInputType.number,
                               autoValidate: false,
@@ -77,15 +82,15 @@ class _CreateAccountState extends State<CreateAccount> {
                               ),
                               onChanged: (phone) {
                                 setState(() {
-                                  _countryCode = phone.countryISOCode;
-                                  _phone = phone.completeNumber;
+                                  _countryISoCodeSocial = phone.countryISOCode;
                                 });
 
                                 print(phone.completeNumber);
                               },
                               onCountryChanged: (phone) {
-                                print('Country code changed to: ' +
-                                    phone.countryCode);
+                                setState(() {
+                                  _countryCodeSocial = phone.countryCode;
+                                });
                               },
                             ),
                           ),
@@ -95,13 +100,35 @@ class _CreateAccountState extends State<CreateAccount> {
                             child: ElevatedButton(
                               onPressed: () {
                                 if (_formKey2.currentState.validate()) {
-                                  if (facebook != null) {
+                                  String trimmedCountryCode;
+                                  String trimmedNumber;
+
+                                  if (_countryCodeSocial.contains("+", 0)) {
+                                    trimmedCountryCode =
+                                        _countryCodeSocial.substring(
+                                            1, _countryCodeSocial.length);
+                                  } else {
+                                    trimmedCountryCode = _countryCodeSocial;
+                                  }
+                                  if (_socialPhoneController.text
+                                      .contains("0", 0)) {
+                                    trimmedNumber = _socialPhoneController.text
+                                        .substring(1,
+                                            _socialPhoneController.text.length);
+                                  } else {
+                                    trimmedNumber = _socialPhoneController.text;
+                                  }
+
+                                  _phoneSocial =
+                                      trimmedCountryCode + trimmedNumber;
+                                  if (type == "Facebook") {
                                     Navigator.pop(context);
                                     DataModel data = DataModel(
                                       email: facebook['email'],
                                       type: "Facebook",
-                                      phone: _phone,
-                                      country: countryCodeToName[_countryCode],
+                                      phone: _phoneSocial,
+                                      country: countryCodeToName[
+                                          _countryISoCodeSocial],
                                     );
                                     UserModel user = UserModel(
                                       data: data,
@@ -113,7 +140,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                             user: user,
                                             fname: facebook['first_name'],
                                             lname: facebook['last_name']);
-                                  } else if (googleAccount != null) {
+                                  } else if (type == "Google") {
                                     String fullName = googleAccount.displayName;
 
                                     var res = fullName.split(" ");
@@ -122,8 +149,9 @@ class _CreateAccountState extends State<CreateAccount> {
                                     DataModel data = DataModel(
                                       email: googleAccount.email,
                                       type: "Google",
-                                      phone: _phone,
-                                      country: countryCodeToName[_countryCode],
+                                      phone: _phoneSocial,
+                                      country: countryCodeToName[
+                                          _countryISoCodeSocial],
                                     );
                                     UserModel user = UserModel(
                                       data: data,
@@ -135,6 +163,9 @@ class _CreateAccountState extends State<CreateAccount> {
                                             user: user,
                                             fname: res[0],
                                             lname: res[1]);
+                                  } else {
+                                    Fluttertoast.showToast(
+                                        msg: "Unknown Social Type");
                                   }
                                 }
                               },
@@ -201,8 +232,8 @@ class _CreateAccountState extends State<CreateAccount> {
                           autoValidate: false,
                           onChanged: (value) {
                             setState(() {
-                              country = value.countryISOCode.toUpperCase();
-                              countryCode = value.countryCode;
+                              countryIsoEmail =
+                                  value.countryISOCode.toUpperCase();
                             });
                           },
                           keyboardType: TextInputType.number,
@@ -213,11 +244,8 @@ class _CreateAccountState extends State<CreateAccount> {
                               labelStyle: _labelStyle),
                           onCountryChanged: (phone) {
                             setState(() {
-                              country = phone.countryISOCode.toUpperCase();
-                              countryCode = phone.countryCode;
+                              countryCodeEmail = phone.countryCode;
                             });
-                            print('Country code changed to: ' +
-                                phone.countryCode);
                           },
                         ),
                         TextFormField(
@@ -238,7 +266,7 @@ class _CreateAccountState extends State<CreateAccount> {
                           controller: _passwordController,
                           validator: (val) {
                             if (!validatePassword(val)) {
-                              return "Minimum is 6 characters! Should contain uppercase,lowecase, special character and number";
+                              return "Minimum is 6 characters! Should contain uppercase, lowercase and number";
                             }
                             return null;
                           },
@@ -326,11 +354,28 @@ class _CreateAccountState extends State<CreateAccount> {
                       : ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState.validate()) {
+                              String trimmedCountryCode;
+                              String trimmedNumber;
+
+                              if (countryCodeEmail.contains("+", 0)) {
+                                trimmedCountryCode = countryCodeEmail.substring(
+                                    1, countryCodeEmail.length);
+                              } else {
+                                trimmedCountryCode = countryCodeEmail;
+                              }
+                              if (_phoneController.text.contains("0", 0)) {
+                                trimmedNumber = _phoneController.text
+                                    .substring(1, _phoneController.text.length);
+                              } else {
+                                trimmedNumber = _phoneController.text;
+                              }
+                              phoneNumberEmail =
+                                  trimmedCountryCode + trimmedNumber;
                               DataModel data = DataModel(
                                   email: _emailController.text.trim(),
                                   password: _confirmPasswordController.text,
-                                  phone: countryCode + _phoneController.text,
-                                  country: countryCodeToName[country],
+                                  phone: phoneNumberEmail,
+                                  country: countryCodeToName[countryCodeEmail],
                                   type: 'Email');
                               UserModel user = UserModel(
                                 data: data,
@@ -375,9 +420,12 @@ class _CreateAccountState extends State<CreateAccount> {
                     InkWell(
                       onTap: () async {
                         var profile = await value.facebookSignUp(context);
-                        print(profile);
+
                         if (profile != null) {
-                          showPhoneModal(context: context, facebook: profile);
+                          showPhoneModal(
+                              context: context,
+                              facebook: profile,
+                              type: "Facebook");
                         }
                       },
                       child: Container(
@@ -399,7 +447,9 @@ class _CreateAccountState extends State<CreateAccount> {
                         var profile = await value.googleLogin();
                         if (profile != null) {
                           showPhoneModal(
-                              context: context, googleAccount: profile);
+                              context: context,
+                              googleAccount: profile,
+                              type: "Google");
                         }
                       },
                       child: Container(

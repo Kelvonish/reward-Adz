@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -16,8 +18,8 @@ class Wallet extends StatefulWidget {
 }
 
 class _WalletState extends State<Wallet> {
-  var phoneNumber;
-  String countryCode;
+  String phoneNumber;
+  String countryCode = "254";
   TextEditingController withdrawAmountController = TextEditingController();
   TextEditingController transferPhoneController = TextEditingController();
   TextEditingController transferAmountController = TextEditingController();
@@ -506,13 +508,9 @@ class _WalletState extends State<Wallet> {
                                                 filled: true,
                                                 labelText: "Phone Number",
                                                 labelStyle: _labelStyle),
-                                            onChanged: (phone) {
-                                              setState(() {
-                                                phoneNumber =
-                                                    phone.completeNumber;
-                                              });
+                                            onCountryChanged: (phone) {
+                                              countryCode = phone.countryCode;
                                             },
-                                            onCountryChanged: (phone) {},
                                           ),
                                           Form(
                                             key: _transferFormKey,
@@ -542,12 +540,50 @@ class _WalletState extends State<Wallet> {
                                                 if (_transferFormKey
                                                     .currentState
                                                     .validate()) {
-                                                  if (phoneNumber == null ||
-                                                      phoneNumber.length < 9) {
+                                                  if (transferPhoneController
+                                                              .text ==
+                                                          null ||
+                                                      transferPhoneController
+                                                              .text.length <
+                                                          6) {
                                                     Fluttertoast.showToast(
                                                         msg:
                                                             "Please Enter a valid number");
                                                   } else {
+                                                    String trimmedCountryCode;
+                                                    String trimmedNumber;
+
+                                                    if (countryCode.contains(
+                                                        "+", 0)) {
+                                                      trimmedCountryCode =
+                                                          countryCode.substring(
+                                                              1,
+                                                              countryCode
+                                                                  .length);
+                                                    } else {
+                                                      trimmedCountryCode =
+                                                          countryCode;
+                                                    }
+                                                    if (transferPhoneController
+                                                        .text
+                                                        .contains("0", 0)) {
+                                                      trimmedNumber =
+                                                          transferPhoneController
+                                                              .text
+                                                              .substring(
+                                                                  1,
+                                                                  transferPhoneController
+                                                                      .text
+                                                                      .length);
+                                                    } else {
+                                                      trimmedNumber =
+                                                          transferPhoneController
+                                                              .text;
+                                                    }
+                                                    phoneNumber =
+                                                        trimmedCountryCode +
+                                                            trimmedNumber;
+                                                    inspect(phoneNumber);
                                                     if (int.parse(
                                                             transferAmountController
                                                                 .text) >

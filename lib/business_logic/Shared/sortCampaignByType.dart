@@ -30,7 +30,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
   } else if (data.video != null) {
     return InkWell(
       onTap: () {
-        data.isactive
+        true
             ? Navigator.push(
                 context,
                 MaterialPageRoute(

@@ -36,10 +36,14 @@ class SendNotification {
 
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
         AndroidNotificationDetails(
-            'your channel id', 'your channel name', 'your channel description',
-            importance: Importance.max,
-            priority: Priority.high,
-            showWhen: false);
+      'your channel id',
+      'your channel name',
+      'your channel description',
+      importance: Importance.max,
+      priority: Priority.high,
+      showWhen: false,
+      styleInformation: BigTextStyleInformation(''),
+    );
     var iOSPlatformChannelSpecifics = IOSNotificationDetails(
         //sound: 'a_long_cold_sting.wav',
         presentAlert: true,
