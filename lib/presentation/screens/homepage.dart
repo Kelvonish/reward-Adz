@@ -26,6 +26,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+
     Provider.of<GetCampaignProvider>(context, listen: false).getCampaigns(
         Provider.of<UserProvider>(context, listen: false).loggedUser);
     Provider.of<TopAdvertisersProvider>(context, listen: false)
