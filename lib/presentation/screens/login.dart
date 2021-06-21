@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 import 'package:rewardadz/business_logic/Shared/validator.dart';
 import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
@@ -13,7 +14,6 @@ import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/createAccount.dart';
 import 'package:provider/provider.dart';
-import 'package:rewardadz/presentation/screens/navigator.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -127,8 +127,10 @@ class _LoginState extends State<Login> {
                           height: 50,
                           margin: EdgeInsets.all(15.0),
                           child: ElevatedButton(
-                            onPressed: () {
+                            onPressed: () async {
                               if (_formKey.currentState.validate()) {
+                                String deviceId =
+                                    await PlatformDeviceId.getDeviceId;
                                 DataModel data = DataModel(
                                     email: _emailController.text.trim(),
                                     password: _passwordController.text,
@@ -137,7 +139,7 @@ class _LoginState extends State<Login> {
                                   data: data,
                                 );
 
-                                value.loginUser(context, user);
+                                value.loginUser(context, user, deviceId);
                               }
                             },
                             style: ButtonStyle(
@@ -172,6 +174,7 @@ class _LoginState extends State<Login> {
                     children: [
                       InkWell(
                         onTap: () async {
+                          String deviceId = await PlatformDeviceId.getDeviceId;
                           var profile = await value.facebookSignUp(context);
                           print(profile);
                           if (profile != null) {
@@ -184,9 +187,9 @@ class _LoginState extends State<Login> {
                             );
                             Provider.of<UserProvider>(context, listen: false)
                                 .loginSocialUser(
-                              context: context,
-                              user: user,
-                            );
+                                    context: context,
+                                    user: user,
+                                    deviceId: deviceId);
                           }
                         },
                         child: Container(
@@ -206,7 +209,7 @@ class _LoginState extends State<Login> {
                       InkWell(
                         onTap: () async {
                           var profile = await value.googleLogin();
-
+                          String deviceId = await PlatformDeviceId.getDeviceId;
                           if (profile != null) {
                             DataModel data = DataModel(
                               email: profile.email,
@@ -216,7 +219,10 @@ class _LoginState extends State<Login> {
                               data: data,
                             );
                             Provider.of<UserProvider>(context, listen: false)
-                                .loginSocialUser(context: context, user: user);
+                                .loginSocialUser(
+                                    context: context,
+                                    user: user,
+                                    deviceId: deviceId);
                           }
                         },
                         child: Container(

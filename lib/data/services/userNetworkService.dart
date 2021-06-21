@@ -1,17 +1,20 @@
 import 'dart:convert';
+import 'dart:developer';
 import "package:http/http.dart" as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/business_logic/constants/constants.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 
 class UserNetworkService {
-  Future<UserModel> createUser(UserModel user) async {
+  Future<UserModel> createUser(UserModel user, String deviceId) async {
     Map data = {
       'email': user.data.email,
       "password": user.data.password,
       "phone": user.data.phone,
       "country": user.data.country,
-      "type": user.data.type
+      "type": user.data.type,
+      "versioncode": 9,
+      "deviceid": deviceId
     };
 
     try {
@@ -36,12 +39,14 @@ class UserNetworkService {
     return null;
   }
 
-  Future<UserModel> createSocialUser(UserModel user) async {
+  Future<UserModel> createSocialUser(UserModel user, String deviceId) async {
     Map data = {
       'email': user.data.email,
       "type": user.data.type,
       "phone": user.data.phone,
       "country": user.data.country,
+      "versioncode": 9,
+      "deviceid": deviceId
     };
 
     try {
@@ -93,10 +98,12 @@ class UserNetworkService {
     return null;
   }
 
-  Future<UserModel> loginUser(UserModel user) async {
+  Future<UserModel> loginUser(UserModel user, String deviceId) async {
     Map data = {
       'email': user.data.email,
       "password": user.data.password,
+      "versioncode": 9,
+      "deviceid": deviceId,
       'type': user.data.type
     };
 
@@ -124,13 +131,18 @@ class UserNetworkService {
     return null;
   }
 
-  Future<UserModel> loginSocialUser(UserModel user) async {
-    Map data = {'email': user.data.email, 'type': user.data.type};
+  Future<UserModel> loginSocialUser(UserModel user, String deviceId) async {
+    Map data = {
+      'email': user.data.email,
+      'type': user.data.type,
+      'deviceid': deviceId,
+      'versioncode': 9
+    };
 
     try {
       String url = BASE_URL + "signinmobile";
       var body = json.encode(data);
-      print(body);
+
       var parsedUrl = Uri.parse(url);
 
       var response = await http.post(parsedUrl,

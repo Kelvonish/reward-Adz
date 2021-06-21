@@ -4,7 +4,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart';
 import 'package:rewardadz/business_logic/Shared/getDeviceInfo.dart';
-import 'package:rewardadz/business_logic/providers/dynamicLinksProvider.dart';
+import 'package:rewardadz/presentation/screens/test.dart';
 import 'package:rewardadz/business_logic/providers/participateCampaign.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
@@ -12,6 +12,7 @@ import 'package:rewardadz/data/database/campaignDatabase.dart';
 import 'package:rewardadz/data/local storage/locationPreference.dart';
 
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
+//import 'package:rewardadz/presentation/screens/homepage.dart';
 import 'package:rewardadz/presentation/screens/landingpage.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
@@ -94,7 +95,7 @@ class _MyAppState extends State<MyApp> {
               highlightColor: const Color.fromRGBO(114, 145, 219, 1),
               primarySwatch: Colors.blue,
               scaffoldBackgroundColor: Colors.white),
-          home: isDeviceRooted ? NoAccess() : CheckSession(),
+          home: CheckSession(),
         ));
   }
 }

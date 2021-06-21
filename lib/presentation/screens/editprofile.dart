@@ -1,7 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
@@ -18,6 +21,11 @@ class _EditProfileState extends State<EditProfile> {
       TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0);
   TextStyle _labelStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.grey);
+  PickedFile _imageFile;
+  dynamic _pickImageError;
+
+  String _retrieveDataError;
+  final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +48,75 @@ class _EditProfileState extends State<EditProfile> {
       return formatted;
     }
 
-    if (_selectedDate == null) {
-      _dateController.text = _value.loggedUser.data.dob;
-    } else {
-      _dateController.text = _formatDate(_selectedDate);
+    void _onImageButtonPressed(ImageSource source,
+        {BuildContext context}) async {
+      try {
+        final pickedFile = await _picker.getImage(
+          source: source,
+        );
+        setState(() {
+          _imageFile = pickedFile;
+          inspect(_imageFile);
+        });
+      } catch (e) {
+        setState(() {
+          _pickImageError = e;
+        });
+      }
+    }
+
+    void _selectSource(BuildContext context) {
+      showCupertinoModalPopup(
+          context: context,
+          builder: (context) => Material(
+                child: Container(
+                    padding: EdgeInsets.all(15.0),
+                    color: Colors.white,
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Title(
+                            color: Theme.of(context).primaryColor,
+                            child: Text(
+                              'Upload Profile Image',
+                              style: TextStyle(fontSize: 18.0),
+                            )),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Divider(
+                          height: 3,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _onImageButtonPressed(ImageSource.gallery,
+                                context: context);
+                          },
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.photo_library,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            title: Text("Select From Gallery"),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            _onImageButtonPressed(ImageSource.camera,
+                                context: context);
+                          },
+                          child: ListTile(
+                            leading: Icon(
+                              Icons.camera_alt,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            title: Text("Take a Photo"),
+                          ),
+                        ),
+                      ],
+                    )),
+              ));
     }
 
     return Container(
@@ -70,8 +143,13 @@ class _EditProfileState extends State<EditProfile> {
                     Center(
                       child: Column(
                         children: [
-                          ProfileImage(
-                            url: value.loggedUser.data.image,
+                          InkWell(
+                            onTap: () {
+                              _selectSource(context);
+                            },
+                            child: ProfileImage(
+                              url: value.loggedUser.data.image,
+                            ),
                           ),
                           SizedBox(
                             height: 5.0,

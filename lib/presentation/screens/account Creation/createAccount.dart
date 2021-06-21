@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,6 +7,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:platform_device_id/platform_device_id.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/Shared/validator.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
@@ -98,7 +101,7 @@ class _CreateAccountState extends State<CreateAccount> {
                             width: MediaQuery.of(context).size.width,
                             margin: EdgeInsets.all(0.0),
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_formKey2.currentState.validate()) {
                                   String trimmedCountryCode;
                                   String trimmedNumber;
@@ -153,6 +156,8 @@ class _CreateAccountState extends State<CreateAccount> {
                                       country: countryCodeToName[
                                           _countryISoCodeSocial],
                                     );
+                                    String deviceId =
+                                        await PlatformDeviceId.getDeviceId;
                                     UserModel user = UserModel(
                                       data: data,
                                     );
@@ -162,7 +167,8 @@ class _CreateAccountState extends State<CreateAccount> {
                                             context: context,
                                             user: user,
                                             fname: res[0],
-                                            lname: res[1]);
+                                            lname: res[1],
+                                            deviceId: deviceId);
                                   } else {
                                     Fluttertoast.showToast(
                                         msg: "Unknown Social Type");
@@ -352,7 +358,7 @@ class _CreateAccountState extends State<CreateAccount> {
                           color: Colors.white,
                         )
                       : ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
                             if (_formKey.currentState.validate()) {
                               String trimmedCountryCode;
                               String trimmedNumber;
@@ -371,6 +377,8 @@ class _CreateAccountState extends State<CreateAccount> {
                               }
                               phoneNumberEmail =
                                   trimmedCountryCode + trimmedNumber;
+                              String deviceId =
+                                  await PlatformDeviceId.getDeviceId;
                               DataModel data = DataModel(
                                   email: _emailController.text.trim(),
                                   password: _confirmPasswordController.text,
@@ -380,7 +388,7 @@ class _CreateAccountState extends State<CreateAccount> {
                               UserModel user = UserModel(
                                 data: data,
                               );
-                              value.createUser(context, user);
+                              value.createUser(context, user, deviceId);
                             }
                           },
                           style: ButtonStyle(
@@ -467,20 +475,36 @@ class _CreateAccountState extends State<CreateAccount> {
                     SizedBox(
                       width: 8.0,
                     ),
-                    InkWell(
-                      onTap: value.twitterLogin,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                        ),
-                        padding: EdgeInsets.all(10.0),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          backgroundImage: AssetImage("assets/twitter.png"),
-                        ),
-                      ),
-                    ),
+                    Platform.isIOS
+                        ? InkWell(
+                            onTap: value.twitterLogin,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              padding: EdgeInsets.all(10.0),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                backgroundImage: AssetImage("assets/apple.png"),
+                              ),
+                            ),
+                          )
+                        : InkWell(
+                            onTap: value.twitterLogin,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              padding: EdgeInsets.all(10.0),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                backgroundImage:
+                                    AssetImage("assets/twitter.png"),
+                              ),
+                            ),
+                          ),
                   ],
                 ),
               ),

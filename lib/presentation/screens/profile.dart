@@ -200,7 +200,7 @@ class _ProfileState extends State<Profile> {
                                               controller: _passwordController,
                                               validator: (val) {
                                                 if (!validatePassword(val)) {
-                                                  return "Minimum is 6 characters! Should contain uppercase,lowecase,special character and number";
+                                                  return "Minimum is 6 characters! Should contain uppercase,lowercase and number";
                                                 }
                                                 return null;
                                               },

@@ -30,14 +30,14 @@ class UserProvider extends ChangeNotifier {
     return loggedUser;
   }
 
-  createUser(BuildContext context, UserModel user) async {
+  createUser(BuildContext context, UserModel user, String deviceId) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       signUpButtonLoading = true;
       notifyListeners();
-      UserModel result = await userClass.createUser(user);
+      UserModel result = await userClass.createUser(user, deviceId);
 
       if (result != null) {
         userPref.getUser();
@@ -58,14 +58,15 @@ class UserProvider extends ChangeNotifier {
       {BuildContext context,
       UserModel user,
       String fname,
-      String lname}) async {
+      String lname,
+      String deviceId}) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       signUpButtonLoading = true;
       notifyListeners();
-      UserModel result = await userClass.createSocialUser(user);
+      UserModel result = await userClass.createSocialUser(user, deviceId);
 
       if (result != null) {
         userPref.getUser();
@@ -108,14 +109,14 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  loginUser(BuildContext context, UserModel user) async {
+  loginUser(BuildContext context, UserModel user, String deviceId) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       loginButtonLoading = true;
       notifyListeners();
-      UserModel result = await userClass.loginUser(user);
+      UserModel result = await userClass.loginUser(user, deviceId);
 
       if (result != null) {
         userPref.saveUser(result);
@@ -142,10 +143,8 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  loginSocialUser({
-    BuildContext context,
-    UserModel user,
-  }) async {
+  loginSocialUser(
+      {BuildContext context, UserModel user, String deviceId}) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
@@ -153,7 +152,7 @@ class UserProvider extends ChangeNotifier {
       loginButtonLoading = true;
       notifyListeners();
 
-      UserModel result = await userClass.loginSocialUser(user);
+      UserModel result = await userClass.loginSocialUser(user, deviceId);
 
       if (result != null) {
         userPref.saveUser(result);
