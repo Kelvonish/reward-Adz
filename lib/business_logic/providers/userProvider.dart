@@ -17,6 +17,7 @@ class UserProvider extends ChangeNotifier {
   bool resetButtonLoading = false;
   bool accountDetailButton = false;
   UserModel loggedUser;
+  bool uploadingImage = false;
 
   bool isInternetConnected;
   checkInternetConnection() async {
@@ -129,18 +130,20 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  getUser(String userId) async {
+  getUser(UserModel user) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
-      UserModel result = await userClass.getUser(userId);
-
+      UserModel result = await userClass.getUser(user);
+      Fluttertoast.showToast(msg: "gotten updated user");
       if (result != null) {
         userPref.saveUser(result);
         await getLoggedInUser();
+        notifyListeners();
       }
     }
+    notifyListeners();
   }
 
   loginSocialUser(
@@ -201,7 +204,7 @@ class UserProvider extends ChangeNotifier {
       bool verified = await userClass.verifyOtp(user, otpCode);
 
       if (verified) {
-        var result = await userClass.getUser(user.data.id.toString());
+        var result = await userClass.getUser(user);
         userPref.saveUser(result);
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => MyApp()),
@@ -260,5 +263,23 @@ class UserProvider extends ChangeNotifier {
       resetButtonLoading = false;
       notifyListeners();
     }
+  }
+
+  uploadProfileImage(String filename, UserModel user) async {
+    await checkInternetConnection();
+    if (isInternetConnected == false) {
+      Fluttertoast.showToast(msg: "No internet connection");
+    } else {
+      uploadingImage = true;
+      notifyListeners();
+
+      bool success = await userClass.uploadProfileImage(filename, user);
+      if (success) {
+        await getUser(user);
+        notifyListeners();
+      }
+    }
+    uploadingImage = false;
+    notifyListeners();
   }
 }

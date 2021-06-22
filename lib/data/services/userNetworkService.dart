@@ -13,13 +13,14 @@ class UserNetworkService {
       "phone": user.data.phone,
       "country": user.data.country,
       "type": user.data.type,
-      "versioncode": 9,
-      "deviceid": deviceId
+      "deviceid": deviceId,
+      "versioncode": 9
     };
 
     try {
       String url = BASE_URL + "users/mobile/levelone/new";
       var body = json.encode(data);
+      inspect(body);
       var parsedUrl = Uri.parse(url);
 
       var response = await http.post(parsedUrl,
@@ -284,14 +285,18 @@ class UserNetworkService {
     }
   }
 
-  Future<UserModel> getUser(String userId) async {
+  Future<UserModel> getUser(UserModel user) async {
     try {
-      String url = BASE_URL + "users/$userId";
+      String url = BASE_URL + "users/${user.data.id}";
 
       var parsedUrl = Uri.parse(url);
 
-      var response = await http.get(parsedUrl);
+      var response = await http.get(parsedUrl, headers: {
+        "Content-Type": "application/json",
+        'x-access-token': user.token,
+      });
       var returnedData = json.decode(response.body);
+      inspect(returnedData);
       if (response.statusCode == 200) {
         return UserModel.fromJson(returnedData);
       } else {
@@ -328,5 +333,35 @@ class UserNetworkService {
       return null;
     }
     return null;
+  }
+
+  Future<bool> uploadProfileImage(String filename, UserModel user) async {
+    String url = BASE_URL + "users/image";
+
+    //create multipart request for POST or PATCH method
+    try {
+      var request = http.MultipartRequest("POST", Uri.parse(url));
+      //add text fields
+      request.fields["id"] = user.data.id.toString();
+      //create multipart using filepath, string or bytes
+      var pic = await http.MultipartFile.fromPath("image", filename);
+
+      request.files.add(pic);
+      var response = await request.send();
+
+      var responseData = await response.stream.toBytes();
+      inspect(responseData);
+      var responseString = String.fromCharCodes(responseData);
+      print(responseString);
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: "Image upload successful");
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      return false;
+    }
   }
 }

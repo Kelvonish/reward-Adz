@@ -387,7 +387,7 @@ class GetCampaignsClass {
       if (response.statusCode == 200) {
         return CompletedCampaignsModel.fromJson(returnedData);
       } else {
-        Fluttertoast.showToast(msg: "Error getting survey");
+        Fluttertoast.showToast(msg: "Error getting completed campaigns");
         return null;
       }
     } catch (e) {
@@ -471,7 +471,7 @@ class GetCampaignsClass {
         );
         return data;
       } else {
-        Fluttertoast.showToast(msg: "Error getting campaign");
+        Fluttertoast.showToast(msg: "Error getting single campaign");
         return null;
       }
     } catch (e) {

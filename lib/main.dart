@@ -52,14 +52,6 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     getLocation();
-    isDeviceRootedFunction();
-  }
-
-  isDeviceRootedFunction() async {
-    bool success = await DeviceDetails().checkIfRooted();
-    setState(() {
-      isDeviceRooted = success;
-    });
   }
 
   getLocation() async {

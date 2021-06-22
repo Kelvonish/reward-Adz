@@ -165,7 +165,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
           var response = await get(Uri.parse(campaignModel.banner.bannerurl));
 
           saveFile.writeAsBytesSync(response.bodyBytes);
-          Share.shareFiles([directory.path + "${campaignModel.sId}.png"],
+          await Share.shareFiles([directory.path + "${campaignModel.sId}.png"],
               text: campaignModel.banner.bannerset,
               sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
           showCupertinoModalPopup(
@@ -257,14 +257,15 @@ class ParticipateCampaignProvider extends ChangeNotifier {
                                                 await Provider.of<UserProvider>(
                                                         context,
                                                         listen: false)
-                                                    .getUser(user.data.id
-                                                        .toString());
+                                                    .getUser(user);
+                                                notifyListeners();
                                                 await Provider.of<
                                                             GetCampaignProvider>(
                                                         context,
                                                         listen: false)
                                                     .getCompletedCampaigns(
                                                         user);
+                                                notifyListeners();
                                                 await Provider.of<
                                                             TransactionProvider>(
                                                         context,
@@ -390,8 +391,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
       bool awarded =
           await awardUser(awardUserModel, awardNotification, user.token);
       if (awarded) {
-        await Provider.of<UserProvider>(context, listen: false)
-            .getUser(user.data.id.toString());
+        await Provider.of<UserProvider>(context, listen: false).getUser(user);
         await Provider.of<GetCampaignProvider>(context, listen: false)
             .getCompletedCampaigns(user);
         await Provider.of<TransactionProvider>(context, listen: false)

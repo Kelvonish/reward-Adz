@@ -48,6 +48,7 @@ dependencies:
   intl_phone_field: ^2.0.0
   just_audio: ^0.7.5
   location: ^4.1.1
+  multipart_request: ^0.3.1
   path_provider: ^2.0.2
   permission_handler: ^8.0.1
   pin_code_fields: ^7.1.0

@@ -383,7 +383,7 @@ class _CreateAccountState extends State<CreateAccount> {
                                   email: _emailController.text.trim(),
                                   password: _confirmPasswordController.text,
                                   phone: phoneNumberEmail,
-                                  country: countryCodeToName[countryCodeEmail],
+                                  country: countryCodeToName[countryIsoEmail],
                                   type: 'Email');
                               UserModel user = UserModel(
                                 data: data,

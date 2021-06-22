@@ -369,7 +369,7 @@ Widget checkTypeForAction(
                     campaignModel.sId,
                     Provider.of<GetCampaignProvider>(context, listen: false)
                         .completedCampaigns);
-        if (participated) {
+        if (false) {
           Fluttertoast.showToast(
               msg: "You have already participated in the campaign!");
         } else {

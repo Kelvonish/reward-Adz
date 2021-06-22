@@ -48,16 +48,26 @@ class _EditProfileState extends State<EditProfile> {
       return formatted;
     }
 
+    uploadImage(BuildContext context) {
+      Navigator.pop(context);
+      if (_imageFile != null) {
+        Provider.of<UserProvider>(context, listen: false).uploadProfileImage(
+            _imageFile.path,
+            Provider.of<UserProvider>(context, listen: false).loggedUser);
+      } else {
+        Fluttertoast.showToast(msg: "Please select image");
+      }
+    }
+
     void _onImageButtonPressed(ImageSource source,
         {BuildContext context}) async {
       try {
         final pickedFile = await _picker.getImage(
           source: source,
         );
-        setState(() {
-          _imageFile = pickedFile;
-          inspect(_imageFile);
-        });
+
+        _imageFile = pickedFile;
+        uploadImage(context);
       } catch (e) {
         setState(() {
           _pickImageError = e;
@@ -160,6 +170,19 @@ class _EditProfileState extends State<EditProfile> {
                                 value.loggedUser.data.lname,
                             style: _titleStyle,
                           ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          value.uploadingImage
+                              ? Container(
+                                  padding: EdgeInsets.all(5),
+                                  color: Theme.of(context).primaryColor,
+                                  child: Text(
+                                    "Uploading image...",
+                                    style: TextStyle(
+                                        color: Colors.white, fontSize: 15.0),
+                                  ))
+                              : SizedBox()
                         ],
                       ),
                     ),
@@ -216,10 +239,9 @@ class _EditProfileState extends State<EditProfile> {
                       enableInteractiveSelection: false,
                       enabled: false,
                       readOnly: true,
-                      controller: _dateController,
+                      controller: _dateController
+                        ..text = value.loggedUser.data.dob,
                       keyboardType: TextInputType.datetime,
-                      decoration:
-                          InputDecoration(hintText: value.loggedUser.data.dob),
                     ),
                     SizedBox(
                       height: 15.0,
