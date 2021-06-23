@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
@@ -21,6 +23,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   TextStyle _titleStyle =
       TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0);
+  Timer timer;
 
   @override
   void initState() {
@@ -31,6 +34,11 @@ class _MyHomePageState extends State<MyHomePage> {
     Provider.of<TopAdvertisersProvider>(context, listen: false)
         .getTopAdvertisers(
             Provider.of<UserProvider>(context, listen: false).loggedUser.token);
+    timer = Timer.periodic(
+        Duration(minutes: 20),
+        (Timer t) => Provider.of<GetCampaignProvider>(context, listen: false)
+            .refreshCampaigns(
+                Provider.of<UserProvider>(context, listen: false).loggedUser));
   }
 
   getAllData() {
@@ -94,7 +102,9 @@ class _MyHomePageState extends State<MyHomePage> {
                               style: _titleStyle,
                             ),
                             Text(
-                              "Kes " + value.loggedUser.balance.toString(),
+                              value.loggedUser.data.currency +
+                                  " " +
+                                  value.loggedUser.balance.toString(),
                               style: _titleStyle,
                             ),
                           ],
@@ -191,40 +201,36 @@ class _MyHomePageState extends State<MyHomePage> {
               Container(
                 width: MediaQuery.of(context).size.width,
                 child: Consumer<GetCampaignProvider>(
-                  builder: (context, data, child) => Column(
-                    children: [
-                      data.loading
-                          ? ListView.builder(
-                              itemCount: 3,
+                  builder: (context, data, child) => data.loading
+                      ? ListView.builder(
+                          itemCount: 3,
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return CampaignCardShimmer();
+                          })
+                      : data.campaignList.length == 0
+                          ? Column(
+                              children: [
+                                Image.asset("assets/empty.png"),
+                                Center(
+                                  child: Text(
+                                    "No Campaigns available right now in your area",
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w300),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : ListView.builder(
                               shrinkWrap: true,
+                              itemCount: data.campaignList.length,
                               physics: NeverScrollableScrollPhysics(),
                               itemBuilder: (context, index) {
-                                return CampaignCardShimmer();
-                              })
-                          : data.campaignList.length == 0
-                              ? Column(
-                                  children: [
-                                    Image.asset("assets/empty.png"),
-                                    Center(
-                                      child: Text(
-                                        "No Campaigns available right now in your area",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.w300),
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : ListView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: data.campaignList.length,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return renderCampaignByType(
-                                        context, data.campaignList[index]);
-                                  }),
-                    ],
-                  ),
+                                return renderCampaignByType(
+                                    context, data.campaignList[index]);
+                              }),
                 ),
               ),
             ],

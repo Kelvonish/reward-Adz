@@ -8,6 +8,7 @@ class UserPreferences {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     prefs.setString("user", jsonEncode(user));
+    return true;
   }
 
   Future<UserModel> getUser() async {

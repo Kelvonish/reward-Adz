@@ -67,6 +67,7 @@ class _ProfileState extends State<Profile> {
             Consumer<UserProvider>(
               builder: (context, value, child) => BalanceCard(
                 name: "Total Earnings",
+                currency: value.loggedUser.data.currency,
                 earnedAmount: value.loggedUser.totalreward.toString(),
                 numberOfAds: value.loggedUser.earnedads.toString(),
               ),

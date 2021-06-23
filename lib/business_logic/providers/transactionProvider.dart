@@ -76,6 +76,12 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  refreshAllTransactionAfterCompletedCampaign(UserModel user) async {
+    getNotifications(user);
+    getEarnings(user);
+    notifyListeners();
+  }
+
   transfer(UserModel user, String amount, String phone) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {

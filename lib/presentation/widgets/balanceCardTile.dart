@@ -5,7 +5,8 @@ class BalanceCard extends StatelessWidget {
   final String earnedAmount;
   final String numberOfAds;
   final String name;
-  BalanceCard({this.earnedAmount, this.numberOfAds, this.name});
+  final String currency;
+  BalanceCard({this.earnedAmount, this.numberOfAds, this.name, this.currency});
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -50,7 +51,7 @@ class BalanceCard extends StatelessWidget {
                             color: Colors.white),
                       )
                     : Text(
-                        "Ksh $earnedAmount",
+                        "$currency $earnedAmount",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 18.0,

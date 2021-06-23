@@ -236,6 +236,7 @@ class _WalletState extends State<Wallet> {
               Consumer<UserProvider>(
                 builder: (context, value, child) => BalanceCard(
                   name: "Balance",
+                  currency: value.loggedUser.data.currency,
                   earnedAmount: value.loggedUser.balance.toString(),
                   numberOfAds: value.loggedUser.earnedads.toString(),
                 ),

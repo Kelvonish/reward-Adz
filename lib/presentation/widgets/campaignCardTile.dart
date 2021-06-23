@@ -21,18 +21,22 @@ class MainCardTile extends StatelessWidget {
       this.type});
   @override
   Widget build(BuildContext context) {
-    return ColorFiltered(
-      colorFilter: isActive
-          ? ColorFilter.mode(
-              Colors.transparent,
-              BlendMode.multiply,
-            )
-          : ColorFilter.mode(
-              Colors.grey,
-              BlendMode.saturation,
-            ),
-      child: Container(
-        margin: EdgeInsets.only(top: 15.0),
+    return Container(
+      margin: EdgeInsets.only(top: 15.0),
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      child: ColorFiltered(
+        colorFilter: isActive
+            ? ColorFilter.mode(
+                Colors.transparent,
+                BlendMode.multiply,
+              )
+            : ColorFilter.mode(
+                Colors.black54,
+                BlendMode.saturation,
+              ),
         child: Column(
           children: [
             CachedNetworkImage(
@@ -45,7 +49,7 @@ class MainCardTile extends StatelessWidget {
                   //shape: BoxShape.circle,
                   image:
                       DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                  borderRadius: BorderRadius.circular(5.0),
+                  borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -78,8 +82,18 @@ class MainCardTile extends StatelessWidget {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            Colors.black45,
+                            Colors.black26,
+                            Colors.black12,
+                          ],
+                        ),
+                      ),
                       padding: EdgeInsets.all(15.0),
-                      color: Colors.black38,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [

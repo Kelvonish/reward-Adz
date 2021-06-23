@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -27,6 +29,7 @@ class UserProvider extends ChangeNotifier {
 
   getLoggedInUser() async {
     loggedUser = await UserPreferences().getUser();
+    inspect(loggedUser);
     notifyListeners();
     return loggedUser;
   }
@@ -41,7 +44,7 @@ class UserProvider extends ChangeNotifier {
       UserModel result = await userClass.createUser(user, deviceId);
 
       if (result != null) {
-        userPref.getUser();
+        userPref.saveUser(result);
         notifyListeners();
         Navigator.push(
             context,
@@ -70,7 +73,7 @@ class UserProvider extends ChangeNotifier {
       UserModel result = await userClass.createSocialUser(user, deviceId);
 
       if (result != null) {
-        userPref.getUser();
+        userPref.saveUser(result);
         notifyListeners();
         Navigator.push(
             context,
@@ -136,9 +139,16 @@ class UserProvider extends ChangeNotifier {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
       UserModel result = await userClass.getUser(user);
-      Fluttertoast.showToast(msg: "gotten updated user");
+
       if (result != null) {
-        userPref.saveUser(result);
+        UserModel existingUser = await userPref.getUser();
+
+        existingUser.balance = result.balance;
+        existingUser.data = result.data;
+        existingUser.status = result.status;
+        existingUser.earnedads = result.earnedads;
+        existingUser.totalreward = result.totalreward;
+        await userPref.saveUser(existingUser);
         await getLoggedInUser();
         notifyListeners();
       }

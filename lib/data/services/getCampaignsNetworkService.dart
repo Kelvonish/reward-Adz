@@ -35,7 +35,7 @@ class GetCampaignsClass {
 
       if (response.statusCode == 200) {
         var campaigns = jsonDecode(response.body);
-
+        campaignList = [];
         campaigns['data'].forEach((json) {
           if (json.containsKey("survey")) {
             CampaignModel newData = CampaignModel(

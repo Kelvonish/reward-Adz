@@ -71,8 +71,6 @@ class TransactionNetworkClass {
       var parsedUrl = Uri.parse(url);
 
       var response = await http.get(parsedUrl, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
         'x-access-token': user.token,
       });
 
@@ -97,17 +95,16 @@ class TransactionNetworkClass {
       var parsedUrl = Uri.parse(url);
 
       var response = await http.get(parsedUrl, headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
         'x-access-token': user.token,
       });
 
       if (response.statusCode == 200) {
         var returnedData = json.decode(response.body);
 
-        var t = NotificationModel.fromJson(returnedData);
-
-        return t;
+        NotificationModel notifications =
+            NotificationModel.fromJson(returnedData);
+        inspect(notifications);
+        return notifications;
       }
     } catch (e) {
       Fluttertoast.showToast(msg: "Error : " + e.toString());

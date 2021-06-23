@@ -29,11 +29,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterDownloader.initialize();
 
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor:
-        Colors.white, // navigation bar color // status bar color
-  ));
-
   runApp(MyApp());
 }
 
@@ -100,52 +95,55 @@ class CheckSession extends StatefulWidget {
 class _CheckSessionState extends State<CheckSession> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: FutureBuilder(
-          future: Provider.of<UserProvider>(context, listen: false)
-              .getLoggedInUser(),
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-              case ConnectionState.waiting:
-                return Scaffold(
-                  body: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: MediaQuery.of(context).size.height,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Theme.of(context).primaryColor,
-                          const Color.fromRGBO(114, 145, 219, 1),
-                          Theme.of(context).accentColor
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: Container(
+        child: FutureBuilder(
+            future: Provider.of<UserProvider>(context, listen: false)
+                .getLoggedInUser(),
+            builder: (context, snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                case ConnectionState.waiting:
+                  return Scaffold(
+                    body: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Theme.of(context).primaryColor,
+                            const Color.fromRGBO(114, 145, 219, 1),
+                            Theme.of(context).accentColor
+                          ],
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                        ),
+                      ),
+                      child: Center(
+                        child: SpinKitChasingDots(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
-                    child: Center(
-                      child: SpinKitChasingDots(
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                );
-              default:
-                if (snapshot.data == null)
-                  return LandingPage();
-                else if (snapshot.data.data.dob == null ||
-                    snapshot.data.data.lname == null ||
-                    snapshot.data.data.fname == null ||
-                    snapshot.data.data.gender == null) {
-                  return AddAccountDetails(
-                    user: snapshot.data,
                   );
-                } else if (snapshot.data.data.status == 0) {
-                  return VerifyOtp(user: snapshot.data);
-                } else
-                  return BottomNavigator();
-            }
-          }),
+                default:
+                  if (snapshot.data == null)
+                    return LandingPage();
+                  else if (snapshot.data.data.dob == null ||
+                      snapshot.data.data.lname == null ||
+                      snapshot.data.data.fname == null ||
+                      snapshot.data.data.gender == null) {
+                    return AddAccountDetails(
+                      user: snapshot.data,
+                    );
+                  } else if (snapshot.data.data.status == 0) {
+                    return VerifyOtp(user: snapshot.data);
+                  } else
+                    return BottomNavigator();
+              }
+            }),
+      ),
     );
   }
 }
