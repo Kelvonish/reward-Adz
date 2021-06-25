@@ -57,6 +57,77 @@ class _WalletState extends State<Wallet> {
   TextStyle _labelStyle = TextStyle(fontWeight: FontWeight.w400);
   @override
   Widget build(BuildContext context) {
+    _completeWithdrawal(int amount) async {
+      Navigator.pop(context);
+      bool success =
+          await Provider.of<TransactionProvider>(context, listen: false)
+              .withdraw(
+                  context,
+                  Provider.of<UserProvider>(context, listen: false).loggedUser,
+                  amount);
+
+      if (success) {
+        showDialog<void>(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Center(
+                    child: Icon(
+                  Icons.check_circle,
+                  color: Colors.green,
+                  size: 50,
+                )),
+                content: Container(
+                  width: double.maxFinite,
+                  child: Text("Withdrawal completed successfully"),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('Done',
+                        style:
+                            TextStyle(color: Theme.of(context).primaryColor)),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              );
+            });
+      } else {
+        Fluttertoast.showToast(msg: "Withdrawal failed!");
+      }
+    }
+
+    _showInDevelopmentDialog(BuildContext context) {
+      showDialog<void>(
+          context: context,
+          barrierDismissible: false,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Center(
+                  child: Icon(
+                Icons.info_outline,
+                color: Theme.of(context).primaryColor,
+                size: 50,
+              )),
+              content: Container(
+                width: double.maxFinite,
+                child: Text("Feature is still in development! coming soon"),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('Okay',
+                      style: TextStyle(color: Theme.of(context).primaryColor)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          });
+    }
+
     Widget _tabSection(BuildContext context) {
       return DefaultTabController(
         length: 3,
@@ -263,7 +334,7 @@ class _WalletState extends State<Wallet> {
                                         children: [
                                           Center(
                                               child: Padding(
-                                            padding: const EdgeInsets.all(15.0),
+                                            padding: const EdgeInsets.all(10.0),
                                             child: Text(
                                               "Withdraw",
                                               style: TextStyle(
@@ -271,6 +342,16 @@ class _WalletState extends State<Wallet> {
                                                   color: Colors.black),
                                             ),
                                           )),
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Text(
+                                              "Make sure the account is registered with a nuber registered with M-pesa",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.w300,
+                                                  fontSize: 14),
+                                            ),
+                                          ),
                                           Divider(
                                             height: 5,
                                           ),
@@ -324,10 +405,10 @@ class _WalletState extends State<Wallet> {
                                                       } else if (int.parse(
                                                               withdrawAmountController
                                                                   .text) <
-                                                          50) {
+                                                          66) {
                                                         Fluttertoast.showToast(
                                                             msg:
-                                                                "Minimum withdraw amount is 50");
+                                                                "Minimum withdraw amount  is Ksh 70");
                                                       } else if (int.parse(
                                                               withdrawAmountController
                                                                   .text) >
@@ -396,21 +477,14 @@ class _WalletState extends State<Wallet> {
                                                                                 Theme.of(context).primaryColor)),
                                                                     onPressed:
                                                                         () {
-                                                                      Navigator.of(
-                                                                              context)
-                                                                          .pop();
+                                                                      _completeWithdrawal(
+                                                                          int.parse(
+                                                                              withdrawAmountController.text));
                                                                     },
                                                                   ),
                                                                 ],
                                                               );
                                                             });
-                                                        /* value.withdraw(
-                                                            Provider.of<UserProvider>(
-                                                                    context,
-                                                                    listen:
-                                                                        false)
-                                                                .loggedUser,
-                                                            netAmount);*/
                                                       }
                                                     }
                                                   }
@@ -475,7 +549,8 @@ class _WalletState extends State<Wallet> {
                   ),
                   InkWell(
                     onTap: () {
-                      showCupertinoModalPopup(
+                      _showInDevelopmentDialog(context);
+                      /* showCupertinoModalPopup(
                           context: context,
                           builder: (context) => Container(
                                 margin: EdgeInsets.all(15.0),
@@ -584,7 +659,7 @@ class _WalletState extends State<Wallet> {
                                                     phoneNumber =
                                                         trimmedCountryCode +
                                                             trimmedNumber;
-                                                    inspect(phoneNumber);
+                                                   
                                                     if (int.parse(
                                                             transferAmountController
                                                                 .text) >
@@ -638,6 +713,7 @@ class _WalletState extends State<Wallet> {
                                       )),
                                 ),
                               ));
+                    */
                     },
                     child: Column(
                       children: [
@@ -664,28 +740,46 @@ class _WalletState extends State<Wallet> {
                   SizedBox(
                     width: 15,
                   ),
-                  Column(
-                    children: [
-                      CircleAvatar(
-                        radius: 25.0,
-                        backgroundColor: Theme.of(context).accentColor,
-                        child: Icon(
-                          Icons.phone_iphone_outlined,
-                          size: 35,
-                          color: Theme.of(context).primaryColor,
+                  InkWell(
+                    onTap: () {
+                      _showInDevelopmentDialog(context);
+                    },
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 25.0,
+                          backgroundColor: Theme.of(context).accentColor,
+                          child: Icon(
+                            Icons.phone_iphone_outlined,
+                            size: 35,
+                            color: Theme.of(context).primaryColor,
+                          ),
                         ),
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Text(
-                        "Buy Airtime",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 12.0),
-                      ),
-                    ],
+                        SizedBox(
+                          height: 5.0,
+                        ),
+                        Text(
+                          "Buy Airtime",
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 12.0),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
+              ),
+              Consumer<TransactionProvider>(
+                builder: (context, value, child) => value.withdrawModalLoading
+                    ? Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: Center(
+                          child: SpinKitThreeBounce(
+                            size: 35,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                      )
+                    : SizedBox(),
               ),
               _tabSection(context),
             ],
