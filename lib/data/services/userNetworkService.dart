@@ -14,13 +14,13 @@ class UserNetworkService {
       "country": user.data.country,
       "type": user.data.type,
       "deviceid": deviceId,
-      "versioncode": 9
+      "versioncode": 10
     };
 
     try {
       String url = BASE_URL + "users/mobile/levelone/new";
       var body = json.encode(data);
-      inspect(body);
+
       var parsedUrl = Uri.parse(url);
 
       var response = await http.post(parsedUrl,
@@ -46,7 +46,7 @@ class UserNetworkService {
       "type": user.data.type,
       "phone": user.data.phone,
       "country": user.data.country,
-      "versioncode": 9,
+      "versioncode": 10,
       "deviceid": deviceId
     };
 
@@ -103,7 +103,7 @@ class UserNetworkService {
     Map data = {
       'email': user.data.email,
       "password": user.data.password,
-      "versioncode": 9,
+      "versioncode": 10,
       "deviceid": deviceId,
       'type': user.data.type
     };
@@ -137,7 +137,7 @@ class UserNetworkService {
       'email': user.data.email,
       'type': user.data.type,
       'deviceid': deviceId,
-      'versioncode': 9
+      'versioncode': 10
     };
 
     try {
@@ -350,7 +350,7 @@ class UserNetworkService {
       var response = await request.send();
 
       var responseData = await response.stream.toBytes();
-      inspect(responseData);
+
       var responseString = String.fromCharCodes(responseData);
       print(responseString);
       if (response.statusCode == 200) {

@@ -302,7 +302,6 @@ class _ProfileState extends State<Profile> {
                                               onPressed: () {
                                                 if (_formKey.currentState
                                                     .validate()) {
-                                                  inspect(user.loggedUser);
                                                   if (user.loggedUser.data
                                                           .type ==
                                                       "Email") {

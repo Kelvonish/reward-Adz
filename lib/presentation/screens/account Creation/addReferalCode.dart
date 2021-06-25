@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rewardadz/main.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
 
 class AddReferalCode extends StatefulWidget {
@@ -89,13 +90,20 @@ class _AddReferalCodeState extends State<AddReferalCode> {
                         MaterialPageRoute(
                             builder: (context) => AddAccountDetails()));
                   },
-                  child: Text(
-                    "Skip for now",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w300,
-                        fontSize: 16.0),
-                    textAlign: TextAlign.center,
+                  child: InkWell(
+                    onTap: () {
+                      Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => MyApp()),
+                          (Route<dynamic> route) => false);
+                    },
+                    child: Text(
+                      "Skip for now",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w300,
+                          fontSize: 16.0),
+                      textAlign: TextAlign.center,
+                    ),
                   ),
                 ),
               ],

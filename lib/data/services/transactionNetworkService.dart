@@ -164,12 +164,10 @@ class TransactionNetworkClass {
           },
           body: body);
       var returnedData = json.decode(response.body);
+      inspect(returnedData);
       if (response.statusCode == 200) {
         return true;
       } else {
-        if (returnedData['data'] is String) {
-          Fluttertoast.showToast(msg: returnedData['data']);
-        }
         return false;
       }
     } catch (e) {
@@ -199,7 +197,6 @@ class TransactionNetworkClass {
     try {
       String url = BASE_URL + "award/user/processaward";
       var body = json.encode(data);
-      inspect(body);
 
       var parsedUrl = Uri.parse(url);
 

@@ -1,6 +1,12 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
+import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
+import 'package:rewardadz/business_logic/providers/notificationsProvider.dart';
+import 'package:rewardadz/business_logic/providers/userProvider.dart';
 
 import 'package:rewardadz/data/models/transactionModel.dart';
 import 'package:rewardadz/data/models/notificationModel.dart';
@@ -82,6 +88,12 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  refreshAllTransactionAfterWithdrawal(UserModel user) async {
+    getNotifications(user);
+    getWithdrawals(user);
+    notifyListeners();
+  }
+
   transfer(UserModel user, String amount, String phone) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
@@ -96,7 +108,8 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  withdraw(UserModel user, int amount) async {
+  Future<bool> withdraw(
+      BuildContext context, UserModel user, int amount) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
@@ -104,9 +117,26 @@ class TransactionProvider extends ChangeNotifier {
       withdrawModalLoading = true;
       notifyListeners();
       bool success = await TransactionNetworkClass().withdraw(user, amount);
-      if (success) {}
+      if (success) {
+        Random random = new Random();
+        int randomNumber = random.nextInt(100);
+        await Provider.of<UserProvider>(context, listen: false).getUser(user);
+        await refreshAllTransactionAfterWithdrawal(user);
+        SendNotification().sendNotification(
+            "Withdrawal successful",
+            "Congratulations ${user.data.fname}, you have successfully withdrawn $amount",
+            randomNumber);
+        withdrawModalLoading = false;
+        notifyListeners();
+        return true;
+      } else {
+        withdrawModalLoading = false;
+        notifyListeners();
+        return false;
+      }
     }
     withdrawModalLoading = false;
     notifyListeners();
+    return false;
   }
 }

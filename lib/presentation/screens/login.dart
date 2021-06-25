@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -240,7 +241,24 @@ class _LoginState extends State<Login> {
                       SizedBox(
                         width: 8.0,
                       ),
-                      Container(
+                      Platform.isIOS
+                          ? InkWell(
+                              onTap: value.twitterLogin,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                padding: EdgeInsets.all(10.0),
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  backgroundImage:
+                                      AssetImage("assets/apple.png"),
+                                ),
+                              ),
+                            )
+                          : Text(""),
+                      /*Container(
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
@@ -251,6 +269,7 @@ class _LoginState extends State<Login> {
                           backgroundImage: AssetImage("assets/twitter.png"),
                         ),
                       ),
+                      */
                     ],
                   ),
                 ),
@@ -338,7 +357,7 @@ class _LoginState extends State<Login> {
                                                 resetPhone =
                                                     trimmedCountryCode +
                                                         trimmedNumber;
-                                                inspect(resetPhone);
+
                                                 Provider.of<UserProvider>(
                                                         context,
                                                         listen: false)

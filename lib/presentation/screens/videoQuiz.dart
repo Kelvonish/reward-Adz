@@ -27,7 +27,6 @@ class _VideoQuizState extends State<VideoQuiz> {
   }
 
   initializeState() async {
-    inspect(widget.campaignModel);
     await Provider.of<GetCampaignProvider>(context, listen: false)
         .getVideoSurvey(widget.campaignModel.video.surveyid,
             Provider.of<UserProvider>(context, listen: false).loggedUser.token);

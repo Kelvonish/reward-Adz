@@ -174,7 +174,6 @@ class GetCampaignProvider extends ChangeNotifier {
           await campaignClass.getSingleCampaign(id, token);
       if (returnedCampaign != null) {
         linkCampaignDetails = returnedCampaign;
-        inspect(linkCampaignDetails);
       }
       loadingCampaignDetails = false;
       notifyListeners();

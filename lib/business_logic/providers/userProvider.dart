@@ -8,6 +8,7 @@ import 'package:rewardadz/data/services/userNetworkService.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/main.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
+import 'package:rewardadz/presentation/screens/account%20Creation/addReferalCode.dart';
 import 'package:rewardadz/presentation/screens/account%20Creation/verifyOtp.dart';
 import 'package:rewardadz/data/local storage/userPreference.dart';
 
@@ -29,7 +30,7 @@ class UserProvider extends ChangeNotifier {
 
   getLoggedInUser() async {
     loggedUser = await UserPreferences().getUser();
-    inspect(loggedUser);
+
     notifyListeners();
     return loggedUser;
   }
@@ -216,9 +217,8 @@ class UserProvider extends ChangeNotifier {
       if (verified) {
         var result = await userClass.getUser(user);
         userPref.saveUser(result);
-        Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => MyApp()),
-            (Route<dynamic> route) => false);
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => AddReferalCode()));
       }
       loginButtonLoading = false;
       notifyListeners();
