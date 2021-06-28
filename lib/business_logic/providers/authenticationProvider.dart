@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_login/flutter_facebook_login.dart';
-import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
@@ -81,6 +80,7 @@ class AuthenticationProvider extends ChangeNotifier {
   }
 
   twitterLogin() async {
+    /*
     var twitterLogin = new TwitterLogin(
       consumerKey: 'IL5ryrgm3qqnOECChYpKVRuUP',
       consumerSecret: 'ArXoJKeXS1u6uMr9wmDPqvmFicJnv9XcujMeSEbIuSYLM0UpwF',
@@ -102,6 +102,6 @@ class AuthenticationProvider extends ChangeNotifier {
       case TwitterLoginStatus.error:
         print(result.errorMessage);
         break;
-    }
+    }*/
   }
 }

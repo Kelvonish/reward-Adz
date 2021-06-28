@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:device_info/device_info.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_jailbreak_detection/flutter_jailbreak_detection.dart';
+
 
 class DeviceDetails {
   Future<String> getDeviceInfo() async {
@@ -32,7 +32,7 @@ class DeviceDetails {
   }
 
   Future<bool> checkIfRooted() async {
-    bool jailbroken = await FlutterJailbreakDetection.jailbroken;
+    bool jailbroken = false;
 
     return jailbroken;
   }

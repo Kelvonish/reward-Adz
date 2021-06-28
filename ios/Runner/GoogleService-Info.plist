@@ -3,21 +3,23 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>236219140751-kss9lh5081d9pcgdr55ouvj9ko8a0hfd.apps.googleusercontent.com</string>
+	<string>259575008376-tn4th1rp3vo4dnopqqc6mq05jo6h5cht.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.236219140751-kss9lh5081d9pcgdr55ouvj9ko8a0hfd</string>
+	<string>com.googleusercontent.apps.259575008376-tn4th1rp3vo4dnopqqc6mq05jo6h5cht</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>259575008376-60hb8gqe1ktcbpvunpivjmplmg9d2c31.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
-	<string>AIzaSyBRvVkdZ6Ymzu6y2gfSqFjd4ZR9FxDKgMg</string>
+	<string>AIzaSyAp5O0jqWircvBYc4AQuXhQvlhcwns1TcU</string>
 	<key>GCM_SENDER_ID</key>
-	<string>236219140751</string>
+	<string>259575008376</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
 	<string>com.example.rewardadz</string>
 	<key>PROJECT_ID</key>
-	<string>rewardadz-6bb76</string>
+	<string>reward-ads-82c7a</string>
 	<key>STORAGE_BUCKET</key>
-	<string>rewardadz-6bb76.appspot.com</string>
+	<string>reward-ads-82c7a.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +31,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:236219140751:ios:3b33792b7aef227ee1befa</string>
+	<string>1:259575008376:ios:431ca20b97e41477cdb18d</string>
+	<key>DATABASE_URL</key>
+	<string>https://reward-ads-82c7a.firebaseio.com</string>
 </dict>
 </plist>
