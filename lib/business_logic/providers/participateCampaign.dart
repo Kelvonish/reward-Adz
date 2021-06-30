@@ -1,12 +1,8 @@
-import 'dart:developer';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
 import 'package:flutter/cupertino.dart';
@@ -133,23 +129,22 @@ class ParticipateCampaignProvider extends ChangeNotifier {
     Directory directory;
     final RenderBox box = context.findRenderObject();
     try {
-      if (Platform.isAndroid) {
+      if (Platform.isIOS) {
+        if (await _requestPermission(Permission.photos)) {
+          directory = await getTemporaryDirectory();
+        } else {
+          Fluttertoast.showToast(msg: "Permission not granted");
+        }
+      } else {
         if (await _requestPermission(Permission.storage)) {
           directory = await getExternalStorageDirectory();
         } else {
           Fluttertoast.showToast(msg: "Permission not granted");
           return false;
         }
-      } else {
-        if (await _requestPermission(Permission.photos)) {
-          directory = await getTemporaryDirectory();
-        } else {
-          Fluttertoast.showToast(msg: "Permission not granted");
-        }
       }
       File saveFile = File(directory.path + "${campaignModel.sId}.png");
       if (!await directory.exists()) {
-        print("No directory");
         await directory.create(recursive: true);
       }
       if (await directory.exists()) {

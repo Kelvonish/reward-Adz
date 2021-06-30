@@ -1,6 +1,5 @@
-import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+//import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/presentation/screens/linkCampaignDetails.dart';
 
 class DynamicLinkService {
@@ -9,7 +8,7 @@ class DynamicLinkService {
   DynamicLinkService({this.context});
   Future handleDynamicLinks() async {
     // Get the initial dynamic link if the app is opened with a dynamic link
-    final PendingDynamicLinkData data =
+    /*final PendingDynamicLinkData data =
         await FirebaseDynamicLinks.instance.getInitialLink();
 
     // Register a link callback to fire if the app is opened up from the background
@@ -22,10 +21,10 @@ class DynamicLinkService {
       _handleDeepLink(dynamicLink);
     }, onError: (OnLinkErrorException e) async {
       print('Link Failed: ${e.message}');
-    });
+    });*/
   }
 
-  void _handleDeepLink(PendingDynamicLinkData data) {
+  /* void _handleDeepLink(PendingDynamicLinkData data) {
     final Uri deepLink = data?.link;
     if (deepLink != null) {
       print('_handleDeepLink | deeplink: $deepLink');
@@ -38,7 +37,6 @@ class DynamicLinkService {
         print(id + " this is where " + type);
 
         if (id != null) {
-          Fluttertoast.showToast(msg: "yeey gotten id");
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -46,16 +44,13 @@ class DynamicLinkService {
                         campaignId: id,
                         campaignType: type,
                       )));
-        } else {
-          Fluttertoast.showToast(msg: "Id is zero");
-        }
-      } else {
-        Fluttertoast.showToast(msg: "Campaign Link not gotten");
-      }
+        } else {}
+      } else {}
     }
-  }
+  }*/
 
   Future createCampaignLink(String id, String type) async {
+    /*
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://rewardads.page.link',
       link: Uri.parse(
@@ -64,7 +59,7 @@ class DynamicLinkService {
         packageName: 'com.adalabsflutter.rewardadz',
       ),
 /*
-      // Other things to add as an example. We don't need it now
+      Other things to add as an example. We don't need it now
       iosParameters: IosParameters(
         bundleId: 'com.example.ios',
         minimumVersion: '1.0.1',
@@ -88,5 +83,6 @@ class DynamicLinkService {
     final Uri dynamicUrl = await parameters.buildUrl();
 
     return dynamicUrl.toString();
+    */
   }
 }

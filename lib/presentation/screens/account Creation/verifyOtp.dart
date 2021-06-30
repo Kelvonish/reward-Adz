@@ -222,9 +222,10 @@ class _VerifyOtpState extends State<VerifyOtp> {
                   onTap: () async {
                     UserPreferences userPref = UserPreferences();
                     bool done = await userPref.removeUser();
+                    /*
                     await Provider.of<AuthenticationProvider>(context,
                             listen: false)
-                        .logoutSocial();
+                        .logoutSocial();*/
                     if (done) {
                       Provider.of<UserProvider>(context, listen: false)
                           .loggedUser = null;

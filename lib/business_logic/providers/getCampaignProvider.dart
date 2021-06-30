@@ -1,14 +1,11 @@
-import 'dart:developer';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/data/models/surveyModel.dart';
-import 'package:rewardadz/presentation/screens/completedCampaigns.dart';
 import 'package:rewardadz/presentation/screens/survey/surveyPage.dart';
 import 'package:rewardadz/data/local storage/locationPreference.dart';
 import '../../data/models/campaignModel.dart';

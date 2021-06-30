@@ -9,7 +9,6 @@ import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvi
 import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/local%20storage/userPreference.dart';
-import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/main.dart';
 import 'package:rewardadz/presentation/screens/notifications.dart';
 import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
@@ -501,9 +500,9 @@ class _ProfileState extends State<Profile> {
                           onPressed: () async {
                             UserPreferences userPref = UserPreferences();
                             bool done = await userPref.removeUser();
-                            await Provider.of<AuthenticationProvider>(context,
+                            /* await Provider.of<AuthenticationProvider>(context,
                                     listen: false)
-                                .logoutSocial();
+                                .logoutSocial();*/
                             if (done) {
                               Provider.of<UserProvider>(context, listen: false)
                                   .loggedUser = null;

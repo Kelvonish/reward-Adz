@@ -64,48 +64,52 @@ class LandingPage extends StatelessWidget {
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Row(
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    height: 50,
-                    margin: EdgeInsets.all(15.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => CreateAccount()));
-                      },
-                      style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(Colors.white)),
-                      child: Text(
-                        "Create Account ",
-                        style: TextStyle(color: Theme.of(context).primaryColor),
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Row(
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: 50,
+                      margin: EdgeInsets.all(15.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CreateAccount()));
+                        },
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.white)),
+                        child: Text(
+                          "Create Account ",
+                          style:
+                              TextStyle(color: Theme.of(context).primaryColor),
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.4,
-                    height: 50,
-                    margin: EdgeInsets.all(15.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Login()));
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                            Theme.of(context).primaryColor),
-                      ),
-                      child: Text(
-                        "Login ",
-                        style: TextStyle(color: Colors.white),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: 50,
+                      margin: EdgeInsets.all(15.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Login()));
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(
+                              Theme.of(context).primaryColor),
+                        ),
+                        child: Text(
+                          "Login ",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             )
           ],

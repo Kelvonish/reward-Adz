@@ -54,10 +54,10 @@ class _CreateAccountState extends State<CreateAccount> {
                 child: Material(
                   type: MaterialType.transparency,
                   child: Container(
-                      height: 186,
                       margin: MediaQuery.of(context).viewInsets,
                       color: Colors.white,
-                      child: ListView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Center(
                               child: Padding(
@@ -477,7 +477,7 @@ class _CreateAccountState extends State<CreateAccount> {
                     ),
                     Platform.isIOS
                         ? InkWell(
-                            onTap: value.twitterLogin,
+                            onTap: () {},
                             child: Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,

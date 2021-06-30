@@ -114,7 +114,10 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
                       );
                     } else {
                       return Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.white10,
+                          color: Colors.white,
+                        ),
                       );
                     }
                   },
@@ -123,7 +126,10 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
               bufferring
                   ? Align(
                       alignment: Alignment.center,
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.white10,
+                        color: Colors.white,
+                      ),
                     )
                   : SizedBox(),
               Positioned(
@@ -142,8 +148,10 @@ class _VideoCampaignPageState extends State<VideoCampaignPage> {
 
   @override
   void dispose() {
-    super.dispose();
+    if (_controller.value.isPlaying) _controller.pause();
     _controller.removeListener(() {});
     _controller.dispose();
+    _controller = null;
+    super.dispose();
   }
 }

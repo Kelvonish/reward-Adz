@@ -296,7 +296,7 @@ class UserNetworkService {
         'x-access-token': user.token,
       });
       var returnedData = json.decode(response.body);
-      inspect(returnedData);
+
       if (response.statusCode == 200) {
         return UserModel.fromJson(returnedData);
       } else {

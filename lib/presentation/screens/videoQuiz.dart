@@ -41,7 +41,7 @@ class _VideoQuizState extends State<VideoQuiz> {
   void dispose() {
     Provider.of<ParticipateCampaignProvider>(context, listen: false)
         .surveyErrors = [];
-
+    
     super.dispose();
   }
 

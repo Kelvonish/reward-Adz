@@ -103,7 +103,7 @@ class TransactionNetworkClass {
 
         NotificationModel notifications =
             NotificationModel.fromJson(returnedData);
-        inspect(notifications);
+
         return notifications;
       }
     } catch (e) {
@@ -164,7 +164,6 @@ class TransactionNetworkClass {
           },
           body: body);
       var returnedData = json.decode(response.body);
-      inspect(returnedData);
       if (response.statusCode == 200) {
         return true;
       } else {

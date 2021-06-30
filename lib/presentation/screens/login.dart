@@ -1,11 +1,8 @@
-import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:platform_device_id/platform_device_id.dart';
 import 'package:rewardadz/business_logic/Shared/validator.dart';
@@ -243,7 +240,7 @@ class _LoginState extends State<Login> {
                       ),
                       Platform.isIOS
                           ? InkWell(
-                              onTap: value.twitterLogin,
+                              onTap: () {},
                               child: Container(
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,

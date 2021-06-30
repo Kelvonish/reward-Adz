@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+//import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:http/http.dart';
 import 'package:rewardadz/business_logic/Shared/getDeviceInfo.dart';
@@ -27,7 +27,7 @@ import 'presentation/screens/account Creation/verifyOtp.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterDownloader.initialize();
+  //await FlutterDownloader.initialize();
 
   runApp(MyApp());
 }
@@ -137,7 +137,7 @@ class _CheckSessionState extends State<CheckSession> {
                     return AddAccountDetails(
                       user: snapshot.data,
                     );
-                  } else if (snapshot.data.data.status == 0) {
+                  } else if (snapshot.data.data.status == 5) {
                     return VerifyOtp(user: snapshot.data);
                   } else
                     return BottomNavigator();
