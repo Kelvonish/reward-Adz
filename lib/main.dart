@@ -80,7 +80,6 @@ class _MyAppState extends State<MyApp> {
               primaryColor: Color.fromRGBO(16, 49, 170, 1),
               accentColor: Color.fromRGBO(213, 225, 255, 1),
               highlightColor: const Color.fromRGBO(114, 145, 219, 1),
-              primarySwatch: Colors.blue,
               scaffoldBackgroundColor: Colors.white),
           home: CheckSession(),
         ));

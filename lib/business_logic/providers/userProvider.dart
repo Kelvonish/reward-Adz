@@ -30,7 +30,7 @@ class UserProvider extends ChangeNotifier {
 
   getLoggedInUser() async {
     loggedUser = await UserPreferences().getUser();
-
+    inspect(loggedUser);
     notifyListeners();
     return loggedUser;
   }

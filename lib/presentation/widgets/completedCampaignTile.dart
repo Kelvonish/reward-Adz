@@ -73,7 +73,7 @@ class CompletedCampaignsTile extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.4,
+                            width: MediaQuery.of(context).size.width * 0.35,
                             child: Text(
                               name,
                               style: TextStyle(

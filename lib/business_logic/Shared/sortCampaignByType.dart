@@ -30,7 +30,7 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
   } else if (data.video != null) {
     return InkWell(
       onTap: () {
-        true
+        data.isactive
             ? Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -100,16 +100,16 @@ Widget renderCampaignByType(BuildContext context, CampaignModel data) {
   return Text("");
 }
 
-showAlertDialogBox(BuildContext context) {
+showAlertDialogBox(BuildContext dialogContext) {
   // set up the buttons
 
   Widget continueButton = TextButton(
     child: Text(
       "I understand",
-      style: TextStyle(color: Theme.of(context).primaryColor),
+      style: TextStyle(color: Theme.of(dialogContext).primaryColor),
     ),
     onPressed: () {
-      Navigator.pop(context);
+      Navigator.of(dialogContext, rootNavigator: true).pop();
     },
   );
 
@@ -125,7 +125,7 @@ showAlertDialogBox(BuildContext context) {
 
   // show the dialog
   showDialog(
-    context: context,
+    context: dialogContext,
     builder: (BuildContext context) {
       return alert;
     },

@@ -48,7 +48,7 @@ class _EditProfileState extends State<EditProfile> {
       return formatted;
     }
 
-    uploadImage(BuildContext context) {
+    uploadImage(BuildContext context) async {
       Navigator.pop(context);
       if (_imageFile != null) {
         Provider.of<UserProvider>(context, listen: false).uploadProfileImage(
@@ -59,23 +59,23 @@ class _EditProfileState extends State<EditProfile> {
       }
     }
 
-    void _onImageButtonPressed(ImageSource source,
-        {BuildContext context}) async {
+    _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
       try {
         final pickedFile = await _picker.getImage(
           source: source,
         );
 
         _imageFile = pickedFile;
-        uploadImage(context);
+        await uploadImage(context);
       } catch (e) {
         setState(() {
           _pickImageError = e;
+          print(_pickImageError);
         });
       }
     }
 
-    void _selectSource(BuildContext context) {
+    _selectSource(BuildContext context) async {
       showCupertinoModalPopup(
           context: context,
           builder: (context) => Material(
@@ -99,8 +99,8 @@ class _EditProfileState extends State<EditProfile> {
                           height: 3,
                         ),
                         InkWell(
-                          onTap: () {
-                            _onImageButtonPressed(ImageSource.gallery,
+                          onTap: () async {
+                            await _onImageButtonPressed(ImageSource.gallery,
                                 context: context);
                           },
                           child: ListTile(
@@ -154,8 +154,8 @@ class _EditProfileState extends State<EditProfile> {
                       child: Column(
                         children: [
                           InkWell(
-                            onTap: () {
-                              _selectSource(context);
+                            onTap: () async {
+                              await _selectSource(context);
                             },
                             child: ProfileImage(
                               url: value.loggedUser.data.image,
@@ -174,14 +174,15 @@ class _EditProfileState extends State<EditProfile> {
                             height: 5.0,
                           ),
                           value.uploadingImage
-                              ? Container(
-                                  padding: EdgeInsets.all(5),
-                                  color: Theme.of(context).primaryColor,
-                                  child: Text(
-                                    "Uploading image...",
-                                    style: TextStyle(
-                                        color: Colors.white, fontSize: 15.0),
-                                  ))
+                              ? Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Center(
+                                    child: SpinKitThreeBounce(
+                                      size: 30,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                  ),
+                                )
                               : SizedBox()
                         ],
                       ),

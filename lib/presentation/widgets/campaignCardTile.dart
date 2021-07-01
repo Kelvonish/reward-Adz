@@ -22,7 +22,8 @@ class MainCardTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 15.0),
+      margin:
+          isActive ? EdgeInsets.only(top: 15.0) : EdgeInsets.only(top: 25.0),
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(10.0),
@@ -34,7 +35,7 @@ class MainCardTile extends StatelessWidget {
                 BlendMode.multiply,
               )
             : ColorFilter.mode(
-                Colors.black54,
+                Colors.grey,
                 BlendMode.saturation,
               ),
         child: Column(
@@ -47,8 +48,8 @@ class MainCardTile extends StatelessWidget {
                 height: 200,
                 decoration: BoxDecoration(
                   //shape: BoxShape.circle,
-                  image:
-                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                  image: DecorationImage(
+                      image: imageProvider, fit: BoxFit.fitWidth),
                   borderRadius: BorderRadius.circular(10.0),
                 ),
                 child: Column(
@@ -83,6 +84,7 @@ class MainCardTile extends StatelessWidget {
                     Container(
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
                         gradient: LinearGradient(
                           begin: Alignment.bottomCenter,
                           end: Alignment.topCenter,
@@ -138,7 +140,7 @@ class MainCardTile extends StatelessWidget {
                                     category,
                                     style: TextStyle(
                                         fontWeight: FontWeight.w400,
-                                        fontSize: 10.0,
+                                        fontSize: 12.0,
                                         color: Colors.white),
                                   ),
                                 ],
