@@ -6,8 +6,6 @@ PODS:
   - AppAuth/ExternalUserAgent (1.4.0)
   - audio_session (0.0.1):
     - Flutter
-  - audioplayers (0.0.1):
-    - Flutter
   - connectivity (0.0.1):
     - Flutter
     - Reachability
@@ -158,7 +156,6 @@ PODS:
 
 DEPENDENCIES:
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
-  - audioplayers (from `.symlinks/plugins/audioplayers/ios`)
   - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - Firebase/Analytics
@@ -205,8 +202,6 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   audio_session:
     :path: ".symlinks/plugins/audio_session/ios"
-  audioplayers:
-    :path: ".symlinks/plugins/audioplayers/ios"
   connectivity:
     :path: ".symlinks/plugins/connectivity/ios"
   device_info:
@@ -249,7 +244,6 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
-  audioplayers: 455322b54050b30ea4b1af7cd9e9d105f74efa8c
   connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   FBSDKCoreKit: 1d5acf7c9d7a2f92bb1a242dc60cae5b7adb91df
@@ -288,6 +282,6 @@ SPEC CHECKSUMS:
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   webview_flutter: 9f491a9b5a66f2573946a389b2677987b0ff8c0b
 
-PODFILE CHECKSUM: acc915de3e53e95e1dda7fcb6d571194db60289b
+PODFILE CHECKSUM: dad955a2b54b9d3972ebd2486e9810d76298d945
 
 COCOAPODS: 1.10.0
