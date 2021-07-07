@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -41,7 +39,7 @@ class _VideoQuizState extends State<VideoQuiz> {
   void dispose() {
     Provider.of<ParticipateCampaignProvider>(context, listen: false)
         .surveyErrors = [];
-    
+
     super.dispose();
   }
 

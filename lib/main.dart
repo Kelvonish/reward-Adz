@@ -1,28 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:http/http.dart';
-import 'package:rewardadz/business_logic/Shared/getDeviceInfo.dart';
-import 'package:rewardadz/presentation/screens/test.dart';
 import 'package:rewardadz/business_logic/providers/participateCampaign.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/database/campaignDatabase.dart';
 import 'package:rewardadz/data/local storage/locationPreference.dart';
-
 import 'package:rewardadz/presentation/screens/account%20Creation/addAccountDetails.dart';
-//import 'package:rewardadz/presentation/screens/homepage.dart';
 import 'package:rewardadz/presentation/screens/landingpage.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
 import 'package:rewardadz/business_logic/providers/topAdvertisersProvider.dart';
 import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
-
 import 'package:rewardadz/presentation/screens/navigator.dart';
-import 'package:rewardadz/presentation/screens/noAcessPage.dart';
-
 import 'presentation/screens/account Creation/verifyOtp.dart';
 
 void main() async {

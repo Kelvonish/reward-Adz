@@ -1,5 +1,4 @@
 import 'package:http/http.dart' as http;
-import 'package:location/location.dart';
 import 'package:rewardadz/business_logic/constants/constants.dart';
 import 'package:rewardadz/data/models/campaignModel.dart';
 import 'package:rewardadz/data/models/topAdvertisersModel.dart';

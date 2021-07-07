@@ -1,11 +1,8 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/models/userModel.dart';
@@ -24,12 +21,10 @@ class _EditProfileState extends State<EditProfile> {
   PickedFile _imageFile;
   dynamic _pickImageError;
 
-  String _retrieveDataError;
   final ImagePicker _picker = ImagePicker();
 
   @override
   Widget build(BuildContext context) {
-    DateTime _selectedDate;
     var _value = Provider.of<UserProvider>(context, listen: false);
     var _formKey = GlobalKey<FormState>();
     TextEditingController _dateController = TextEditingController();
@@ -41,12 +36,6 @@ class _EditProfileState extends State<EditProfile> {
         TextEditingController(text: _value.loggedUser.data.lname);
     TextEditingController _genderController = TextEditingController();
     TextEditingController _phoneController = TextEditingController();
-
-    String _formatDate(DateTime date) {
-      final DateFormat formatter = DateFormat('dd-MM-yyyy');
-      final String formatted = formatter.format(date);
-      return formatted;
-    }
 
     uploadImage(BuildContext context) async {
       Navigator.pop(context);

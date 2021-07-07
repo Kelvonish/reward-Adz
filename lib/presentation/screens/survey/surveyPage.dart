@@ -12,7 +12,6 @@ class Survey extends StatefulWidget {
 
 class _SurveyState extends State<Survey> {
   var selectedRadio;
-  bool _value = false;
   FullSurveyModel surveyAnswers = FullSurveyModel(data: []);
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -8,7 +6,6 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/business_logic/providers/transactionProvider.dart';
-import 'package:rewardadz/data/models/userModel.dart';
 import 'package:rewardadz/presentation/widgets/balanceCardTile.dart';
 import 'package:rewardadz/presentation/widgets/transactionTile.dart';
 
@@ -57,6 +54,15 @@ class _WalletState extends State<Wallet> {
   TextStyle _labelStyle = TextStyle(fontWeight: FontWeight.w400);
   @override
   Widget build(BuildContext context) {
+    _completeTransfer(BuildContext context) async {
+      Navigator.pop(context);
+      Provider.of<TransactionProvider>(context, listen: false).transfer(
+          context,
+          Provider.of<UserProvider>(context, listen: false).loggedUser,
+          transferAmountController.text,
+          phoneNumber);
+    }
+
     _completeWithdrawal(int amount) async {
       Navigator.pop(context);
       bool success =
@@ -345,7 +351,7 @@ class _WalletState extends State<Wallet> {
                                           Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Text(
-                                              "Make sure the account is registered with a nuber registered with M-pesa",
+                                              "Make sure the account is registered with a number registered with M-pesa",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontWeight: FontWeight.w300,
@@ -549,8 +555,7 @@ class _WalletState extends State<Wallet> {
                   ),
                   InkWell(
                     onTap: () {
-                      _showInDevelopmentDialog(context);
-                      /* showCupertinoModalPopup(
+                      showCupertinoModalPopup(
                           context: context,
                           builder: (context) => Container(
                                 margin: EdgeInsets.all(15.0),
@@ -659,7 +664,7 @@ class _WalletState extends State<Wallet> {
                                                     phoneNumber =
                                                         trimmedCountryCode +
                                                             trimmedNumber;
-                                                   
+
                                                     if (int.parse(
                                                             transferAmountController
                                                                 .text) >
@@ -672,12 +677,15 @@ class _WalletState extends State<Wallet> {
                                                           msg:
                                                               "You cannot transfer more than your balance");
                                                     } else if (int.parse(
-                                                            withdrawAmountController
+                                                            transferAmountController
                                                                 .text) <
-                                                        50) {
+                                                        10) {
                                                       Fluttertoast.showToast(
                                                           msg:
-                                                              "Minimum transfer amount is 50");
+                                                              "Minimum transfer amount is 10");
+                                                    } else {
+                                                      _completeTransfer(
+                                                          context);
                                                     }
                                                   }
                                                 }
@@ -713,7 +721,6 @@ class _WalletState extends State<Wallet> {
                                       )),
                                 ),
                               ));
-                    */
                     },
                     child: Column(
                       children: [

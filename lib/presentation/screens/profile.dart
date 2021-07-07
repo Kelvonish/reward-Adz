@@ -1,12 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/business_logic/Shared/validator.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
-import 'package:rewardadz/business_logic/providers/authenticationProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/local%20storage/userPreference.dart';
 import 'package:rewardadz/main.dart';

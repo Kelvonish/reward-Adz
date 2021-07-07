@@ -113,7 +113,7 @@ class TransactionNetworkClass {
     return null;
   }
 
-  Future transfer(UserModel user, String phone, String amount) async {
+  Future<bool> transfer(UserModel user, String phone, String amount) async {
     Map data = {"amount": amount, "phone": phone, "uid": user.data.id};
 
     try {
@@ -129,18 +129,22 @@ class TransactionNetworkClass {
           },
           body: body);
       var returnedData = json.decode(response.body);
+      inspect(returnedData);
       if (response.statusCode == 200) {
-        return returnedData;
+        if (returnedData['status'] == "true") {
+          return true;
+        }
       } else {
-        if (returnedData['data'] is String) {
-          Fluttertoast.showToast(msg: returnedData['data']);
+        if (returnedData['Message'] is String) {
+          Fluttertoast.showToast(msg: returnedData['Message']);
+          return false;
         }
       }
     } catch (e) {
       Fluttertoast.showToast(msg: "Nothing " + e.toString());
-      return null;
+      return false;
     }
-    return null;
+    return false;
   }
 
   Future<bool> withdraw(UserModel user, int amount) async {

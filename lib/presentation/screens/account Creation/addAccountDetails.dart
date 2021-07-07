@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/models/userModel.dart';
-import 'package:rewardadz/presentation/screens/account Creation/verifyOtp.dart';
 
 class AddAccountDetails extends StatefulWidget {
   final UserModel user;

@@ -1,13 +1,10 @@
 import 'dart:math';
-
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
-import 'package:rewardadz/business_logic/providers/getCampaignProvider.dart';
 import 'package:rewardadz/business_logic/providers/notificationsProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
-
 import 'package:rewardadz/data/models/transactionModel.dart';
 import 'package:rewardadz/data/models/notificationModel.dart';
 import 'package:rewardadz/data/models/userModel.dart';
@@ -94,17 +91,35 @@ class TransactionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  transfer(UserModel user, String amount, String phone) async {
+  refreshAllTransactionAfterTransfer(UserModel user) async {
+    getNotifications(user);
+    getTransfers(user);
+    notifyListeners();
+  }
+
+  transfer(
+      BuildContext context, UserModel user, String amount, String phone) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
-      transferModalLoading = true;
+      withdrawModalLoading = true;
       notifyListeners();
-      notifications =
+      bool success =
           await TransactionNetworkClass().transfer(user, phone, amount);
+
+      if (success) {
+        Random random = new Random();
+        int randomNumber = random.nextInt(100);
+        await Provider.of<UserProvider>(context, listen: false).getUser(user);
+        await refreshAllTransactionAfterTransfer(user);
+        SendNotification().sendNotification(
+            "Transfer successful",
+            "You have successfully transferred $amount to $phone",
+            randomNumber);
+      }
     }
-    transferModalLoading = false;
+    withdrawModalLoading = false;
     notifyListeners();
   }
 

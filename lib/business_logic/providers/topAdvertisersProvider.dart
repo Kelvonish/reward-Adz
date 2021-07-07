@@ -4,7 +4,6 @@ import 'package:rewardadz/business_logic/providers/checkInternetProvider.dart';
 import 'package:rewardadz/data/local storage/locationPreference.dart';
 import 'package:rewardadz/data/services/getTopAdvertisersNetworkService.dart';
 import 'package:rewardadz/data/models/topAdvertisersModel.dart';
-import '../Shared/getLocation.dart';
 import '../../data/models/campaignModel.dart';
 
 class TopAdvertisersProvider extends ChangeNotifier {
