@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/business_logic/providers/participateCampaign.dart';
 import 'package:rewardadz/business_logic/providers/togglePasswordVisibilityProvider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
@@ -118,9 +119,9 @@ class _CheckSessionState extends State<CheckSession> {
                     ),
                   );
                 default:
-                  if (snapshot.data == null)
+                  if (snapshot.data == null) {
                     return LandingPage();
-                  else if (snapshot.data.data.dob == null ||
+                  } else if (snapshot.data.data.dob == null ||
                       snapshot.data.data.lname == null ||
                       snapshot.data.data.fname == null ||
                       snapshot.data.data.gender == null) {
@@ -129,8 +130,15 @@ class _CheckSessionState extends State<CheckSession> {
                     );
                   } else if (snapshot.data.data.status == 5) {
                     return VerifyOtp(user: snapshot.data);
-                  } else
+                  } else if (Provider.of<UserProvider>(context, listen: false)
+                      .expiryTime
+                      .isBefore(DateTime.now())) {
+                    Fluttertoast.showToast(
+                        msg: "Session expired! Please Login again");
+                    return LandingPage();
+                  } else {
                     return BottomNavigator();
+                  }
               }
             }),
       ),

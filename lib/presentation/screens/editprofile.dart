@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:rewardadz/business_logic/providers/userProvider.dart';
 import 'package:rewardadz/data/models/userModel.dart';
@@ -48,6 +51,18 @@ class _EditProfileState extends State<EditProfile> {
       }
     }
 
+    Future<bool> _requestPermission(Permission permission) async {
+      if (await permission.isGranted) {
+        return true;
+      } else {
+        var result = await permission.request();
+        if (result == PermissionStatus.granted) {
+          return true;
+        }
+      }
+      return false;
+    }
+
     _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
       try {
         final pickedFile = await _picker.getImage(
@@ -85,7 +100,7 @@ class _EditProfileState extends State<EditProfile> {
                           height: 15,
                         ),
                         Divider(
-                          height: 3,
+                          height: 5,
                         ),
                         InkWell(
                           onTap: () async {
@@ -100,6 +115,9 @@ class _EditProfileState extends State<EditProfile> {
                             title: Text("Select From Gallery"),
                           ),
                         ),
+                        Divider(
+                          height: 5,
+                        ),
                         InkWell(
                           onTap: () {
                             _onImageButtonPressed(ImageSource.camera,
@@ -112,6 +130,9 @@ class _EditProfileState extends State<EditProfile> {
                             ),
                             title: Text("Take a Photo"),
                           ),
+                        ),
+                        Divider(
+                          height: 5,
                         ),
                       ],
                     )),
@@ -144,7 +165,25 @@ class _EditProfileState extends State<EditProfile> {
                         children: [
                           InkWell(
                             onTap: () async {
-                              await _selectSource(context);
+                              if (Platform.isIOS) {
+                                if (await _requestPermission(
+                                    Permission.photos)) {
+                                  await _selectSource(context);
+                                } else {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "Permission not granted! Please go to settings and allow permission to access all photos");
+                                }
+                              } else {
+                                if (await _requestPermission(
+                                    Permission.storage)) {
+                                  await _selectSource(context);
+                                } else {
+                                  Fluttertoast.showToast(
+                                      msg: "Permission not granted");
+                                  return false;
+                                }
+                              }
                             },
                             child: ProfileImage(
                               url: value.loggedUser.data.image,

@@ -20,6 +20,7 @@ class UserProvider extends ChangeNotifier {
   bool resetButtonLoading = false;
   bool accountDetailButton = false;
   UserModel loggedUser;
+  DateTime expiryTime;
   bool uploadingImage = false;
 
   bool isInternetConnected;
@@ -30,7 +31,7 @@ class UserProvider extends ChangeNotifier {
 
   getLoggedInUser() async {
     loggedUser = await UserPreferences().getUser();
-    inspect(loggedUser);
+    expiryTime = await UserPreferences().getExpiringTime();
     notifyListeners();
     return loggedUser;
   }
@@ -46,6 +47,7 @@ class UserProvider extends ChangeNotifier {
 
       if (result != null) {
         userPref.saveUser(result);
+        userPref.saveExpiryTime();
         notifyListeners();
         Navigator.push(
             context,
@@ -75,6 +77,7 @@ class UserProvider extends ChangeNotifier {
 
       if (result != null) {
         userPref.saveUser(result);
+        userPref.saveExpiryTime();
         notifyListeners();
         Navigator.push(
             context,
@@ -125,6 +128,7 @@ class UserProvider extends ChangeNotifier {
 
       if (result != null) {
         userPref.saveUser(result);
+        userPref.saveExpiryTime();
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => MyApp()),
             (Route<dynamic> route) => false);
@@ -170,7 +174,7 @@ class UserProvider extends ChangeNotifier {
 
       if (result != null) {
         userPref.saveUser(result);
-
+        userPref.saveExpiryTime();
         Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (context) => MyApp()),
             (Route<dynamic> route) => false);
@@ -258,7 +262,7 @@ class UserProvider extends ChangeNotifier {
       UserModel result = await userClass.resetPassword(userId, newPassword);
 
       if (result != null) {
-        userPref.saveUser(result);
+        //userPref.saveUser(result);
 
         Fluttertoast.showToast(
             msg: "Password reset Successfully",
@@ -266,7 +270,7 @@ class UserProvider extends ChangeNotifier {
 
         Navigator.pop(context);
       } else {
-        Fluttertoast.showToast(msg: "Error reseting. Nothing happened");
+        Fluttertoast.showToast(msg: "Error reseting password");
         resetButtonLoading = false;
         notifyListeners();
       }
