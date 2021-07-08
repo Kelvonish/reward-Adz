@@ -330,139 +330,265 @@ class GetCampaignsClass {
 
       if (response.statusCode == 200) {
         var campaigns = jsonDecode(response.body);
+        if (Platform.isIOS) {
+          campaigns['data'].forEach((json) {
+            if (json.containsKey("survey")) {
+              CampaignModel newData = CampaignModel(
+                isactive: json['isactive'],
+                sId: json['_id'],
+                name: json['name'],
+                type: json['type'],
+                organization: json['organization'] != null
+                    ? OrganizationModel(
+                        id: json['organization']['id'],
+                        name: json['organization']['name'],
+                        email: json['organization']['email'],
+                        industry: json['organization']['industry'],
+                        phone: json['organization']['phone'],
+                        logo: json['organization']['logo'],
+                        userId: json['organization']['user_id'],
+                        balance: json['organization']['balance'],
+                        createdAt: json['organization']['createdAt'],
+                        updatedAt: json['organization']['updatedAt'],
+                      )
+                    : null,
+                status: json['status'],
+                campimg: json['campimg'],
+                objective: json['objective'],
+                iV: json['__v'],
+                audio: null,
+                video: json['video'] != null
+                    ? VideoModel(
+                        surveyid: json['video']['surveyid'],
+                        watchedvideosamount: json['video']
+                            ['watchedvideosamount'],
+                        url: json['video']['url'])
+                    : null,
+                survey: json['survey'] != null
+                    ? SurveyModel(
+                        amount: json['survey']['amount'],
+                        surveyid: json['survey']['surveyid'])
+                    : null,
+                banner: json['banner'] != null
+                    ? BannerModel(
+                        shares: json['shares'],
+                        sharesamount: json['sharesamount'],
+                        bannerset: json['bannerset'],
+                        banneramount: json['banneramount'],
+                        bannerurl: json['bannerurl'],
+                      )
+                    : null,
+                endage: json['endage'],
+                gender: json['gender'],
+                startage: json['startage'],
+                dailybudget: json['dailybudget'],
+                featured: json['featured'],
+                fromdate: json['fromdate'],
+                paymentmode: json['paymentmode'],
+                todate: json['todate'],
+                totalbudget: json['totalbudget'],
+              );
 
-        campaigns['data'].forEach((json) {
-          if (json.containsKey("survey")) {
-            CampaignModel newData = CampaignModel(
-              isactive: json['isactive'],
-              sId: json['_id'],
-              name: json['name'],
-              type: json['type'],
-              organization: json['organization'] != null
-                  ? OrganizationModel(
-                      id: json['organization']['id'],
-                      name: json['organization']['name'],
-                      email: json['organization']['email'],
-                      industry: json['organization']['industry'],
-                      phone: json['organization']['phone'],
-                      logo: json['organization']['logo'],
-                      userId: json['organization']['user_id'],
-                      balance: json['organization']['balance'],
-                      createdAt: json['organization']['createdAt'],
-                      updatedAt: json['organization']['updatedAt'],
-                    )
-                  : null,
-              status: json['status'],
-              campimg: json['campimg'],
-              objective: json['objective'],
-              iV: json['__v'],
-              audio: json['audio'] != null
-                  ? AudioModel(
-                      uniquecalls: json['audio']['uniquecalls'],
-                      award: json['audio']['award'],
-                      volume: json['audio']['volume'],
-                      audiourl: json['audio']['audiourl'])
-                  : null,
-              video: json['video'] != null
-                  ? VideoModel(
-                      surveyid: json['video']['surveyid'],
-                      watchedvideosamount: json['video']['watchedvideosamount'],
-                      url: json['video']['url'])
-                  : null,
-              survey: json['survey'] != null
-                  ? SurveyModel(
-                      amount: json['survey']['amount'],
-                      surveyid: json['survey']['surveyid'])
-                  : null,
-              banner: json['banner'] != null
-                  ? BannerModel(
-                      shares: json['shares'],
-                      sharesamount: json['sharesamount'],
-                      bannerset: json['bannerset'],
-                      banneramount: json['banneramount'],
-                      bannerurl: json['bannerurl'],
-                    )
-                  : null,
-              endage: json['endage'],
-              gender: json['gender'],
-              startage: json['startage'],
-              dailybudget: json['dailybudget'],
-              featured: json['featured'],
-              fromdate: json['fromdate'],
-              paymentmode: json['paymentmode'],
-              todate: json['todate'],
-              totalbudget: json['totalbudget'],
-            );
+              var contain = searchCampaignList
+                  .where((element) => element.sId == newData.sId);
+              if (contain.isEmpty) {
+                searchCampaignList.add(newData);
+              }
+            } else {
+              CampaignModel newData = CampaignModel(
+                isactive: json['isactive'],
+                sId: json['_id'],
+                name: json['name'],
+                type: json['type'],
+                organization: json['organization'] != null
+                    ? OrganizationModel(
+                        id: json['organization']['id'],
+                        name: json['organization']['name'],
+                        email: json['organization']['email'],
+                        industry: json['organization']['industry'],
+                        phone: json['organization']['phone'],
+                        logo: json['organization']['logo'],
+                        userId: json['organization']['user_id'],
+                        balance: json['organization']['balance'],
+                        createdAt: json['organization']['createdAt'],
+                        updatedAt: json['organization']['updatedAt'],
+                      )
+                    : null,
+                status: json['status'],
+                campimg: json['campimg'],
+                objective: json['objective'],
+                iV: json['__v'],
+                audio: null,
+                video: json['video'] != null
+                    ? VideoModel(
+                        surveyid: json['video']['surveyid'],
+                        watchedvideosamount: json['video']
+                            ['watchedvideosamount'],
+                        url: json['video']['url'])
+                    : null,
+                banner: json['banner'] != null
+                    ? BannerModel(
+                        shares: json['shares'],
+                        sharesamount: json['sharesamount'],
+                        bannerset: json['bannerset'],
+                        banneramount: json['banneramount'],
+                        bannerurl: json['bannerurl'],
+                      )
+                    : null,
+                survey: null,
+                endage: json['endage'],
+                gender: json['gender'],
+                startage: json['startage'],
+                dailybudget: json['dailybudget'],
+                featured: json['featured'],
+                fromdate: json['fromdate'],
+                paymentmode: json['paymentmode'],
+                todate: json['todate'],
+                totalbudget: json['totalbudget'],
+              );
+              var contain = searchCampaignList
+                  .where((element) => element.sId == newData.sId);
+              if (contain.isEmpty) {
+                searchCampaignList.add(newData);
+              }
+            }
+          });
+        } else {
+          campaigns['data'].forEach((json) {
+            if (json.containsKey("survey")) {
+              CampaignModel newData = CampaignModel(
+                isactive: json['isactive'],
+                sId: json['_id'],
+                name: json['name'],
+                type: json['type'],
+                organization: json['organization'] != null
+                    ? OrganizationModel(
+                        id: json['organization']['id'],
+                        name: json['organization']['name'],
+                        email: json['organization']['email'],
+                        industry: json['organization']['industry'],
+                        phone: json['organization']['phone'],
+                        logo: json['organization']['logo'],
+                        userId: json['organization']['user_id'],
+                        balance: json['organization']['balance'],
+                        createdAt: json['organization']['createdAt'],
+                        updatedAt: json['organization']['updatedAt'],
+                      )
+                    : null,
+                status: json['status'],
+                campimg: json['campimg'],
+                objective: json['objective'],
+                iV: json['__v'],
+                audio: json['audio'] != null
+                    ? AudioModel(
+                        uniquecalls: json['audio']['uniquecalls'],
+                        award: json['audio']['award'],
+                        volume: json['audio']['volume'],
+                        audiourl: json['audio']['audiourl'])
+                    : null,
+                video: json['video'] != null
+                    ? VideoModel(
+                        surveyid: json['video']['surveyid'],
+                        watchedvideosamount: json['video']
+                            ['watchedvideosamount'],
+                        url: json['video']['url'])
+                    : null,
+                survey: json['survey'] != null
+                    ? SurveyModel(
+                        amount: json['survey']['amount'],
+                        surveyid: json['survey']['surveyid'])
+                    : null,
+                banner: json['banner'] != null
+                    ? BannerModel(
+                        shares: json['shares'],
+                        sharesamount: json['sharesamount'],
+                        bannerset: json['bannerset'],
+                        banneramount: json['banneramount'],
+                        bannerurl: json['bannerurl'],
+                      )
+                    : null,
+                endage: json['endage'],
+                gender: json['gender'],
+                startage: json['startage'],
+                dailybudget: json['dailybudget'],
+                featured: json['featured'],
+                fromdate: json['fromdate'],
+                paymentmode: json['paymentmode'],
+                todate: json['todate'],
+                totalbudget: json['totalbudget'],
+              );
 
-            var contain = searchCampaignList
-                .where((element) => element.sId == newData.sId);
-            if (contain.isEmpty) {
-              searchCampaignList.add(newData);
+              var contain = searchCampaignList
+                  .where((element) => element.sId == newData.sId);
+              if (contain.isEmpty) {
+                searchCampaignList.add(newData);
+              }
+            } else {
+              CampaignModel newData = CampaignModel(
+                isactive: json['isactive'],
+                sId: json['_id'],
+                name: json['name'],
+                type: json['type'],
+                organization: json['organization'] != null
+                    ? OrganizationModel(
+                        id: json['organization']['id'],
+                        name: json['organization']['name'],
+                        email: json['organization']['email'],
+                        industry: json['organization']['industry'],
+                        phone: json['organization']['phone'],
+                        logo: json['organization']['logo'],
+                        userId: json['organization']['user_id'],
+                        balance: json['organization']['balance'],
+                        createdAt: json['organization']['createdAt'],
+                        updatedAt: json['organization']['updatedAt'],
+                      )
+                    : null,
+                status: json['status'],
+                campimg: json['campimg'],
+                objective: json['objective'],
+                iV: json['__v'],
+                audio: json['audio'] != null
+                    ? AudioModel(
+                        uniquecalls: json['audio']['uniquecalls'],
+                        award: json['audio']['award'],
+                        volume: json['audio']['volume'],
+                        audiourl: json['audio']['audiourl'])
+                    : null,
+                video: json['video'] != null
+                    ? VideoModel(
+                        surveyid: json['video']['surveyid'],
+                        watchedvideosamount: json['video']
+                            ['watchedvideosamount'],
+                        url: json['video']['url'])
+                    : null,
+                banner: json['banner'] != null
+                    ? BannerModel(
+                        shares: json['shares'],
+                        sharesamount: json['sharesamount'],
+                        bannerset: json['bannerset'],
+                        banneramount: json['banneramount'],
+                        bannerurl: json['bannerurl'],
+                      )
+                    : null,
+                survey: null,
+                endage: json['endage'],
+                gender: json['gender'],
+                startage: json['startage'],
+                dailybudget: json['dailybudget'],
+                featured: json['featured'],
+                fromdate: json['fromdate'],
+                paymentmode: json['paymentmode'],
+                todate: json['todate'],
+                totalbudget: json['totalbudget'],
+              );
+              var contain = searchCampaignList
+                  .where((element) => element.sId == newData.sId);
+              if (contain.isEmpty) {
+                searchCampaignList.add(newData);
+              }
             }
-          } else {
-            CampaignModel newData = CampaignModel(
-              isactive: json['isactive'],
-              sId: json['_id'],
-              name: json['name'],
-              type: json['type'],
-              organization: json['organization'] != null
-                  ? OrganizationModel(
-                      id: json['organization']['id'],
-                      name: json['organization']['name'],
-                      email: json['organization']['email'],
-                      industry: json['organization']['industry'],
-                      phone: json['organization']['phone'],
-                      logo: json['organization']['logo'],
-                      userId: json['organization']['user_id'],
-                      balance: json['organization']['balance'],
-                      createdAt: json['organization']['createdAt'],
-                      updatedAt: json['organization']['updatedAt'],
-                    )
-                  : null,
-              status: json['status'],
-              campimg: json['campimg'],
-              objective: json['objective'],
-              iV: json['__v'],
-              audio: json['audio'] != null
-                  ? AudioModel(
-                      uniquecalls: json['audio']['uniquecalls'],
-                      award: json['audio']['award'],
-                      volume: json['audio']['volume'],
-                      audiourl: json['audio']['audiourl'])
-                  : null,
-              video: json['video'] != null
-                  ? VideoModel(
-                      surveyid: json['video']['surveyid'],
-                      watchedvideosamount: json['video']['watchedvideosamount'],
-                      url: json['video']['url'])
-                  : null,
-              banner: json['banner'] != null
-                  ? BannerModel(
-                      shares: json['shares'],
-                      sharesamount: json['sharesamount'],
-                      bannerset: json['bannerset'],
-                      banneramount: json['banneramount'],
-                      bannerurl: json['bannerurl'],
-                    )
-                  : null,
-              survey: null,
-              endage: json['endage'],
-              gender: json['gender'],
-              startage: json['startage'],
-              dailybudget: json['dailybudget'],
-              featured: json['featured'],
-              fromdate: json['fromdate'],
-              paymentmode: json['paymentmode'],
-              todate: json['todate'],
-              totalbudget: json['totalbudget'],
-            );
-            var contain = searchCampaignList
-                .where((element) => element.sId == newData.sId);
-            if (contain.isEmpty) {
-              searchCampaignList.add(newData);
-            }
-          }
-        });
+          });
+        }
 
         return searchCampaignList;
       } else {
