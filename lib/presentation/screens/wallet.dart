@@ -555,6 +555,8 @@ class _WalletState extends State<Wallet> {
                   ),
                   InkWell(
                     onTap: () {
+                      _showInDevelopmentDialog(context);
+                      /*
                       showCupertinoModalPopup(
                           context: context,
                           builder: (context) => Container(
@@ -720,7 +722,7 @@ class _WalletState extends State<Wallet> {
                                         ],
                                       )),
                                 ),
-                              ));
+                              ));*/
                     },
                     child: Column(
                       children: [

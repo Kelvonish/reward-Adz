@@ -490,9 +490,8 @@ class _CreateAccountState extends State<CreateAccount> {
                               ),
                             ),
                           )
-                        : Text(
-                            ""), /*InkWell(
-                            onTap: value.twitterLogin,
+                        : InkWell(
+                            onTap: () {},
                             child: Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
@@ -506,7 +505,6 @@ class _CreateAccountState extends State<CreateAccount> {
                               ),
                             ),
                           ),
-                  */
                   ],
                 ),
               ),

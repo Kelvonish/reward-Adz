@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -64,12 +65,17 @@ class _EditProfileState extends State<EditProfile> {
     }
 
     _onImageButtonPressed(ImageSource source, {BuildContext context}) async {
+      if (!mounted) return;
+
       try {
         final pickedFile = await _picker.getImage(
           source: source,
         );
+        inspect(pickedFile);
+        setState(() {
+          _imageFile = pickedFile;
+        });
 
-        _imageFile = pickedFile;
         await uploadImage(context);
       } catch (e) {
         setState(() {

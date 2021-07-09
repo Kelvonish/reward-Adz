@@ -254,19 +254,18 @@ class _LoginState extends State<Login> {
                                 ),
                               ),
                             )
-                          : Text(""),
-                      /*Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                        ),
-                        padding: EdgeInsets.all(10.0),
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          backgroundImage: AssetImage("assets/twitter.png"),
-                        ),
-                      ),
-                      */
+                          : Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              padding: EdgeInsets.all(10.0),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                backgroundImage:
+                                    AssetImage("assets/twitter.png"),
+                              ),
+                            ),
                     ],
                   ),
                 ),

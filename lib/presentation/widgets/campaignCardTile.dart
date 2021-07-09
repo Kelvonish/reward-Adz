@@ -21,23 +21,23 @@ class MainCardTile extends StatelessWidget {
       this.type});
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin:
-          isActive ? EdgeInsets.only(top: 15.0) : EdgeInsets.only(top: 25.0),
-      width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      child: ColorFiltered(
-        colorFilter: isActive
-            ? ColorFilter.mode(
-                Colors.transparent,
-                BlendMode.multiply,
-              )
-            : ColorFilter.mode(
-                Colors.grey,
-                BlendMode.saturation,
-              ),
+    return ColorFiltered(
+      colorFilter: isActive
+          ? ColorFilter.mode(
+              Colors.transparent,
+              BlendMode.multiply,
+            )
+          : ColorFilter.mode(
+              Colors.grey[700],
+              BlendMode.saturation,
+            ),
+      child: Container(
+        margin:
+            isActive ? EdgeInsets.only(top: 15.0) : EdgeInsets.only(top: 25.0),
+        width: MediaQuery.of(context).size.width,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
         child: Column(
           children: [
             CachedNetworkImage(
