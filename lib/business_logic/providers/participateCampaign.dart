@@ -85,8 +85,11 @@ class ParticipateCampaignProvider extends ChangeNotifier {
     return participated;
   }
 
-  Future<bool> awardUser(AwardUserModel awardUser,
-      AwardNotificationModel notificationModel, String token) async {
+  Future<bool> awardUser(
+      AwardUserModel awardUser,
+      AwardNotificationModel notificationModel,
+      UserModel user,
+      BuildContext context) async {
     await checkInternetConnection();
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
@@ -95,14 +98,19 @@ class ParticipateCampaignProvider extends ChangeNotifier {
       awardingLoading = true;
       notifyListeners();
       bool success = await transactionNetworkClass.awardUser(
-          awardUser, notificationModel, token);
+          awardUser, notificationModel, user.token);
       if (success) {
-        Fluttertoast.showToast(msg: "You have been awarded");
+        await Provider.of<UserProvider>(context, listen: false).getUser(user);
+        await Provider.of<GetCampaignProvider>(context, listen: false)
+            .getCompletedCampaigns(user);
+        await Provider.of<TransactionProvider>(context, listen: false)
+            .refreshAllTransactionAfterCompletedCampaign(user);
         Random random = new Random();
         int randomNumber = random.nextInt(100);
         notification.sendNotification(notificationModel.title,
             notificationModel.description, randomNumber);
         awardingLoading = false;
+
         notifyListeners();
         return true;
       }
@@ -247,25 +255,9 @@ class ParticipateCampaignProvider extends ChangeNotifier {
                                               bool awarded = await awardUser(
                                                   awardUserModel,
                                                   awardNotification,
-                                                  user.token);
+                                                  user,
+                                                  context);
                                               if (awarded) {
-                                                await Provider.of<UserProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .getUser(user);
-
-                                                await Provider.of<
-                                                            GetCampaignProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .getCompletedCampaigns(
-                                                        user);
-                                                await Provider.of<
-                                                            TransactionProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .refreshAllTransactionAfterCompletedCampaign(
-                                                        user);
                                                 final nav =
                                                     Navigator.of(context);
                                                 nav.pop();
@@ -384,17 +376,11 @@ class ParticipateCampaignProvider extends ChangeNotifier {
           uid: user.data.id.toString());
 
       bool awarded =
-          await awardUser(awardUserModel, awardNotification, user.token);
+          await awardUser(awardUserModel, awardNotification, user, context);
       if (awarded) {
         final nav = Navigator.of(context);
         nav.pop();
         nav.pop();
-        await Provider.of<UserProvider>(context, listen: false).getUser(user);
-
-        await Provider.of<GetCampaignProvider>(context, listen: false)
-            .getCompletedCampaigns(user);
-        await Provider.of<TransactionProvider>(context, listen: false)
-            .refreshAllTransactionAfterCompletedCampaign(user);
       }
     } else {
       showDialog<void>(
