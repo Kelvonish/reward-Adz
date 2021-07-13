@@ -6,7 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 class AuthenticationProvider extends ChangeNotifier {
-  GoogleSignIn _googleSignIn = GoogleSignIn(
+  GoogleSignIn googleSignIn = GoogleSignIn(
     scopes: [
       'email',
       // you can add extras if you require
@@ -14,30 +14,13 @@ class AuthenticationProvider extends ChangeNotifier {
   );
   final facebookLogin = FacebookLogin();
   logoutSocial() async {
-    await _googleSignIn.signOut();
+    await googleSignIn.signOut();
     await facebookLogin.logOut();
   }
 
   googleLogin() async {
-    GoogleSignIn _googleSignIn = GoogleSignIn(
-      scopes: [
-        'email',
-        // you can add extras if you require
-      ],
-    );
-
-    return _googleSignIn.signIn().then((GoogleSignInAccount acc) async {
-//GoogleSignInAuthentication auth = await acc.authentication;
-      //print(acc.id);
-      //print(acc.email);
-      //print(acc.displayName);
-      //print(acc.photoUrl);
-
+    return googleSignIn.signIn().then((GoogleSignInAccount acc) async {
       return acc;
-      //acc.authentication.then((GoogleSignInAuthentication auth) async {
-      //print(auth.idToken);
-      //print(auth.accessToken);
-      //});
     });
     //notifyListeners();
   }
@@ -49,13 +32,6 @@ class AuthenticationProvider extends ChangeNotifier {
 
     switch (result.status) {
       case FacebookLoginStatus.loggedIn:
-        /*print("Success");
-      print(result.accessToken);
-      print(result.accessToken.token);
-      print(result.accessToken.expires);
-      print(result.accessToken.permissions);
-      print(result.accessToken.userId);
-      print(result.accessToken.isValid());*/
         final token = result.accessToken.token;
         var url = Uri.parse(
             'https://graph.facebook.com/v2.12/me?fields=name,first_name,last_name,email&access_token=$token');

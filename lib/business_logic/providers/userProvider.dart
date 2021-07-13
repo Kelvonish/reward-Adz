@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -41,6 +43,7 @@ class UserProvider extends ChangeNotifier {
     } else {
       signUpButtonLoading = true;
       notifyListeners();
+      inspect(user);
       UserModel result = await userClass.createUser(user, deviceId);
 
       if (result != null) {
@@ -282,6 +285,7 @@ class UserProvider extends ChangeNotifier {
     if (isInternetConnected == false) {
       Fluttertoast.showToast(msg: "No internet connection");
     } else {
+      inspect(user);
       uploadingImage = true;
       notifyListeners();
 

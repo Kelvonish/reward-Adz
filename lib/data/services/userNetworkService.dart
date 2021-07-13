@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import "package:http/http.dart" as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:rewardadz/business_logic/constants/constants.dart';
@@ -15,7 +16,7 @@ class UserNetworkService {
       "deviceid": deviceId,
       "versioncode": 10
     };
-
+    inspect(data);
     try {
       String url = BASE_URL + "users/mobile/levelone/new";
       var body = json.encode(data);
@@ -25,18 +26,22 @@ class UserNetworkService {
       var response = await http.post(parsedUrl,
           headers: {"Content-Type": "application/json"}, body: body);
       var returnedData = json.decode(response.body);
+      inspect(returnedData);
       if (response.statusCode == 200) {
         return UserModel.fromJson(returnedData);
       } else {
-        if (returnedData['message'] == 'duplicates found')
+        if (returnedData['message'] == 'duplicates found') {
           Fluttertoast.showToast(
               msg: 'User registered with email or phone number already exists');
+          return null;
+        } else if (returnedData['status'] == "false") {
+          Fluttertoast.showToast(msg: returnedData.toString());
+        }
       }
     } catch (e) {
       Fluttertoast.showToast(msg: e.toString());
       return null;
     }
-    return null;
   }
 
   Future<UserModel> createSocialUser(UserModel user, String deviceId) async {

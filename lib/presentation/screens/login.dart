@@ -174,7 +174,7 @@ class _LoginState extends State<Login> {
                         onTap: () async {
                           String deviceId = await PlatformDeviceId.getDeviceId;
                           var profile = await value.facebookSignUp(context);
-                          print(profile);
+                          await value.facebookLogin.logOut();
                           if (profile != null) {
                             DataModel data = DataModel(
                               email: profile['email'],
@@ -208,6 +208,7 @@ class _LoginState extends State<Login> {
                         onTap: () async {
                           var profile = await value.googleLogin();
                           String deviceId = await PlatformDeviceId.getDeviceId;
+                          await value.googleSignIn.signOut();
                           if (profile != null) {
                             DataModel data = DataModel(
                               email: profile.email,
