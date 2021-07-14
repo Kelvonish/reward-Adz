@@ -132,8 +132,8 @@ class ParticipateCampaignProvider extends ChangeNotifier {
     return false;
   }
 
-  Future saveAndShare(
-      BuildContext context, CampaignModel campaignModel, UserModel user) async {
+  Future saveAndShare(BuildContext context, CampaignModel campaignModel,
+      UserModel user, String type) async {
     Directory directory;
     final RenderBox box = context.findRenderObject();
     try {
@@ -162,12 +162,11 @@ class ParticipateCampaignProvider extends ChangeNotifier {
         } else {
           sharingbanner = true;
           notifyListeners();
-          Fluttertoast.showToast(
-              msg:
-                  "Please share to twitter as a tweet and submit the link to post");
+
           var response = await get(Uri.parse(campaignModel.banner.bannerurl));
 
           saveFile.writeAsBytesSync(response.bodyBytes);
+
           await Share.shareFiles([directory.path + "${campaignModel.sId}.png"],
               text: campaignModel.banner.bannerset,
               sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
@@ -224,8 +223,14 @@ class ParticipateCampaignProvider extends ChangeNotifier {
                                               Uri.parse(_linkController.text)
                                                   .isAbsolute;
                                           if (_validURL) {
-                                            if (_linkController.text
-                                                .contains("twitter.com")) {
+                                            if (type == "Twitter" &&
+                                                    _linkController.text
+                                                        .contains(
+                                                            "twitter.com") ||
+                                                (type == "Facebook" &&
+                                                    _linkController.text
+                                                        .contains(
+                                                            "facebook.com"))) {
                                               Navigator.pop(context);
                                               String deviceDetails =
                                                   await deviceDetailsClass
@@ -265,7 +270,7 @@ class ParticipateCampaignProvider extends ChangeNotifier {
                                             } else {
                                               Fluttertoast.showToast(
                                                   msg:
-                                                      "That is not a link to the twitter post");
+                                                      "That is not a link to the $type post");
                                             }
                                           } else {
                                             Fluttertoast.showToast(

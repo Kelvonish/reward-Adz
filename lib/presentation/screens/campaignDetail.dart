@@ -193,7 +193,9 @@ class _CampaignDetailsState extends State<CampaignDetails> {
                         await DynamicLinkService(context: context)
                             .createCampaignLink(
                                 widget.campaignModel.sId, widget.type);
-                    Share.share(dynamicLink,
+                    Share.share(
+                        dynamicLink ??
+                            "https://rewardads.page.link/campaignDetails",
                         sharePositionOrigin:
                             box.localToGlobal(Offset.zero) & box.size);
                   },

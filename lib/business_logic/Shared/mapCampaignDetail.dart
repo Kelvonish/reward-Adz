@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -9,6 +10,81 @@ import '../../presentation/widgets/audioPlayer.dart';
 import '../providers/getCampaignProvider.dart';
 import '../providers/participateCampaign.dart';
 import '../providers/userProvider.dart';
+
+showSocialShareModal(BuildContext context, CampaignModel campaignModel) {
+  showCupertinoModalPopup(
+      context: context,
+      builder: (context) => Material(
+            child: Container(
+                padding: EdgeInsets.all(15.0),
+                color: Colors.white,
+                width: MediaQuery.of(context).size.width,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Title(
+                        color: Theme.of(context).primaryColor,
+                        child: Text(
+                          'Share to : ',
+                          style: TextStyle(fontSize: 18.0),
+                        )),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Divider(
+                      height: 5,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        await Provider.of<ParticipateCampaignProvider>(context,
+                                listen: false)
+                            .saveAndShare(
+                                context,
+                                campaignModel,
+                                Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .loggedUser,
+                                "Twitter");
+                      },
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          radius: 15,
+                          backgroundColor: Colors.white,
+                          backgroundImage: AssetImage("assets/twitter.png"),
+                        ),
+                        title: Text("Twitter"),
+                      ),
+                    ),
+                    Divider(
+                      height: 5,
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        await Provider.of<ParticipateCampaignProvider>(context,
+                                listen: false)
+                            .saveAndShare(
+                                context,
+                                campaignModel,
+                                Provider.of<UserProvider>(context,
+                                        listen: false)
+                                    .loggedUser,
+                                "Facebook");
+                      },
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.facebook,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        title: Text("Facebook"),
+                      ),
+                    ),
+                    Divider(
+                      height: 5,
+                    ),
+                  ],
+                )),
+          ));
+}
 
 Widget checkTypeofCampaignForDetails(String type, CampaignModel campaignModel) {
   if (type == "Ringtone") {
@@ -382,10 +458,7 @@ Widget checkTypeForAction(
                       .loggedUser
                       .data
                       .id);
-
-          Provider.of<ParticipateCampaignProvider>(context, listen: false)
-              .saveAndShare(context, campaignModel,
-                  Provider.of<UserProvider>(context, listen: false).loggedUser);
+          showSocialShareModal(context, campaignModel);
         }
       },
       child: Padding(
